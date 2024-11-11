@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFO-F420 Computational Geometry Project</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <ul>
+                <li><a class="" href="../../index.html">Home</a></li>
+                <li><a class=""href="../../html/Concepts/index.html">Concepts</a></li>
+                <li><a class="" href="../../html/Code/index.html">Code</a></li>
+                <li><a class="" href="../../html/Tool/index.html">Tool</a></li>
+                <li><a class="" href="../../html/Reference/index.html">References</a></li>
+                <li><a class="active" href="../../html/Glossary/index.html">Glossary</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="content">
+            <h1>INFO-F420 Computational Geometry Project</h1>
+            
+            <h2>Context</h2>
+            <p>This page was created in the context of the "INFO-F420 - Computational Geometry" course at Université libre de Bruxelles (ULB), and taught by Stefan Langerman. The goal of the project is to read and understand one or several recent research articles in computational geometry, related to the topic of choice. A creative work must be implemented demonstrating our deep understanding of the concepts described in the articles we read.</p>
+            <p>Our group chose to study the "Reflections in an octagonal mirror maze" article by D. Eppstein.</p>
+            
+            <h2>Introduction</h2>
+            <p>
+                This project will explore the concept of attraction-convexity, a geometric property derived from
+                beacon attraction. Beacon attraction describes a movement system in which a point moves to
+                minimize its Euclidean distance to a beacon (another point). If there are no obstacles, the point
+                moves directly toward the beacon; when obstacles are present, the point either slides along them or
+                becomes stuck. A beacon is said to attract a point if the point can ultimately reach it by following
+                this method.
+            </p>
+            <p>
+                A polygon is considered attraction-convex if every point within it attracts every other point. These
+                polygons, also referred to as normally visible polygons in the computational geometry literature, are
+                discussed in the article “Attraction-Convexity and Normal Visibility” from the Computational
+                Geometry journal [1], which forms the basis of our study. This article also presents a linear-time
+                algorithm for recognizing attraction-convex polygons, which we will implement as part of this
+                project.
+            </p>
+            <p>
+                Beacon attraction is not inherently symmetric, so we will also investigate inverse attraction regions.
+                Like the second article said [2], these regions are more complex, as they are not always connected,
+                making their computation more challenging compared to regular attraction regions.
+            </p>
+
+            <section id="sections">
+                <h2>Sections</h2>
+                <p>The webpage is organized into the following sections:</p>
+                <ul>
+                    <li><a href="#concepts">Concepts</a>: attempts to summarize and popularize the studied articles.</li>
+                    <li><a href="#code">Code</a>: contains the description of our implementation as well as some personal remarks regarding the overall project.</li>
+                    <li><a href="#tool">Tool</a>: presents a tool allowing to explore some ideas of the read articles.</li>
+                    <li><a href="#references">References</a>: bibliography part.</li>
+                </ul>
+            </section>
+
+            <section id="students">
+                <h2>Students</h2>
+                <ul>
+                    <li>Loïc Blommaert</li>
+                    <li>Quentin Lecocq</li>
+                    <li>Kevin Vandervaeren</li>
+                </ul>
+                <p>As we were a small group, the work was not distributed and was done following the pair-programming principle.</p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
