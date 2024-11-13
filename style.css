@@ -19,7 +19,7 @@ body {
 
 .sidebar {
     width: 200px;
-    background-color: #d4e7ee;
+    background-color: #eed9c1;
     padding-top: 20px;
     position: fixed;
     height: 100%;
@@ -43,7 +43,12 @@ body {
 }
 
 .sidebar ul li a:hover {
-    background-color: #c3d7e0;
+    background-color: #eed9c1;
+}
+
+.sidebar ul li a.active {
+    background-color: #9b291a;
+    color: #fff;
 }
 
 .content {
@@ -53,16 +58,16 @@ body {
 }
 
 h1 {
-    color: #1a579b;
-    background-color: #d4e7ee;
+    color: #9b291a;
+    background-color: #eed9c1;
     padding: 10px;
     border-radius: 5px;
     font-size: 24px;
 }
 
 h2 {
-    color: #1a579b;
-    background-color: #e8f0f7;
+    color: #9b291a;
+    background-color: #eed9c1;
     padding: 5px;
     border-radius: 3px;
     font-size: 18px;
@@ -79,7 +84,7 @@ ul li {
 }
 
 ul li a {
-    color: #1a579b;
+    color: #9b291a;
     text-decoration: none;
 }
 
