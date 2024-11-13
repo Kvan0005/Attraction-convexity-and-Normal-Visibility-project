@@ -22,10 +22,28 @@
 
         <!-- Main Content Area -->
         <main class="content">
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.10.0/p5.min.js"></script>
+            <h1>Code</h1>
 
-            <script type="module" src="../../src/main.js"></script>
-        </main
+            <h2>Pseudo Code used</h2>
+
+            <pre>
+            <code>
+
+            <b>Algorithm 1</b> Inverse attraction region.
+
+            <b>Input:</b> Simple polygon P , and a point p ∈ P.
+            <b>Output:</b> Inverse attraction region of p.
+                1: Compute SPT<sub>r</sub>(p) and SPM(p).
+                2: for <b>for each</b> e ∈ SPT<sub>r</sub>(p) <b>do</b> 
+                3:     Compute constraining half-planes of e and corresponding domain subpolygons.
+                4: <b>end for</b>
+                5: <b>for each</b> region R<sub>i</sub> of SPM(p) with base vertex v<sub>i</sub> <b>do</b> 
+                6:     Find all the domain subpolygons that contain v<sub>i</sub>, and compute Free<sub>i</sub>.
+                7:     Intersect R with Free<sub>i</sub>, and add the resulting set to the inverse attraction region of p.
+                8: <b>end for</b>
+                9: <b>return</b> Inverse attraction region of p.
+            </code>
+            </pre>
     </div>
 </body>
 </html>

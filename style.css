@@ -63,6 +63,7 @@ h1 {
     padding: 10px;
     border-radius: 5px;
     font-size: 24px;
+    text-align: center;
 }
 
 h2 {
@@ -72,6 +73,12 @@ h2 {
     border-radius: 3px;
     font-size: 18px;
     margin-top: 20px;
+}
+
+h3 {
+    color: #9b291a;
+    font-size: 16px;
+    margin-top: 15px;
 }
 
 p, ul {
