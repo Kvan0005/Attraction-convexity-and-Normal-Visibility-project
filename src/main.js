@@ -3,7 +3,7 @@ import { Point } from "./Point.js"; // Import the Point class
 
 
 var poly = new Polygon(); // Create a new Polygon object
-var button; 
+var ch;
 var clearButton;
 var computeButton;
 
@@ -31,12 +31,14 @@ const s=(p) => {
 
     function compute(){
         poly.compute();
+        ch = poly.getConvexHull()
     }
 
     p.draw = function(){
         p.background(122, 158, 128);
         p.text(p.textToDisplay, p.width / 2, 10);
         poly.draw(p);
+        if (ch) { ch.draw(p) }
     }
 
     p.mousePressed = function(){
