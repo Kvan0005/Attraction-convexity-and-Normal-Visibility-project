@@ -126,4 +126,17 @@ export class Polygon {
         }
         return hull;
     }
+
+    get(index){
+      if (index < 0 || index > this.points.length){
+        console.log("Index Error: {}", index);
+        return null;
+      }
+      return this.points[index]
+    }
+
+    rotate(){
+      let first = this.points.shift();
+      this.points.push(first);
+    }
   }

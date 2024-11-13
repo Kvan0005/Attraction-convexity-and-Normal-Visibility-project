@@ -18,4 +18,16 @@ export class ConvexHull {
         p.fill("white");
         p.stroke("white");
     }
+
+    get(index) {
+        if (index < 0 || index >= this.points.length) {
+            console.error("Index out of bounds {}", index);
+            return null;
+        }
+        return this.points[index];
+    }
+
+    length() {
+        return this.points.length;
+    }
 }

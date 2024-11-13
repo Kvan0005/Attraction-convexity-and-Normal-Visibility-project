@@ -7,6 +7,8 @@ var ch;
 var clearButton;
 var computeButton;
 
+
+var temp = [];
 const s=(p) => {
     p.setup = function(){
         p.createCanvas(p.windowWidth, p.windowHeight);
@@ -32,13 +34,82 @@ const s=(p) => {
     function compute(){
         poly.compute();
         ch = poly.getConvexHull()
+        let count = 0;
+        while (ch.get(0) != poly.get(0)){
+            count++;
+            if (count > poly.points.length){
+                p.textToDisplay = "Error: The convex hull could not be computed";
+                return;
+            }
+            poly.rotate();
+        }
+        step2(ch, poly);
     }
 
+    function step2(ch, poly){
+        let cnt = 0;
+        for (let i = 0; i < ch.length(); i++){
+            console.log(i);
+            let i_1 = (i+1)%ch.length();
+            let v_p = ch.get(i);
+            let v_q = ch.get(i_1);
+            if (v_p == poly.get(i) && v_q == poly.get(i_1)) 
+                continue;
+            let pocket_lid = [v_p];
+            let index = i_1;
+            while (poly.get(index)!=v_q){
+                pocket_lid.push(poly.get(index));
+                index= (index+1)%poly.length();
+                console.log(index);
+            }
+            pocket_lid.push(v_q);
+            
+            let prime_pocket = [v_p];
+            for (let i = 1; i < pocket_lid.length; i++){
+                let p = pocket_lid[i];
+                let q = v_p;
+                prime_pocket.push(projection(p,q));
+            }
+            if (cnt==0){
+                console.log("adding");
+                temp.push((v_p, v_q))
+                for (let i = 1; i < prime_pocket.length; i++){
+                    temp.push((prime_pocket[i], pocket_lid[i]))
+                }
+                cnt++;
+            }
+        }
+    }
+    // WARNING: This function is not implemented correctly and is BUGGY
+    function projection(p,q){
+        let facteur = dotproduct(p,q);
+        return facteur*q.x, facteur*q.y;
+    }
+    
+    function dotproduct(p,q){
+        return (p.x*q.x + p.y*q.y)
+    }
+    
+    
     p.draw = function(){
         p.background(122, 158, 128);
         p.text(p.textToDisplay, p.width / 2, 10);
         poly.draw(p);
-        if (ch) { ch.draw(p) }
+        if (ch) { ch.draw(p); }
+        if (temp.length == 0) return;
+        console.log(temp);
+        p.stroke("black");
+        p.fill("black");
+        let v = temp.shift(), v1 = temp.shift();
+        console.log(v);
+        p.line(v.x, -v.y, v1.x, -v1.y);
+        p.fill("red");
+        p.stroke("red");
+        for (let i = 0; i < temp.length; i++){
+            p.line(temp[i][0].x, -temp[i][0].y, temp[i][1].x, -temp[i][1].y);
+        }
+        p.fill("white");
+        p.stroke("white");
     }
 
     p.mousePressed = function(){
@@ -74,10 +145,10 @@ const s=(p) => {
     p.windowResized = function(){
         let xCompute = p.width / 2 - computeButton.width - 5;
         let xClear = p.width / 2 - clearButton.width + 5;
-        let y = height - 50;
+        let y = p.height - 50;
         computeButton.position(xCompute - 30, y);
         clearButton.position(xClear + 30, y);
-        p.resizeCanvas(windowWidth, windowHeight);
+        p.resizeCanvas(p.windowWidth, p.windowHeight);
     }
 }
 
