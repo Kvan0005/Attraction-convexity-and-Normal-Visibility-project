@@ -98,3 +98,23 @@ ul li a {
 ul li a:hover {
     text-decoration: underline;
 }
+
+
+/* math */
+
+.overline {
+    text-decoration: overline;
+    text-decoration-skip-ink: none;
+}
+.overline-sub {
+    display: inline-block;
+    position: relative;
+}
+.overline-sub::before {
+    content: '';
+    position: absolute;
+    top: 0; /* Adjust this value as needed */
+    left: 0;
+    right: 0;
+    border-top: 1px solid;
+}

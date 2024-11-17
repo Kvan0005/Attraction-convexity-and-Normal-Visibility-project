@@ -22,27 +22,33 @@
 
         <!-- Main Content Area -->
         <main class="content">
-            <h1>INFO-F420 Computational Geometry Project</h1>
             
-            <h2>Attraction-convexity and normal visibility</h2>
+            <h1>Attraction-convexity and normal visibility</h1>
             <p>
                 To be completed
             </p>
             
 
-            <h2>Inverse Attraction Regions</h2>
+            <h1>Inverse Attraction Regions</h1>
 
-            <h3>Computation</h3>
+            <h2>Computation</h2>
             <p>
-                We compute the constraining half-planes of every edge of <i>SPT<sub>r</sub> (p)</i> 
-                of <i>p</i> and the corresponding domain subpolygons. Then, for every region 
-                <i>R<sub>i</sub></i> of the shortest path map of <i>p</i>, we compute the free region 
-                <i>Free<sub>i</sub></i>, where <i>v<sub>i</sub></i> is the base vertex of the region; 
-                and we add the intersection of <i>R<sub>i</sub></i> and <i>Free<sub>i</sub></i> to 
-                the inverse attraction region of <i>p</i>.
+                In this section, we demonstrate how to compute the inverse attraction region of a point within a simple polygon in <em>O(n log n)</em> time.
+            </p>
+            <p>
+                Let region <em>R<sub>i</sub></em> of the shortest path map <em>SPM (p)</em> consist of all points <em>t</em> such that the last segment of the shortest path from <em>p</em> to <em>t</em> is <em><span class="overline-sub">v<sub>i</sub> t</span></em> (Figure 9). Vertex <em>v<sub>i</sub></em> is called the base of <em>R<sub>i</sub></em>.
+                Extend the edge of <em>SPT<sub>r</sub> (p)</em> ending at <em>v<sub>i</sub></em> until the first intersection <em>z<sub>i</sub></em> with the boundary of <em>P</em>. Call the segment <em>w<sub>i</sub> = <span class="overline-sub">v<sub>i</sub> z<sub>i</sub></span></em> a window, and point <em>z<sub>i</sub></em> – the end of the window; window <em>w<sub>i</sub></em> is a boundary segment of <em>R<sub>i</sub></em>.
             </p>
 
-            <h3>Complexity</h3>
+            <!-- Figure 9: Shortest Path Map TODO -->
+            <p style="text-align:center;">
+                <img src="../../images/Figure9.png" alt="Figure 9: Shortest Path Map" style="width:100%;max-width:600px;">
+            </p>
+            <p>
+                We will construct a part of the inverse attraction region of <em>p</em> inside each region of the shortest path map <em>SPM(p)</em> independently. A point in a region of <em>SPM(p)</em> attracts <em>p</em> only if its attraction can move <em>p</em> into the region through the corresponding window.
+            </p>
+
+            <h2>Complexity</h2>
             
             <p>
                 To be completed
