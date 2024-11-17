@@ -1,4 +1,5 @@
-import { DIRECTION } from "./Const.js";
+import {DIRECTION} from "./Const.js";
+
 export class Point {
     constructor(x, y) {
         this.x = x;
@@ -20,14 +21,18 @@ export function getTurn(p1, p2, p3) {
     */
     let cross = det(p1, p2, p3);
     if (cross > 0) {
-        return DIRECTION.RIGHT;
-    } else if (cross < 0) {
         return DIRECTION.LEFT;
+    } else if (cross < 0) {
+        return DIRECTION.RIGHT;
     } else {
         return DIRECTION.STRAIGHT;
     }
 }
 
-export function isALeftTurn(p1, p2, p3) {
+export function isLeftTurn(p1, p2, p3) {
     return getTurn(p1, p2, p3) === DIRECTION.LEFT;
+}
+
+export function isRightTurn(p1, p2, p3) {
+    return getTurn(p1, p2, p3) === DIRECTION.RIGHT;
 }

@@ -10,7 +10,7 @@ export const ISINSIDE = {
     NODETERMINED: "No information",
 };
 
-export const DISTANCE ={
+export const DISTANCE = {
     NEAR: "near",
     FAR: "far"
 }
