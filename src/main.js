@@ -6,9 +6,9 @@ var poly = new Polygon(); // Create a new Polygon object
 var ch;
 var clearButton;
 var computeButton;
+var display_pocket_chain_projection_on_lid = false;
 
-
-var temp = [];
+var data_pocket_chain_on_lid = [];
 const s = (p) => {
     p.setup = function () {
         p.createCanvas(p.windowWidth, p.windowHeight);
@@ -25,6 +25,11 @@ const s = (p) => {
         computeButton.mousePressed(compute);
         clearButton.position(xClear + 30, y);
         clearButton.mousePressed(reset_points);
+        let displayButton = p.createButton("Display Pocket Chain Projection on Lid");
+        displayButton.position(p.width / 2 - displayButton.width / 2, y + 50);
+        displayButton.mousePressed(() => {
+            display_pocket_chain_projection_on_lid = !display_pocket_chain_projection_on_lid;
+        });
     }
 
     function reset_points() {
@@ -47,36 +52,37 @@ const s = (p) => {
     }
 
     function step2(ch, poly) {
-        let cnt = 0;
+        let cnt=0;
         for (let i = 0; i < ch.length(); i++) {
             console.log(i);
             let i_1 = (i + 1) % ch.length();
-            let v_p = ch.get(i);
-            let v_q = ch.get(i_1);
-            if (v_p === poly.get(i) && v_q === poly.get(i_1))
+            const v_p = ch.get(i);
+            const v_q = ch.get(i_1);
+            while (poly.get(i) !== v_p) {
+                poly.rotate();
+            }
+            if (v_p === poly.get(i) && v_q === poly.get((i + 1) % poly.length())){
                 continue;
-            let pocket_lid = [v_p];
-            let index = i_1;
+            }
+            let pocket_chain = [];
+            let index = (i + 1) % poly.length();
             while (poly.get(index) !== v_q) {
-                pocket_lid.push(poly.get(index));
+                pocket_chain.push(poly.get(index));
                 index = (index + 1) % poly.length();
-                console.log(index);
             }
-            pocket_lid.push(v_q);
 
-            let prime_pocket = [v_p];
-            for (let i = 1; i < pocket_lid.length; i++) {
-                let p = pocket_lid[i];
-                prime_pocket.push(projection(p, v_p));
+            let prime_pocket = [];
+            for (let i = 0; i < pocket_chain.length; i++) {
+                let k = pocket_chain[i];
+                prime_pocket.push(projection(v_p, v_q, k));
             }
-            if (cnt === 0) {
-                console.log("adding");
-                temp.push([v_p, v_q])
-                for (let i = 1; i < prime_pocket.length; i++) {
-                    temp.push([prime_pocket[i], pocket_lid[i]])
-                }
-                cnt++;
+
+            data_pocket_chain_on_lid.push([[v_p, v_q]])
+            for (let i = 0; i < prime_pocket.length; i++) {
+                data_pocket_chain_on_lid[cnt].push([prime_pocket[i], pocket_chain[i]])
             }
+            cnt++;
+            
         }
     }
 
@@ -89,13 +95,11 @@ const s = (p) => {
     }
 
     // WARNING: This function is not implemented correctly and is BUGGY
-    function projection(p, q) {
-        let factor = dot_product(p, q);
-        return [factor * q.x, factor * q.y];
-    }
-
-    function dot_product(p, q) {
-        return (p.x * q.x + p.y * q.y)
+    function projection(p, q, k) {
+        let dot = (k.x - p.x) * (q.x - p.x) + (k.y - p.y) * (q.y - p.y);
+        let norm = Math.pow(q.x - p.x, 2) + Math.pow(q.y - p.y, 2);
+        let t = dot / norm;
+        return new Point(p.x + t * (q.x - p.x), p.y + t * (q.y - p.y));
     }
 
 
@@ -106,20 +110,19 @@ const s = (p) => {
         if (ch) {
             ch.draw(p);
         }
-        if (temp.length === 0) return;
-        console.log(temp);
-        p.stroke("black");
-        p.fill("black");
-        let v = temp.shift();
-        console.log(v);
-        p.line(v[0].x, -v[0].y, v[1].x, -v[1].y);
-        p.fill("red");
-        p.stroke("red");
-        for (let i = 0; i < temp.length; i++) {
-            p.line(temp[i][0].x, -temp[i][0].y, temp[i][1].x, -temp[i][1].y);
+        if (data_pocket_chain_on_lid.length === 0 || !display_pocket_chain_projection_on_lid) return;
+        for (let j = 0;j < data_pocket_chain_on_lid.length; j++) {
+            p.stroke("black");
+            p.fill("black");
+            p.line(data_pocket_chain_on_lid[j][0][0].x, -data_pocket_chain_on_lid[j][0][0].y, data_pocket_chain_on_lid[j][0][1].x, -data_pocket_chain_on_lid[j][0][1].y);
+            p.fill("blue");
+            p.stroke("blue");
+            for (let i = 1; i < data_pocket_chain_on_lid[j].length; i++) {
+                p.line(data_pocket_chain_on_lid[j][i][0].x, -data_pocket_chain_on_lid[j][i][0].y, data_pocket_chain_on_lid[j][i][1].x, -data_pocket_chain_on_lid[j][i][1].y);
+            }
+            p.fill("white");
+            p.stroke("white");
         }
-        p.fill("white");
-        p.stroke("white");
     }
 
     p.mousePressed = function () {
