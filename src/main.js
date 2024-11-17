@@ -48,7 +48,8 @@ const s = (p) => {
             }
             poly.rotate();
         }
-        step2(ch, poly);
+        let ret_val = step2(ch, poly);
+        console.log("ret_val->",ret_val);
     }
 
     function step2(ch, poly) {
@@ -64,17 +65,25 @@ const s = (p) => {
             if (v_p === poly.get(i) && v_q === poly.get((i + 1) % poly.length())){
                 continue;
             }
-            let pocket_chain = [];
+            let pocket_chain = [v_p];
             let index = (i + 1) % poly.length();
             while (poly.get(index) !== v_q) {
                 pocket_chain.push(poly.get(index));
                 index = (index + 1) % poly.length();
             }
+            pocket_chain.push(v_q);
 
+            const order = v_p.x < v_q.x ? 1 : -1; //! this considering general position which x-coordinates are different
             let prime_pocket = [];
             for (let i = 0; i < pocket_chain.length; i++) {
                 let k = pocket_chain[i];
                 prime_pocket.push(projection(v_p, v_q, k));
+                if (i === 0) {
+                    continue;
+                }
+                if (order*prime_pocket[i].x < order*prime_pocket[i - 1].x){
+                    return false;
+                }
             }
 
             data_pocket_chain_on_lid.push([[v_p, v_q]])
@@ -82,8 +91,9 @@ const s = (p) => {
                 data_pocket_chain_on_lid[cnt].push([prime_pocket[i], pocket_chain[i]])
             }
             cnt++;
-            
+
         }
+        return true;
     }
 
     function ccwScan(polygon) {
