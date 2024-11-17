@@ -1,4 +1,4 @@
-import {det, getTurn} from "./Point.js";
+import {det, getTurn, isRightTurn} from "./Point.js";
 import {DIRECTION} from "./Const.js";
 import {ConvexHull} from "./ConvexHull.js";
 
@@ -44,7 +44,8 @@ export class Polygon {
         let pMinus = pIndex - 1 >= 0 ? this.points[pIndex - 1] : this.points[this.length() - 1];
         let pPlus = this.points[(pIndex + 1) % this.length()];
 
-        if (det(pMinus, p, pPlus) < 0) {
+        if (isRightTurn(pMinus, p, pPlus)) {
+            console.log("hey")
             this.points.reverse();
         }
     }

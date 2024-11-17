@@ -110,9 +110,9 @@ const s = (p) => {
         console.log(temp);
         p.stroke("black");
         p.fill("black");
-        let v = temp.shift(), v1 = temp.shift();
+        let v = temp.shift();
         console.log(v);
-        p.line(v.x, -v.y, v1.x, -v1.y);
+        p.line(v[0].x, -v[0].y, v[1].x, -v[1].y);
         p.fill("red");
         p.stroke("red");
         for (let i = 0; i < temp.length; i++) {
