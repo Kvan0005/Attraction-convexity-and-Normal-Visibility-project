@@ -3,9 +3,10 @@ import {DIRECTION} from "./Const.js";
 import {ConvexHull} from "./ConvexHull.js";
 
 export class Polygon {
-    constructor(points) {
+    constructor(points, closed) {
+        if (closed === undefined) {closed = false; }
         points ? this.points = points : this.points = [];
-        this.closed = false;
+        this.closed = closed;
     }
 
     addPoint(point) {
@@ -45,10 +46,14 @@ export class Polygon {
         let pPlus = this.points[(pIndex + 1) % this.length()];
 
         if (isRightTurn(pMinus, p, pPlus)) {
-            console.log("hey")
             this.points.reverse();
         }
     }
+
+    getClockWiseOrder() {
+        return new Polygon([...this.points].reverse(), true);
+    }
+
 
     leftmostPoint() {
         return this.points.reduce(
@@ -102,7 +107,7 @@ export class Polygon {
     }
 
     getConvexHull() {
-        return new ConvexHull(this.grahamScan())
+        return new ConvexHull(this.grahamScan());
     }
 
     grahamScan() {

@@ -36,3 +36,16 @@ export function isLeftTurn(p1, p2, p3) {
 export function isRightTurn(p1, p2, p3) {
     return getTurn(p1, p2, p3) === DIRECTION.RIGHT;
 }
+
+export function angle(p1, p2, p3) {
+    const v1 = { x: p1.x - p2.x, y: p1.y - p2.y };
+    const v2 = { x: p3.x - p2.x, y: p3.y - p2.y };
+    const dotProduct = v1.x * v2.x + v1.y * v2.y;
+    const normV1 = Math.sqrt(v1.x ** 2 + v1.y ** 2);
+    const normV2 = Math.sqrt(v2.x ** 2 + v2.y ** 2);
+    return Math.acos(dotProduct / (normV1 * normV2));
+}
+
+export function isAcuteAngle(p1, p2, p3) {
+    return angle(p1, p2, p3) < Math.PI/2;
+}

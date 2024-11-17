@@ -1,5 +1,5 @@
 import {Polygon} from "./Polygon.js"; // Import the Polygon class
-import {isRightTurn, Point} from "./Point.js"; // Import the Point class
+import {isAcuteAngle, isLeftTurn, isRightTurn, Point} from "./Point.js"; // Import the Point class
 
 
 var poly = new Polygon(); // Create a new Polygon object
@@ -7,6 +7,7 @@ var ch;
 var clearButton;
 var computeButton;
 var display_pocket_chain_projection_on_lid = false;
+var text_to_display = "?"
 
 var data_pocket_chain_on_lid = [];
 const s = (p) => {
@@ -37,6 +38,7 @@ const s = (p) => {
     }
 
     function compute() {
+
         poly.compute();
         ch = poly.getConvexHull()
         let count = 0;
@@ -48,8 +50,9 @@ const s = (p) => {
             }
             poly.rotate();
         }
-        let ret_val = step2(ch, poly);
-        console.log("ret_val->",ret_val);
+        if (step2(ch, poly)) {console.log("step2 passed"); text_to_display = step3(poly) ? "True" : "False";}
+        else {text_to_display = "False";}
+        //console.log("ret_val->",ret_val);
     }
 
     function step2(ch, poly) {
@@ -97,14 +100,54 @@ const s = (p) => {
     }
 
     function ccwScan(polygon) {
-        let S = [polygon.leftmostPoint()]
-        for (let i = 0; i < polygon.length(); i++) {
-            while (S.length !== 1 && isRightTurn(S[S.length - 2], S[S.length - 1], v_i)) { S.pop() }
+        let s = [polygon.leftmostPoint()];
+        for (let i = 0; i < polygon.length(); i++) { // play with these index for clockwise
+            let v = polygon.get(i), v_next = polygon.get((i+1) % polygon.length()), v_prev = polygon.get((i-1 + polygon.length()) % polygon.length());
+            while (s.length !== 1 && isRightTurn(s[s.length - 2], s[s.length - 1], v)) s.pop();
+            s.push(v);
+            let c_prev = s[s.length - 2], c = s[s.length - 1];
+            if (isRightTurn(c_prev, c, v_next) && isAcuteAngle(c_prev, c, v_next)) {
+                console.log("nop");
+                return false;
+            }
+            if (isLeftTurn(c_prev, c, v_next) && isRightTurn(v_prev, v, v_next)) {
+                console.log("nop2");
+                return false;
+            }
         }
+        console.log("yeepee");
+        return true;
 
     }
 
-    // WARNING: This function is not implemented correctly and is BUGGY
+    function cwScan(polygon) {
+        let s = [polygon.leftmostPoint()];
+        for (let i = polygon.length() - 1; i <= 0; i++) { // play with these index for clockwise
+            let v = polygon.get(i), v_next = polygon.get((i+1) % polygon.length()), v_prev = polygon.get((i-1 + polygon.length()) % polygon.length());
+            while (s.length !== 1 && isLeftTurn(s[s.length - 2], s[s.length - 1], v)) s.pop();
+            s.push(v);
+            let c_prev = s[s.length - 2], c = s[s.length - 1];
+            if (isLeftTurn(c_prev, c, v_next) && isAcuteAngle(c_prev, c, v_next)) {
+                console.log("pon");
+                return false;
+            }
+            if (isRightTurn(c_prev, c, v_next) && isLeftTurn(v_prev, v, v_next)) {
+                console.log("2pon");
+                return false;
+            }
+        }
+        console.log("eepeey");
+        return true;
+    }
+
+    function step3(polygon) {
+        if (ccwScan(polygon)) {
+            return cwScan(polygon); // not sure if it is correct, but it seems to work
+        }
+        return false;
+
+    }
+
     function projection(p, q, k) {
         let dot = (k.x - p.x) * (q.x - p.x) + (k.y - p.y) * (q.y - p.y);
         let norm = Math.pow(q.x - p.x, 2) + Math.pow(q.y - p.y, 2);
@@ -115,7 +158,7 @@ const s = (p) => {
 
     p.draw = function () {
         p.background(122, 158, 128);
-        p.text(p.textToDisplay, p.width / 2, 10);
+        p.text(text_to_display, p.width / 2, 10);
         poly.draw(p);
         if (ch) {
             ch.draw(p);
