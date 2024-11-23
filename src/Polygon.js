@@ -90,6 +90,26 @@ export class Polygon {
         return false;
     }
 
+    isCutting2(p1, p2) {
+        for (let i = 0; i < this.points.length - 1; i++) {
+            let a = this.points[i], b = this.points[i + 1];
+            if (a === p1 || a === p2 || b === p1 || b === p2) continue;
+
+            let turn1 = det(p1, p2, a) >= 0;
+            let turn2 = det(p1, p2, b) >= 0;
+            if (turn1 !== turn2) {
+                let turn3 = det(a, b, p2) >= 0;
+                let turn4 = det(a, b, p1) >= 0;
+                if (turn3 !== turn4) return true;
+            }
+        }
+        return false;
+    }
+
+    isReflex(p1, p2, p3) {
+        return det(p1, p2, p3) >= 0;
+    }
+
     draw(p) {
         let ctx = p.drawingContext;
         let n = this.points.length - 1;

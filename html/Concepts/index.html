@@ -22,6 +22,7 @@
 
         <!-- Main Content Area -->
         <main class="content">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.10.0/p5.min.js"></script>
             
             <h1>Attraction-convexity and normal visibility</h1>
             <p>
@@ -52,12 +53,13 @@
             <h3>Region - <em>R<sub>i</sub></em></h3>
             
             <p>
-                Let region <em>R<sub>i</sub></em> of the shortest path map <a href="../../html/Glossary/index.html#shortest-path-map"><em>SPM(p)</em></a> consist of all points <em>t</em> such that the last segment of the shortest path from <em>p</em> to <em>t</em> is <em><span class="overline-sub">v<sub>i</sub> t</span></em> (Figure 9). Vertex <em>v<sub>i</sub></em> is called the base of <em>R<sub>i</sub></em>.
-                Extend the edge of <a href="../../html/Glossary/index.html#shortest-path-tree"><em>SPT<sub>r</sub>(p)</em></a> ending at <em>v<sub>i</sub></em> until the first intersection <em>z<sub>i</sub></em> with the boundary of <em>P</em>. Call the segment <span class=overline-sub><em>w<sub>i</sub></span> = <span class="overline-sub">v<sub>i</sub> z<sub>i</sub></span></em> a window, and point <em>z<sub>i</sub></em> – the end of the window; window <span class=overline-sub><em>w<sub>i</sub></span> is a boundary segment of <em>R<sub>i</sub></em>.
+                Let region <em>R<sub>i</sub></em> of the shortest path map <a href="../../html/Glossary/index.html#shortest-path-map"><em>SPM(p)</em></a> consist of all points <em>t</em> such that the last segment of the shortest path from <em>p</em> to <em>t</em> is <em><span class="overline-sub">v<sub>i</sub> t</span></em>. Vertex <em>v<sub>i</sub></em> is called the base of <em>R<sub>i</sub></em>.
+                Extend the edge of <a href="../../html/Glossary/index.html#shortest-path-tree"><em>SPT<sub>r</sub>(p)</em></a> ending at <em>v<sub>i</sub></em> until the first intersection <em>z<sub>i</sub></em> with the boundary of <em>P</em>. Call the segment <span class="overline-sub"><em>w<sub>i</sub></span> = <span class="overline-sub">v<sub>i</sub> z<sub>i</sub></span></em> a window, and point <em>z<sub>i</sub></em> – the end of the window; window <span class="overline-sub"><em>w<sub>i</sub></span> is a boundary segment of <em>R<sub>i</sub></em>.
             </p>
-            <!-- Figure 9: Shortest Path Map TODO -->
+
+            <!-- Canvas for Animation -->
             <p style="text-align:center;">
-                <img src="../../images/Figure9.png" alt="Figure 9: Shortest Path Map" style="width:100%;max-width:600px;">
+                <div id="animationCanvasContainer"></div>
             </p>
 
             <h3><em>Free<sub>i</sub></em> and Constraining Half-Planes</h3>
@@ -68,7 +70,7 @@
 
             <h4>Constraining Half-Planes</h4>
             <p>
-                Let <em>uv</em> be an edge of the shortest path tree <a href="../../html/Glossary/index.html#shortest-path-tree"><em>SPT<sub>r</sub>(p)</em></a>, where <em>u</em> is the parent of <em>v</em>. Extend <em>uv</em> from <em>u</em> until it intersects the boundary of <em>P</em> at <em>w</em>. The segment <span class=overline><em>uw</em></span> partitions <em>P</em> into two subpolygons. Let <em>P<sub>p</sub></em> be the subpolygon containing <em>p</em>. Any path from <em>p</em> to any point outside <em>P<sub>p</sub></em> must pass through <em>uw</em>.
+                Let <em>uv</em> be an edge of the shortest path tree <a href="../../html/Glossary/index.html#shortest-path-tree"><em>SPT<sub>r</sub>(p)</em></a>, where <em>u</em> is the parent of <em>v</em>. Extend <em>uv</em> from <em>u</em> until it intersects the boundary of <em>P</em> at <em>w</em>. The segment <em>uw</em> partitions <em>P</em> into two subpolygons. Let <em>P<sub>p</sub></em> be the subpolygon containing <em>p</em>. Any path from <em>p</em> to any point outside <em>P<sub>p</sub></em> must pass through <em>uw</em>.
             </p>
             <p>
                 <strong>Case 1: <em>u</em> is not in <em>H<sub>1</sub> ∪ H<sub>2</sub>:</em></strong><br>
@@ -94,5 +96,6 @@
 
         </main>
     </div>
+    <script type="module" src="main.js"></script>
 </body>
 </html>
