@@ -122,11 +122,11 @@ const s = (p) => {
 
     function cwScan(polygon) {
         let s = [polygon.leftmostPoint()];
-        for (let i = polygon.length() - 1; i <= 0; i++) { // play with these index for clockwise
-            let v = polygon.get(i), v_next = polygon.get((i+1) % polygon.length()), v_prev = polygon.get((i-1 + polygon.length()) % polygon.length());
-            while (s.length !== 1 && isLeftTurn(s[s.length - 2], s[s.length - 1], v)) s.pop();
+        for (let i = polygon.length() - 1; i <= 0; i--) { // play with these index for clockwise
+            let v = polygon.get(i), v_prev = polygon.get((i+1) % polygon.length()), v_next = polygon.get((i-1 + polygon.length()) % polygon.length());
+            while (s.length !== 1 && isLeftTurn(s[0], s[s.length - 1], v)) s.pop();
             s.push(v);
-            let c_prev = s[s.length - 2], c = s[s.length - 1];
+            let c_prev = s[0], c = s[s.length - 1];
             if (isLeftTurn(c_prev, c, v_next) && isAcuteAngle(c_prev, c, v_next)) {
                 console.log("pon");
                 return false;

@@ -99,6 +99,15 @@ ul li a:hover {
     text-decoration: underline;
 }
 
+#animationCanvasContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #000; /* Bordure noire */
+    width: 600px; /* Largeur du canvas */
+    height: 400px; /* Hauteur du canvas */
+    margin: 0 auto; /* Centrer horizontalement */
+}
 
 /* math */
 
@@ -117,4 +126,16 @@ ul li a:hover {
     left: 0;
     right: 0;
     border-top: 1px solid;
+}
+
+.overrightarrow {
+    display: inline-block;
+    position: relative;
+}
+
+.overrightarrow::after {
+    content: '→';
+    position: absolute;
+    right: 0px; /* Adjust this value as needed */
+    bottom: 10px; /* Adjust this value as needed */
 }
