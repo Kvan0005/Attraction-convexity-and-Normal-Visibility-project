@@ -1,4 +1,6 @@
 import {DIRECTION} from "./Const.js";
+import {Attraction} from "./Attraction.js";
+import {Polygon} from "./Polygon.js";
 
 
 class Phase {
@@ -264,6 +266,10 @@ class ReactivePolygon {
         }
         return this.vertices[index]
     }
+
+    toPolygon(){
+        return new Polygon(this.vertices, true)
+    }
 }
 
 class AnimatedText{
@@ -489,14 +495,26 @@ var phase2Dialogs = new Dialog(
                new AnimatedText("", 500),
                new AnimatedText("Now, let's imagine an ant walking counterclockwise\n" +
                                          " with a laser on its right on the edges...", 4000, 500)]);
+
+var negPhase2Dialogs = new Dialog(
+    [new AnimatedText("This polygon is not Attraction Convex", 3000, 1000,),
+        new AnimatedText("It means that at least one point of the polygon " +
+            "cannot attract every others one", 3000, 1000),
+        new AnimatedText("", 500),
+        new AnimatedText("Now, let's imagine an ant walking counterclockwise\n" +
+            " with a laser on its right on the edges...", 4000, 500)]);
+
+
 var ant = new WalkingAnt(polygon);
 var phase4Dialogs = new Dialog(
     [
-        new AnimatedText("The laser never hit the polygon.", 3000, 1000,),
-        new AnimatedText("Which means the polygon is Normally Visible", 3000, 1000),
+        new AnimatedText("The laser hit the polygon.", 3000, 1000,),
+        new AnimatedText("Which means the polygon is not Normally Visible", 3000, 1000),
         new AnimatedText("Normal visibility is another way to describe attraction convexity", 5000, 1000),
         new AnimatedText("These Notions are subject of our study.", 3000, 1000)
-    ])
+    ]);
+
+var isAttractionConvex = false;
 
 const s = (p) => {
     p.setup = function () {
@@ -511,7 +529,8 @@ const s = (p) => {
         p.strokeWeight(1);
         switch (phase) {
             case Phase.Draw: {polygon.drawAnimated(p); break;}
-            case Phase.Explanation: {polygon.toCounterClockwiseOrder()
+            case Phase.Explanation: { isAttractionConvex = Attraction.compute(polygon.toPolygon())
+                                     polygon.toCounterClockwiseOrder();
                                      phase2Dialogs.draw(p);
                                      polygon.draw(p);
                                      break;}
