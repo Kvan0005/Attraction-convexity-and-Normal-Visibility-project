@@ -1,13 +1,9 @@
-export const DIRECTION = {
-    LEFT: "left",
-    RIGHT: "right",
-    STRAIGHT: "straight",
-};
+import {DIRECTION} from "./Const.js";
+
 
 class Phase {
     static EndVisible = new Phase('EndVisible');
-    static WalkAnt = new Phase('WalkAnt', Phase.EndVisible);
-    static ImagineAnt = new Phase('ImagineAnt', Phase.WalkAnt);
+    static ImagineAnt = new Phase('ImagineAnt', Phase.EndVisible);
     static Explanation = new Phase('Explanation', Phase.ImagineAnt);
     static Draw = new Phase('Draw', Phase.Explanation);
 
@@ -21,6 +17,23 @@ class Phase {
 
     next() {
         return this.n;
+    }
+
+    notify(f, p){
+        switch(f) {
+            case Phase.Draw: {
+                phase = this.next(); break;
+            }
+            case Phase.Explanation: {
+                phase = this.next(); break;
+            }
+            case Phase.ImagineAnt: {
+                phase = this.next(); ant.restart(); break;
+            }
+            case Phase.EndVisible: {
+                p.noLoop();
+            }
+        }
     }
 }
 
@@ -88,8 +101,8 @@ class ReactivePolygon {
 
     close(p) {
         this.closed = p.millis();
-        for (let i = 0; i < polygon.length() - 1; i++) {
-            this.perimeter += p.dist(polygon.get(i).x, polygon.get(i).y, polygon.get(i + 1).x, polygon.get(i + 1).y);
+        for (let i = 0; i < this.length() - 1; i++) {
+            this.perimeter += p.dist(this.get(i).x, this.get(i).y, this.get(i + 1).x, this.get(i + 1).y);
         }
     }
 
@@ -102,8 +115,8 @@ class ReactivePolygon {
     }
 
     isNearFirstVertex(p) {
-        if (polygon.length() === 0) return false;
-        let distanceSq = (p.mouseX - polygon.get(0).x) ** 2 + (p.mouseY - polygon.get(0).y) ** 2;
+        if (this.length() === 0) return false;
+        let distanceSq = (p.mouseX - this.get(0).x) ** 2 + (p.mouseY - this.get(0).y) ** 2;
         return distanceSq < 49;
     };
 
@@ -155,35 +168,34 @@ class ReactivePolygon {
         return false;
     }
 
-    draw(p) {
-        if (!polygon.isClosed()) {
-            polygon.drawInConstruction(p)
+    drawAnimated(p) {
+        if (!this.isClosed()) {
+            this.drawInConstruction(p)
         }
         else {
-            polygon.drawEnded(p)
+            this.drawEnded(p)
         }
     }
 
     drawInConstruction(p) {
         p.noFill();
         p.beginShape();
-        for (let i = 0; i < polygon.length(); i++) {
-            p.vertex(polygon.get(i).x, polygon.get(i).y);
+        for (let i = 0; i < this.length(); i++) {
+            p.vertex(this.get(i).x, this.get(i).y);
         }
         p.vertex(p.mouseX, p.mouseY);
         p.endShape();
 
         // First vertex drawing
-        if (polygon.length() > 0) {
-            polygon.isNearFirstVertex(p) ? p.fill(255, 255, 255) : p.fill(200, 50, 30);
-            polygon.get(0).draw(p, 10);
+        if (this.length() > 0) {
+            this.isNearFirstVertex(p) ? p.fill(255, 255, 255) : p.fill(200, 50, 30);
+            this.get(0).draw(p, 10);
         }
 
         p.fill(0, 0, 0);
-        for (let i = 1; i < polygon.length(); i++) {
-            //p.circle(polygon.get(i).x, polygon.get(i).y, 5);
-            polygon.get(i).draw(p);
-            let intersection = polygon.isCutting(new Point(p.mouseX, p.mouseY))
+        for (let i = 1; i < this.length(); i++) {
+            this.get(i).draw(p);
+            let intersection = this.isCutting(new Point(p.mouseX, p.mouseY))
             if (intersection) {
                 let {a, b} = intersection
                 p.fill(255, 0, 0);
@@ -197,52 +209,52 @@ class ReactivePolygon {
     }
 
     drawEnded(p) {
-        let t = p.min(1, (p.millis() - polygon.closedInstant()) / 1000); // 0 <= t <= 1
+        let t = p.min(1, (p.millis() - this.closedInstant()) / 1000); // 0 <= t <= 1
 
         p.fill(160, 220, 120);
         p.beginShape();
 
         if (t < 1) {
-            let animationDistance = polygon.getPerimeter() * t;
+            let animationDistance = this.getPerimeter() * t;
 
             let d = 0; // length n-1 first edges
             let ld = 0; // length n-1 edge
             let n = 0; // targeted vertex
 
             while (d <= animationDistance) {
-                ld = p.dist(polygon.get(n).x, polygon.get(n).y, polygon.get(n + 1).x, polygon.get(n + 1).y);
+                ld = p.dist(this.get(n).x, this.get(n).y, this.get(n + 1).x, this.get(n + 1).y);
                 d += ld;
                 n++;
             }
 
             for (let i = 0; i < n; i++) {
-                p.vertex(polygon.get(i).x, polygon.get(i).y);
+                p.vertex(this.get(i).x, this.get(i).y);
             }
 
             let relT = (animationDistance - d + ld) / ld;
-            p.vertex(relT * polygon.get(n).x + (1 - relT) * polygon.get(n - 1).x, relT * polygon.get(n).y + (1 - relT) * polygon.get(n - 1).y);
+            p.vertex(relT * this.get(n).x + (1 - relT) * this.get(n - 1).x, relT * this.get(n).y + (1 - relT) * this.get(n - 1).y);
         } else {
             // t = 1, polygon ended
-            for (let i = 0; i < polygon.length(); i++) {
-                p.vertex(polygon.get(i).x, polygon.get(i).y);
+            for (let v of this.vertices) {
+                p.vertex(v.x, v.y);
             }
-            p.vertex(polygon.get(0).x, polygon.get(0).y);
+            p.endShape(p.CLOSE);
             //p.noLoop();
-            phase = phase.next()
+            phase.notify(phase, p)
+            //phase = phase.next()
         }
 
         p.endShape();
     }
 
-    drawInstantly(p){
-        p.fill(160, 220, 120);
-        p.stroke(0, 0, 0)
+    draw(p){
+        p.fill(160, 220, 120, this.alpha);
+        p.stroke(0, 0, 0, this.alpha)
         p.beginShape();
-        for (let i = 0; i < polygon.length(); i++) {
-            p.vertex(polygon.get(i).x, polygon.get(i).y);
+        for (let v of this.vertices) {
+            p.vertex(v.x, v.y);
         }
-        p.vertex(polygon.get(0).x, polygon.get(0).y);
-        p.endShape();
+        p.endShape(p.CLOSE);
     }
 
     get(index) {
@@ -314,7 +326,8 @@ class Dialog {
             txt.draw(p);
             if (txt.isEnded()) this.current += 1;
         } else {
-            phase = phase.next()
+            phase.notify(phase, p)
+            //phase = phase.next()
             //p.noLoop();
         }
     }
@@ -345,6 +358,10 @@ class WalkingAnt {
         this.timePerEdge = this.totalTime / (this.polygon.length() - 1) | 0;
         this.timePerRotation = this.totalRotationTime / this.polygon.length() | 0;
         this.calculateDistance(p, this.polygon.get(0), this.polygon.get(1));
+    }
+
+    restart(){
+        this.currentEdge = 0;
     }
 
     calculateDistance(p, start, end) {
@@ -431,7 +448,7 @@ class WalkingAnt {
         let endY = y + lineLength * Math.sin(angle);
 
         p.stroke(0, 0, 255);
-        p.strokeWeight(2);
+        //p.strokeWeight(2);
         p.line(x, y, endX, endY);
     }
 
@@ -451,8 +468,13 @@ class WalkingAnt {
             }
         }
         else {
-            console.log("ended")
-            p.noLoop();
+            //console.log("ended")
+            if (phase === Phase.ImagineAnt) {
+                phase.notify(phase, p)
+                //phase = phase.next();
+                //this.restart();
+            }
+            //p.noLoop();
         }
     }
 }
@@ -462,8 +484,19 @@ let polygon = new ReactivePolygon(); // Sommets du polygone
 var phase = Phase.Draw
 var phase2Dialogs = new Dialog(
     [new AnimatedText("This polygon is Attraction Convex", 3000, 1000,),
-        new AnimatedText("It means that every point of the polygon can attract every others one", 3000, 1000)]);
+               new AnimatedText("It means that every point of the polygon " +
+                                         "can attract every others one", 3000, 1000),
+               new AnimatedText("", 500),
+               new AnimatedText("Now, let's imagine an ant walking counterclockwise\n" +
+                                         " with a laser on its right on the edges...", 4000, 500)]);
 var ant = new WalkingAnt(polygon);
+var phase4Dialogs = new Dialog(
+    [
+        new AnimatedText("The laser never hit the polygon.", 3000, 1000,),
+        new AnimatedText("Which means the polygon is Normally Visible", 3000, 1000),
+        new AnimatedText("Normal visibility is another way to describe attraction convexity", 5000, 1000),
+        new AnimatedText("These Notions are subject of our study.", 3000, 1000)
+    ])
 
 const s = (p) => {
     p.setup = function () {
@@ -477,15 +510,20 @@ const s = (p) => {
         p.stroke(0, 0, 0);
         p.strokeWeight(1);
         switch (phase) {
-            case Phase.Draw: {polygon.draw(p); break;}
+            case Phase.Draw: {polygon.drawAnimated(p); break;}
             case Phase.Explanation: {polygon.toCounterClockwiseOrder()
                                      phase2Dialogs.draw(p);
-                                     polygon.drawInstantly(p);
+                                     polygon.draw(p);
                                      break;}
             case Phase.ImagineAnt: {ant.init(p);
-                                    polygon.drawInstantly(p);
+                                    polygon.draw(p);
                                     ant.draw(p);
                                     break;}
+            case Phase.EndVisible: {
+                                    ant.draw(p);
+                                    polygon.draw(p);
+                                    phase4Dialogs.draw(p);
+            }
         }
     };
 
