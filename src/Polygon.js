@@ -1,7 +1,7 @@
-import {det, getTurn, isRightTurn} from "./Point.js";
+import {det, getTurn, isLeftTurn, isRightTurn} from "./Point.js";
 import {DIRECTION} from "./Const.js";
 import {ConvexHull} from "./ConvexHull.js";
-
+import {Deque} from "./Deque.js";
 export class Polygon {
     constructor(points, closed) {
         if (closed === undefined) {closed = false; }
@@ -127,7 +127,7 @@ export class Polygon {
     }
 
     getConvexHull() {
-        return new ConvexHull(this.grahamScan());
+        return new ConvexHull(this.melkman());
     }
 
     grahamScan() {
@@ -158,6 +158,45 @@ export class Polygon {
             hull.push(points[i]);
         }
         return hull;
+    }
+
+    melkman() {
+        // create a copy of the points
+        let points = [...this.points];
+        let n = points.length;
+        if (n < 3) {
+            return points;
+        }
+        let deque = new Deque();
+        let v1 = points.shift(), v2 = points.shift(), v3 = points.shift();
+        if (isRightTurn(v1, v2, v3)) {
+            deque.push(v1);
+            deque.push(v2);
+        }
+        else {
+            deque.push(v2);
+            deque.push(v1);
+        }
+        deque.push(v3);
+        deque.unshift(v3);
+        while (points.length > 0) {
+            let v = points.shift();
+            while(!(isLeftTurn(v, deque.peekFront(), deque.peekFrontNext()) || isLeftTurn(deque.peekBackPrev(), deque.peekBack(), v))) {
+                v = points.shift();
+                if (v === undefined) {
+                    return deque.deque;
+                }
+            }
+            while(!isRightTurn(deque.peekBackPrev(), deque.peekBack(), v)) {
+                deque.pop();
+            }
+            deque.push(v);
+            while (!isRightTurn(v, deque.peekFront(), deque.peekFrontNext())) {
+                deque.shift();
+            }
+            deque.unshift(v);
+        }
+        return deque.deque;
     }
 
     get(index) {
