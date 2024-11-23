@@ -31,46 +31,60 @@
 
             <h1>Inverse Attraction Regions</h1>
 
+            <h2>Summary</h2>
+            <p>
+                The inverse attraction region of a point within a simple polygon is the set of points that can attract the given point. The inverse attraction region is a subset of the polygon which is denoted as <em>IAR(p)</em>.
+                Note that the concept of attraction in the inverse attraction region is the same as the concept of attraction in the attraction region. However, if the point <em>p</em> attracts a point <em>q</em>, then it does not apply that <em>q</em> attracts <em>p</em>. This implies that the attraction region of <em>p</em> and the inverse attraction region of <em>p</em> are asymmetric problems.
+            </p>
+
+            <!-- Figure 1: Inverse Attraction Region : Example-->
+
+
             <h2>Computation</h2>
             <p>
-                In this section, we demonstrate how to compute the inverse attraction region of a point within a simple polygon in <em>O(n log n)</em> time.
+                As the inverse attraction region is a subset of the polygon, it is important to determine the points that can attract the given point. The computation of the inverse attraction region is done by constructing the shortest path map <a href="../../html/Glossary/index.html#shortest-path-map"><em>SPM(p)</em></a> of the given point <em>p</em> within the polygon <em>P</em>. The inverse attraction region is then constructed by considering the regions of the shortest path map <a href="../../html/Glossary/index.html#shortest-path-map"><em>SPM(p)</em></a> independently.
             </p>
             
             <p>
-                We will construct a part of the inverse attraction region of <em>p</em> inside each region of the shortest path map <em>SPM(p)</em> independently. A point in a region of <em>SPM (p)</em> attracts <em>p</em> only if its attraction can move <em>p</em> into the region through the corresponding window.
-            </p>
-            
-            <p>
-                The set of points in <em>R<sub>i</sub></em> that attract <em>p</em> is <em>Free<sub>i</sub> &cap; R<sub>i</sub></em>.
+                The article proposes to consider the inverse attraction region <em>IAR(p)</em> as the union of all <em>Free<sub>i</sub> &cap; R<sub>i</sub></em> for all <em>i</em>. We will explain this in more detail in the following sections.
             </p>
 
             <h3>Region - <em>R<sub>i</sub></em></h3>
             
             <p>
-                Let region <em>R<sub>i</sub></em> of the shortest path map <em>SPM (p)</em> consist of all points <em>t</em> such that the last segment of the shortest path from <em>p</em> to <em>t</em> is <em><span class="overline-sub">v<sub>i</sub> t</span></em> (Figure 9). Vertex <em>v<sub>i</sub></em> is called the base of <em>R<sub>i</sub></em>.
-                Extend the edge of <em>SPT<sub>r</sub> (p)</em> ending at <em>v<sub>i</sub></em> until the first intersection <em>z<sub>i</sub></em> with the boundary of <em>P</em>. Call the segment <em>w<sub>i</sub> = <span class="overline-sub">v<sub>i</sub> z<sub>i</sub></span></em> a window, and point <em>z<sub>i</sub></em> – the end of the window; window <em>w<sub>i</sub></em> is a boundary segment of <em>R<sub>i</sub></em>.
+                Let region <em>R<sub>i</sub></em> of the shortest path map <a href="../../html/Glossary/index.html#shortest-path-map"><em>SPM(p)</em></a> consist of all points <em>t</em> such that the last segment of the shortest path from <em>p</em> to <em>t</em> is <em><span class="overline-sub">v<sub>i</sub> t</span></em> (Figure 9). Vertex <em>v<sub>i</sub></em> is called the base of <em>R<sub>i</sub></em>.
+                Extend the edge of <a href="../../html/Glossary/index.html#shortest-path-tree"><em>SPT<sub>r</sub>(p)</em></a> ending at <em>v<sub>i</sub></em> until the first intersection <em>z<sub>i</sub></em> with the boundary of <em>P</em>. Call the segment <span class=overline-sub><em>w<sub>i</sub></span> = <span class="overline-sub">v<sub>i</sub> z<sub>i</sub></span></em> a window, and point <em>z<sub>i</sub></em> – the end of the window; window <span class=overline-sub><em>w<sub>i</sub></span> is a boundary segment of <em>R<sub>i</sub></em>.
             </p>
             <!-- Figure 9: Shortest Path Map TODO -->
             <p style="text-align:center;">
                 <img src="../../images/Figure9.png" alt="Figure 9: Shortest Path Map" style="width:100%;max-width:600px;">
             </p>
 
-            <h3>Free Space - <em>Free<sub>i</sub></em></h3>
+            <h3><em>Free<sub>i</sub></em> and Constraining Half-Planes</h3>
 
             <p>
-                <em>Free<sub>i</sub></em> is the intersection of the complements of the half-planes in <em>H<sub>i</sub></em>. 
-            </p>
-            <p
-                <em>H<sub>i</sub></em> is the set of all constraining half-planes corresponding to the domain subpolygons that that contain the point <em>v<sub>i</sub></em> (the base vertex of <em>R<sub>i</sub></em></h3>).
+                To comprehend the inverse attraction region <em>IAR(p)</em> and what is exactly <em>Free<sub>i</sub></em>, it is important to understand the concept of constraining half-planes. The constraining half-planes are used to identify the regions within the polygon <em>P</em> where points cannot attract <em>p</em> due to the presence of vertex <em>v</em>.
             </p>
 
-            <h3>Constraining Half-Planes</h3>
-            <!-- Constraining Half-Planes TODO -->
-
-            In summary, in case 1, the eﬀect of uv is expressed by two half-planes: L2, aﬀecting the subpolygon P1, and L1, aﬀecting the subpolygon P2. We call L1 and L2 the constraining half-planes of uv, and we call P1 and P2 the domain of the constraining half-planes L2 and L1, respectively. Furthermore, we call P1 ∩ L2 and P2 ∩ L1 the constraining regions of uv.
-            Later we show that L is the only eﬀective line associated to uv.
-
-            In summary, in case 2, the eﬀect of uv on IAR(p) can be expressed by the half-plane H2. We call H2 the constraining half-plane of uv, P1 the domain of H2 and we call P1 ∩ H2 the constraining region of uv. Later we show that the supporting line of H2 is the only eﬀective line associated to v.
+            <h4>Constraining Half-Planes</h4>
+            <p>
+                Let <em>uv</em> be an edge of the shortest path tree <a href="../../html/Glossary/index.html#shortest-path-tree"><em>SPT<sub>r</sub>(p)</em></a>, where <em>u</em> is the parent of <em>v</em>. Extend <em>uv</em> from <em>u</em> until it intersects the boundary of <em>P</em> at <em>w</em>. The segment <span class=overline><em>uw</em></span> partitions <em>P</em> into two subpolygons. Let <em>P<sub>p</sub></em> be the subpolygon containing <em>p</em>. Any path from <em>p</em> to any point outside <em>P<sub>p</sub></em> must pass through <em>uw</em>.
+            </p>
+            <p>
+                <strong>Case 1: <em>u</em> is not in <em>H<sub>1</sub> ∪ H<sub>2</sub>:</em></strong><br>
+                Let <em>e<sub>1</sub></em> and <em>e<sub>2</sub></em> be the edges incident to <em>v</em>. <em>H<sub>1</sub></em> is the half-plane defined by a line orthogonal to <em>e<sub>1</sub></em> passing through <em>v</em> and containing <em>e<sub>1</sub></em>. <em>H<sub>2</sub></em> is the half-plane defined by a line orthogonal to <em>e<sub>2</sub></em> passing through <em>v</em> and containing <em>e<sub>2</sub></em>. If <em>u</em> is not in <em>H<sub>1</sub> ∪ H<sub>2</sub></em>, the supporting line of <em>uv</em> is the only line associated with <em>v</em> that may contribute to the boundary of the inverse attraction region <a href="../../html/Glossary/index.html#inverse-attraction-region"><em>IAR(p)</em></a>.
+            </p>
+            <p>
+                <strong>Case 2: <em>u</em> is in <em>H<sub>1</sub> ∪ H<sub>2</sub>:</strong><br>
+                If <em>u</em> can see part of the edge <em>e<sub>2</sub></em>, define the subpolygon <em>P<sub>p</sub></em> and let <em>w</em> be the first intersection of the ray <span class=overrightarrow><em>vu</em></span> with the boundary of <em>P</em>. The segment <span class=overline><em>uw</em></span> partitions <em>P</em> into two subpolygons. Let <em>P<sub>p</sub></em> be the subpolygon containing <em>p</em>. Define <em>ρ</em> as the ray originating at <em>v</em> along the extension of edge <em>e<sub>2</sub></em> and let <em>z</em> be the first intersection of <em>ρ</em> with the boundary of <em>P</em>. <em>P<sub>1</sub></em> is the subpolygon induced by <span class=overline><em>vz</em></span> containing <em>e<sub>1</sub></em>.
+            </p>
+            <p>
+                These constraining half-planes help in identifying the regions within the polygon <em>P</em> where points cannot attract <em>p</em> due to the presence of vertex <em>v</em>.
+            </p>
+            
+            <p>
+                 The set <em>H<sub>i</sub></em> is the set of all constraining half-planes corresponding to the domain subpolygons that contain the point <em>v<sub>i</sub></em> (the base vertex of <em>R<sub>i</sub></em>). <em>Free<sub>i</sub></em> is the intersection of the complements of the half-planes in <em>H<sub>i</sub></em>.
+            </p>
 
             <h2>Complexity</h2>
             
