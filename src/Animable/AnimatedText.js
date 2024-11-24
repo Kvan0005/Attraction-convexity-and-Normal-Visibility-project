@@ -28,8 +28,8 @@ export class AnimatedText{
             alpha = p.map(elapsedTime, this.displayDuration - this.fadeDuration, this.displayDuration, 255, 0);
         }
 
-        p.fill(0, 0, 0, alpha);
-        p.stroke(0, 0, 0, alpha);
+        p.fill(84, 79, 99, alpha);
+        p.stroke(84, 79, 99, alpha);
         p.text(this.message, p.width / 2, 10);
 
         // Arrêter l'animation après 5 secondes

@@ -1,32 +1,5 @@
 import {Polygon} from "../Polygon.js";
-import {DIRECTION} from "../Const.js";
-import {Point} from "./Home/HomeSketch.js";
-
-function det(p1, p2, p3) {
-    return (p2.x - p1.x) * (p3.y - p2.y) - (p2.y - p1.y) * (p3.x - p2.x);
-}
-
-function getTurn(p1, p2, p3) {
-    /*
-    Returns the direction of the turn
-    */
-    let cross = det(p1, p2, p3);
-    if (cross < 0) {
-        return DIRECTION.LEFT;
-    } else if (cross > 0) {
-        return DIRECTION.RIGHT;
-    } else {
-        return DIRECTION.STRAIGHT;
-    }
-}
-
-function isLeftTurn(p1, p2, p3) {
-    return getTurn(p1, p2, p3) === DIRECTION.LEFT;
-}
-
-function isRightTurn(p1, p2, p3) {
-    return getTurn(p1, p2, p3) === DIRECTION.RIGHT;
-}
+import {Point, det, isRightTurn} from "../Point.js";
 
 export class ReactivePolygon {
     constructor(points, closed) {
@@ -53,7 +26,7 @@ export class ReactivePolygon {
     close(p) {
         this.closed = p.millis();
         for (let i = 0; i < this.length() - 1; i++) {
-            this.perimeter += p.dist(this.get(i).x, this.get(i).y, this.get(i + 1).x, this.get(i + 1).y);
+            this.perimeter += p.dist(this.get(i).x, -this.get(i).y, this.get(i + 1).x, -this.get(i + 1).y);
         }
     }
 
@@ -67,7 +40,7 @@ export class ReactivePolygon {
 
     isNearFirstVertex(p) {
         if (this.length() === 0) return false;
-        let distanceSq = (p.mouseX - this.get(0).x) ** 2 + (p.mouseY - this.get(0).y) ** 2;
+        let distanceSq = (p.mouseX - this.get(0).x) ** 2 + (p.mouseY - -this.get(0).y) ** 2;
         return distanceSq < 49;
     };
 
@@ -130,7 +103,7 @@ export class ReactivePolygon {
         p.noFill();
         p.beginShape();
         for (let i = 0; i < this.length(); i++) {
-            p.vertex(this.get(i).x, this.get(i).y);
+            p.vertex(this.get(i).x, -this.get(i).y);
         }
         p.vertex(p.mouseX, p.mouseY);
         p.endShape();
@@ -144,7 +117,7 @@ export class ReactivePolygon {
         p.fill(0, 0, 0);
         for (let i = 1; i < this.length(); i++) {
             this.get(i).draw(p);
-            let intersection = this.isCutting(new Point(p.mouseX, p.mouseY))
+            let intersection = this.isCutting(new Point(p.mouseX, -p.mouseY))
             if (intersection) {
                 let {a, b} = intersection
                 p.fill(255, 0, 0);
@@ -171,21 +144,21 @@ export class ReactivePolygon {
             let n = 0; // targeted vertex
 
             while (d <= animationDistance) {
-                ld = p.dist(this.get(n).x, this.get(n).y, this.get(n + 1).x, this.get(n + 1).y);
+                ld = p.dist(this.get(n).x, -this.get(n).y, this.get(n + 1).x, -this.get(n + 1).y);
                 d += ld;
                 n++;
             }
 
             for (let i = 0; i < n; i++) {
-                p.vertex(this.get(i).x, this.get(i).y);
+                p.vertex(this.get(i).x, -this.get(i).y);
             }
 
             let relT = (animationDistance - d + ld) / ld;
-            p.vertex(relT * this.get(n).x + (1 - relT) * this.get(n - 1).x, relT * this.get(n).y + (1 - relT) * this.get(n - 1).y);
+            p.vertex(relT * this.get(n).x + (1 - relT) * this.get(n - 1).x, relT * -this.get(n).y + (1 - relT) * -this.get(n - 1).y);
         } else {
             // t = 1, polygon ended
             for (let v of this.vertices) {
-                p.vertex(v.x, v.y);
+                p.vertex(v.x, -v.y);
             }
             p.endShape(p.CLOSE);
             observer.notify()
@@ -199,7 +172,7 @@ export class ReactivePolygon {
         p.stroke(0, 0, 0, this.alpha)
         p.beginShape();
         for (let v of this.vertices) {
-            p.vertex(v.x, v.y);
+            p.vertex(v.x, -v.y);
         }
         p.endShape(p.CLOSE);
     }

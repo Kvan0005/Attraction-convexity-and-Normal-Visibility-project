@@ -12,7 +12,7 @@ export class Point {
 
     draw(p, size) {
         if (size === undefined) size = 5;
-        p.ellipse(this.x, this.y, size, size);
+        p.ellipse(this.x, -this.y, size, size);
     }
 }
 
@@ -77,8 +77,8 @@ class Sketch{
                 this.ant.draw(this.p, this);
                 break;}
             case Phase.EndVisible: {
-                this.ant.draw(this.p, this);
                 this.polygon.draw(this.p);
+                this.ant.draw(this.p, this);
                 this.dialog2.draw(this.p, this);
             }
         }
@@ -110,7 +110,7 @@ const s = (p) => {
         const canvas = p.createCanvas(parentBounds.width, parentBounds.height); // Taille du canvas = parent
         canvas.parent('bigAnimationCanvasContainer')
         sketch.setP(p);
-        p.textSize(40);
+        p.textSize(20);
         p.textAlign(p.CENTER, p.TOP);
     };
 
@@ -129,7 +129,7 @@ const s = (p) => {
             p.redraw();
             sketch.closePolygon(p)
         } else {
-            sketch.addPoint(new Point(p.mouseX, p.mouseY));
+            sketch.addPoint(new Point(p.mouseX, -p.mouseY));
         }
     };
 

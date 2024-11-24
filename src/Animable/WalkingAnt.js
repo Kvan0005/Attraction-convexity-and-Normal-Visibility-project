@@ -1,31 +1,4 @@
-import {DIRECTION} from "../Const.js";
-
-function det(p1, p2, p3) {
-    return (p2.x - p1.x) * (p3.y - p2.y) - (p2.y - p1.y) * (p3.x - p2.x);
-}
-
-function getTurn(p1, p2, p3) {
-    /*
-    Returns the direction of the turn
-    */
-    let cross = det(p1, p2, p3);
-    if (cross < 0) {
-        return DIRECTION.LEFT;
-    } else if (cross > 0) {
-        return DIRECTION.RIGHT;
-    } else {
-        return DIRECTION.STRAIGHT;
-    }
-}
-
-function isLeftTurn(p1, p2, p3) {
-    return getTurn(p1, p2, p3) === DIRECTION.LEFT;
-}
-
-function isRightTurn(p1, p2, p3) {
-    return getTurn(p1, p2, p3) === DIRECTION.RIGHT;
-}
-
+import {isRightTurn} from "../Point.js";
 
 export class WalkingAnt {
     constructor(polygon) {
@@ -65,12 +38,11 @@ export class WalkingAnt {
     }
 
     calculateRotation(p, start, end, nextEnd) {
-        this.rotationStartAngle = Math.atan2(end.y - start.y, end.x - start.x) + Math.PI / 2;
-        let rawTargetAngle = Math.atan2(nextEnd.y - end.y, nextEnd.x - end.x) + Math.PI / 2;
-        console.log(this.rotationStartAngle, rawTargetAngle);
-        this.rotationTargetAngle = rawTargetAngle;
+        this.rotationStartAngle = Math.atan2(end.y - start.y, end.x - start.x) - Math.PI / 2;
+        //console.log(this.rotationStartAngle, rawTargetAngle);
+        this.rotationTargetAngle = Math.atan2(nextEnd.y - end.y, nextEnd.x - end.x) - Math.PI / 2;
 
-        if (isLeftTurn(start, end, nextEnd)) {
+        if (isRightTurn(start, end, nextEnd)) {
             this.rotationTargetAngle = this.normalizeAngle(this.rotationTargetAngle, this.rotationStartAngle);
         } else {
             this.rotationTargetAngle = this.normalizeAngle(this.rotationTargetAngle, this.rotationStartAngle + 2 * Math.PI);
@@ -104,7 +76,7 @@ export class WalkingAnt {
 
             // Light
             let edgeAngle = Math.atan2(end.y - start.y, end.x - start.x);
-            let perpendicularAngle = edgeAngle + Math.PI/2;
+            let perpendicularAngle = edgeAngle - Math.PI/2;
 
             if (distanceTravelled === this.distance) {
                 this.calculateRotation(p, start, end, next_end)
@@ -129,22 +101,21 @@ export class WalkingAnt {
     }
 
     drawPointAndLine(p, x, y, start, end, angle = null) {
-        p.fill(255, 0, 0);
-        p.noStroke();
-        p.ellipse(x, y, 10, 10);
-
         if (angle === null && start && end) {
-            angle = Math.atan2(end.y - start.y, end.x - start.x) + Math.PI/2;
+            angle = Math.atan2(end.y - start.y, end.x - start.x) - Math.PI/2;
         }
 
         // Dessiner la demi-droite
-        let lineLength = 500;
+        let lineLength = 5000;
         let endX = x + lineLength * Math.cos(angle);
         let endY = y + lineLength * Math.sin(angle);
 
-        p.stroke(0, 0, 255);
-        //p.strokeWeight(2);
-        p.line(x, y, endX, endY);
+        p.stroke(0, 155, 184);
+        p.line(x, -y, endX, -endY);
+
+        p.stroke(84, 79, 99);
+        //p.noStroke();
+        p.ellipse(x, -y, 10, 10);
     }
 
     draw(p, observer) {
