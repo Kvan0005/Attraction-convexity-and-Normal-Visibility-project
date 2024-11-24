@@ -122,6 +122,14 @@ const s = (p) => {
     };
 
     p.mousePressed = function () {
+        const rect = p.canvas.getBoundingClientRect();
+        if (!(
+            p.mouseX >= 0 &&
+            p.mouseX <= rect.width &&
+            p.mouseY >= 0 &&
+            p.mouseY <= rect.height)
+        ) return;
+
         if (sketch.polygonIsClosed())
             return;
 

@@ -110,7 +110,7 @@ export class ReactivePolygon {
 
         // First vertex drawing
         if (this.length() > 0) {
-            this.isNearFirstVertex(p) ? p.fill(255, 255, 255) : p.fill(200, 50, 30);
+            this.isNearFirstVertex(p) ? p.fill(255, 255, 255) : p.fill(0, 155, 184);
             this.get(0).draw(p, 10);
         }
 
@@ -122,7 +122,7 @@ export class ReactivePolygon {
                 let {a, b} = intersection
                 p.fill(255, 0, 0);
                 p.stroke(255, 0, 0);
-                p.line(a.x, a.y, b.x, b.y);
+                p.line(a.x, -a.y, b.x, -b.y);
                 p.fill(0, 0, 0)
                 p.stroke(0, 0, 0);
                 p.strokeWeight(1);

@@ -208,7 +208,7 @@ ul li a:hover {
     right: 10px; /* Décalé de 10px de la droite */
     font-size: 15px; /* Taille du texte */
     color: #544F63; /* Couleur du texte */
-    background-color: white; /* Fond blanc */
+    background-color: rgba(255, 255, 255, 0.8); /* Fond blanc */
     padding: 5px 10px; /* Espace intérieur pour respirer autour du texte */
     border-radius: 5px; /* Coins arrondis */
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Ombre légère pour un effet visuel agréable */
