@@ -1,6 +1,3 @@
-import { Point } from "./Point.js";
-import { Polygon } from "./Polygon.js";
-
 export class SPT {
     constructor(polygon, source) {
         this.polygon = polygon;

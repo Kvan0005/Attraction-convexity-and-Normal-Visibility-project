@@ -9,6 +9,10 @@ export class Point {
     draw(p) {
         p.ellipse(this.x, -this.y, 5, 5);
     }
+
+    equals(other) {
+        return this.x === other.x && this.y === other.y;
+    }
 }
 
 export function det(p1, p2, p3) {

@@ -1,31 +1,32 @@
 import { Point } from "../../src/Point.js";
 import { Polygon } from "../../src/Polygon.js";
 import { SPT } from "../../src/SPT.js";
-
+import { SPM } from "../../src/SPM.js";
 
 const translatedPoints = getTranslatedPoints();
 const polygon = new Polygon(translatedPoints.slice(0, -1), true);
 const p_point = translatedPoints[translatedPoints.length - 1];
 const spt = new SPT(polygon, p_point);
+const spm = new SPM(polygon, spt);
 
 function getTranslatedPoints() {
     // Define the points
     const points = [
         new Point(1 * 80, 2 * 80),      // a
-        new Point(2.5 * 80, 3 * 80),    // d
-        new Point(4 * 80, 1.5 * 80),    // e
-        new Point(4 * 80, 2.25 * 80),   // g
-        new Point(4.5 * 80, 3 * 80),    // f
-        new Point(5 * 80, 2.5 * 80),    // h
-        new Point(6 * 80, 2.5 * 80),    // o
-        new Point(5.5 * 80, 1.75 * 80), // b
-        new Point(6.5 * 80, 1 * 80),    // n
-        new Point(6 * 80, 0 * 80),      // i
-        new Point(5 * 80, 1 * 80),      // j
-        new Point(2.5 * 80, 1.5 * 80),  // k
-        new Point(4.5 * 80, 0.5 * 80),  // c
-        new Point(2.5 * 80, 0.5 * 80),  // l
         new Point(2 * 80, -0.5 * 80),   // m
+        new Point(2.5 * 80, 0.5 * 80),  // l
+        new Point(4.5 * 80, 0.5 * 80),  // c
+        new Point(2.5 * 80, 1.5 * 80),  // k
+        new Point(5 * 80, 1 * 80),      // j
+        new Point(6 * 80, 0 * 80),      // i
+        new Point(6.5 * 80, 1 * 80),    // n
+        new Point(5.5 * 80, 1.75 * 80), // b
+        new Point(6 * 80, 2.5 * 80),    // o
+        new Point(5 * 80, 2.5 * 80),    // h
+        new Point(4.5 * 80, 3 * 80),    // f
+        new Point(4 * 80, 2.25 * 80),   // g
+        new Point(4 * 80, 1.5 * 80),    // e
+        new Point(2.5 * 80, 3 * 80),    // d
 
         new Point(2 * 80, 0.25 * 80)    // p
     ];
@@ -64,6 +65,7 @@ const s = (p) => {
         p_point.draw(p);
         polygon.draw(p);
         spt.draw(p);
+        spm.draw(p);
     }
 
     p.windowResized = function () {

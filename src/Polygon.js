@@ -107,7 +107,7 @@ export class Polygon {
     }
 
     isReflex(p1, p2, p3) {
-        return det(p1, p2, p3) >= 0;
+        return det(p1, p2, p3) < 0;
     }
 
     draw(p) {
