@@ -180,10 +180,12 @@ ul li a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid #000; /* Bordure noire */
-    width: 600px; /* Largeur du canvas */
-    height: 400px; /* Hauteur du canvas */
-    margin: 0 auto; /* Centrer horizontalement */
+    /*border: 1px solid #000; /* Bordure noire */
+    width: 80%; /* Prend 80% de la largeur de la fenêtre */
+    max-width: 600px; /* Largeur maximale */
+    aspect-ratio: 2.5 / 1.5; /* Maintient le ratio largeur/hauteur */
+    margin: 20px auto; /* Centré horizontalement avec un espace vertical */
+    overflow: hidden /* auto; /* Ajoute des scrollbars si nécessaire */ /* Empêche le contenu de dépasser */
 }
 
 /* math */

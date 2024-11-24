@@ -52,16 +52,14 @@
             </p>
 
             <h3>Region - <em>R<sub>i</sub></em></h3>
-            
+
             <p>
-                Let region <em>R<sub>i</sub></em> of the shortest path map <a href="../../html/Glossary/index.html#shortest-path-map"><em>SPM(p)</em></a> consist of all points <em>t</em> such that the last segment of the shortest path from <em>p</em> to <em>t</em> is <em><span class="overline-sub">v<sub>i</sub> t</span></em>. Vertex <em>v<sub>i</sub></em> is called the base of <em>R<sub>i</sub></em>.
-                Extend the edge of <a href="../../html/Glossary/index.html#shortest-path-tree"><em>SPT<sub>r</sub>(p)</em></a> ending at <em>v<sub>i</sub></em> until the first intersection <em>z<sub>i</sub></em> with the boundary of <em>P</em>. Call the segment <span class="overline-sub"><em>w<sub>i</sub></em>></span> = <span class="overline-sub">v<sub>i</sub> z<sub>i</sub></span> a window, and point <em>z<sub>i</sub></em> – the end of the window; window <span class="overline-sub"><em>w<sub>i</sub></em></span> is a boundary segment of <em>R<sub>i</sub></em>.
+                Let region <span>\({R_i}\)</span> of the shortest path map <a href="../../html/Glossary/index.html#shortest-path-map"><em>SPM(p)</em></a> consist of all points <span>\({R_i}\)</span> such that the last segment of the shortest path from <span>\(p\)</span> to <span>\(t\)</span> is <span>\(\overline{v_i t}\)</span>. Vertex <span>\({v_i}\)</span> is called the base of <span>\({R_i}\)</span>.
+                Extend the edge of <a href="../../html/Glossary/index.html#shortest-path-tree"><em>SPT<sub>r</sub>(p)</em></a> ending at <span>\({v_i}\)</span> until the first intersection <span>\({z_i}\)</span> with the boundary of <em>P</em>. Call the segment <span>\({w_i = \overline{v_iz_i}}\)</span> a window, and point <span>\({z_i}\)</span> – the end of the window; window <span>\({w_i}\)</span> is a boundary segment of <span>\({R_i}\)</span>.
             </p>
 
             <!-- Canvas for Animation -->
-            <p style="text-align:center;">
-                <div id="animationCanvasContainer"></div>
-            </p>
+            <div id="animationCanvasContainer"></div>
 
             <h3><em>Free<sub>i</sub></em> and Constraining Half-Planes</h3>
 
@@ -74,12 +72,12 @@
                 Let <em>uv</em> be an edge of the shortest path tree <a href="../../html/Glossary/index.html#shortest-path-tree"><em>SPT<sub>r</sub>(p)</em></a>, where <em>u</em> is the parent of <em>v</em>. Extend <em>uv</em> from <em>u</em> until it intersects the boundary of <em>P</em> at <em>w</em>. The segment <em>uw</em> partitions <em>P</em> into two subpolygons. Let <em>P<sub>p</sub></em> be the subpolygon containing <em>p</em>. Any path from <em>p</em> to any point outside <em>P<sub>p</sub></em> must pass through <em>uw</em>.
             </p>
             <p>
-                <strong>Case 1: <em>u</em> is not in <em>H<sub>1</sub> ∪ H<sub>2</sub>:</em></strong><br>
-                Let <em>e<sub>1</sub></em> and <em>e<sub>2</sub></em> be the edges incident to <em>v</em>. <em>H<sub>1</sub></em> is the half-plane defined by a line orthogonal to <em>e<sub>1</sub></em> passing through <em>v</em> and containing <em>e<sub>1</sub></em>. <em>H<sub>2</sub></em> is the half-plane defined by a line orthogonal to <em>e<sub>2</sub></em> passing through <em>v</em> and containing <em>e<sub>2</sub></em>. If <em>u</em> is not in <em>H<sub>1</sub> ∪ H<sub>2</sub></em>, the supporting line of <em>uv</em> is the only line associated with <em>v</em> that may contribute to the boundary of the inverse attraction region <a href="../../html/Glossary/index.html#inverse-attraction-region"><em>IAR(p)</em></a>.
+                <strong>Case 1: <span>\({u}\)</span> is not in <em>H<sub>1</sub> ∪ H<sub>2</sub>:</em></strong><br>
+                Let <span>\({e_1}\)</span> and <span>\({e_2}\)</span> be the edges incident to <em>v</em>. <em>H<sub>1</sub></em> is the half-plane defined by a line orthogonal to <em>e<sub>1</sub></em> passing through <em>v</em> and containing <em>e<sub>1</sub></em>. <em>H<sub>2</sub></em> is the half-plane defined by a line orthogonal to <em>e<sub>2</sub></em> passing through <em>v</em> and containing <em>e<sub>2</sub></em>. If <em>u</em> is not in <em>H<sub>1</sub> ∪ H<sub>2</sub></em>, the supporting line of <em>uv</em> is the only line associated with <em>v</em> that may contribute to the boundary of the inverse attraction region <a href="../../html/Glossary/index.html#inverse-attraction-region"><em>IAR(p)</em></a>.
             </p>
             <p>
-                <strong>Case 2: <em>u</em> is in <em>H<sub>1</sub> ∪ H<sub>2</sub>:</em></strong><br>
-                If <em>u</em> can see part of the edge <em>e<sub>2</sub></em>, define the subpolygon <em>P<sub>p</sub></em> and let <em>w</em> be the first intersection of the ray <span class=overrightarrow><em>vu</em></span> with the boundary of <em>P</em>. The segment <span class=overline><em>uw</em></span> partitions <em>P</em> into two subpolygons. Let <em>P<sub>p</sub></em> be the subpolygon containing <em>p</em>. Define <em>ρ</em> as the ray originating at <em>v</em> along the extension of edge <em>e<sub>2</sub></em> and let <em>z</em> be the first intersection of <em>ρ</em> with the boundary of <em>P</em>. <em>P<sub>1</sub></em> is the subpolygon induced by <span class=overline><em>vz</em></span> containing <em>e<sub>1</sub></em>.
+                <strong>Case 2: <span>\({u}\)</span> is in <em>H<sub>1</sub> ∪ H<sub>2</sub>:</em></strong><br>
+                If <span>\({u}\)</span> can see part of the edge <span>\({e_2}\)</span>, define the subpolygon <em>P<sub>p</sub></em> and let <em>w</em> be the first intersection of the ray <span>\({\vec{vu}}\)</span> with the boundary of <em>P</em>. The segment <span>\(\overline{uw}\)</span> partitions <em>P</em> into two subpolygons. Let <em>P<sub>p</sub></em> be the subpolygon containing <em>p</em>. Define <em>ρ</em> as the ray originating at <em>v</em> along the extension of edge <span>\({e_2}\)</span> and let <em>z</em> be the first intersection of <span>\({\rho}\)</span> with the boundary of <em>P</em>. <em>P<sub>1</sub></em> is the subpolygon induced by <span>\(\overline{vz}\)</span> containing <em>e<sub>1</sub></em>.
             </p>
             <p>
                 These constraining half-planes help in identifying the regions within the polygon <em>P</em> where points cannot attract <em>p</em> due to the presence of vertex <em>v</em>.
@@ -98,5 +96,9 @@
         </main>
     </div>
     <script type="module" src="main.js"></script>
+    <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.min.js">
+    </script>
+
 </body>
 </html>
