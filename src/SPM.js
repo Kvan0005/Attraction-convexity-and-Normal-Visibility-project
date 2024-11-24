@@ -6,7 +6,6 @@ export class SPM {
         this.spt = spt;
         this.projections = this.computeProjections();
         this.regions = this.computeRegions();
-        console.log(this.regions);
     }
 
     computeRegions() {
@@ -82,7 +81,7 @@ export class SPM {
                 const intersection = this.getIntersection(u, v, p1, p2);
                 if (intersection) {
                     const key = JSON.stringify([u, v]);
-                    if (!(key in projections) || this.isBetween(v, projections[key], intersection)) {
+                    if (!(key in projections) || isBetween(v, projections[key], intersection)) {
                         projections[key] = [intersection, p1, p2];
                     }
                     
@@ -106,17 +105,13 @@ export class SPM {
 
         if (p.equals(p1) || p.equals(p2) || p.equals(p3) || p.equals(p4)) return null;
 
-        if (this.isBetween(p3, p4, p) && this.isBetween(p1, p, p2)) {
+        if (isBetween(p3, p4, p) && isBetween(p1, p, p2)) {
             return p;
         }
         return null;
     }
 
-    isBetween(p1, p2, p) {
-        return (p.x >= Math.min(p1.x, p2.x) && p.x <= Math.max(p1.x, p2.x) &&
-                p.y >= Math.min(p1.y, p2.y) && p.y <= Math.max(p1.y, p2.y));
-    }
-
+    
     draw(p) {
         const colors = [
             [100, 100, 250, 50],
@@ -126,10 +121,10 @@ export class SPM {
             [100, 250, 250, 50],
             [250, 100, 250, 50]
         ];
-
+        
         p.stroke("blue");
         p.strokeWeight(1);
-
+        
         Object.values(this.regions).forEach((region, index) => {
             const color = colors[index % colors.length];
             p.fill(...color);
@@ -141,3 +136,8 @@ export class SPM {
         });
     }
 }
+
+export function isBetween(p1, p2, p) {
+    return (p.x >= Math.min(p1.x, p2.x) && p.x <= Math.max(p1.x, p2.x) &&
+            p.y >= Math.min(p1.y, p2.y) && p.y <= Math.max(p1.y, p2.y));
+    }
