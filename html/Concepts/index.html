@@ -23,7 +23,8 @@
         <!-- Main Content Area -->
         <main class="content">
             <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.10.0/p5.min.js"></script>
-            
+
+            <header>Concepts</header>
             <h1>Attraction-convexity and normal visibility</h1>
             <p>
                 To be completed
@@ -54,7 +55,7 @@
             
             <p>
                 Let region <em>R<sub>i</sub></em> of the shortest path map <a href="../../html/Glossary/index.html#shortest-path-map"><em>SPM(p)</em></a> consist of all points <em>t</em> such that the last segment of the shortest path from <em>p</em> to <em>t</em> is <em><span class="overline-sub">v<sub>i</sub> t</span></em>. Vertex <em>v<sub>i</sub></em> is called the base of <em>R<sub>i</sub></em>.
-                Extend the edge of <a href="../../html/Glossary/index.html#shortest-path-tree"><em>SPT<sub>r</sub>(p)</em></a> ending at <em>v<sub>i</sub></em> until the first intersection <em>z<sub>i</sub></em> with the boundary of <em>P</em>. Call the segment <span class="overline-sub"><em>w<sub>i</sub></span> = <span class="overline-sub">v<sub>i</sub> z<sub>i</sub></span></em> a window, and point <em>z<sub>i</sub></em> – the end of the window; window <span class="overline-sub"><em>w<sub>i</sub></span> is a boundary segment of <em>R<sub>i</sub></em>.
+                Extend the edge of <a href="../../html/Glossary/index.html#shortest-path-tree"><em>SPT<sub>r</sub>(p)</em></a> ending at <em>v<sub>i</sub></em> until the first intersection <em>z<sub>i</sub></em> with the boundary of <em>P</em>. Call the segment <span class="overline-sub"><em>w<sub>i</sub></em>></span> = <span class="overline-sub">v<sub>i</sub> z<sub>i</sub></span> a window, and point <em>z<sub>i</sub></em> – the end of the window; window <span class="overline-sub"><em>w<sub>i</sub></em></span> is a boundary segment of <em>R<sub>i</sub></em>.
             </p>
 
             <!-- Canvas for Animation -->
@@ -77,7 +78,7 @@
                 Let <em>e<sub>1</sub></em> and <em>e<sub>2</sub></em> be the edges incident to <em>v</em>. <em>H<sub>1</sub></em> is the half-plane defined by a line orthogonal to <em>e<sub>1</sub></em> passing through <em>v</em> and containing <em>e<sub>1</sub></em>. <em>H<sub>2</sub></em> is the half-plane defined by a line orthogonal to <em>e<sub>2</sub></em> passing through <em>v</em> and containing <em>e<sub>2</sub></em>. If <em>u</em> is not in <em>H<sub>1</sub> ∪ H<sub>2</sub></em>, the supporting line of <em>uv</em> is the only line associated with <em>v</em> that may contribute to the boundary of the inverse attraction region <a href="../../html/Glossary/index.html#inverse-attraction-region"><em>IAR(p)</em></a>.
             </p>
             <p>
-                <strong>Case 2: <em>u</em> is in <em>H<sub>1</sub> ∪ H<sub>2</sub>:</strong><br>
+                <strong>Case 2: <em>u</em> is in <em>H<sub>1</sub> ∪ H<sub>2</sub>:</em></strong><br>
                 If <em>u</em> can see part of the edge <em>e<sub>2</sub></em>, define the subpolygon <em>P<sub>p</sub></em> and let <em>w</em> be the first intersection of the ray <span class=overrightarrow><em>vu</em></span> with the boundary of <em>P</em>. The segment <span class=overline><em>uw</em></span> partitions <em>P</em> into two subpolygons. Let <em>P<sub>p</sub></em> be the subpolygon containing <em>p</em>. Define <em>ρ</em> as the ray originating at <em>v</em> along the extension of edge <em>e<sub>2</sub></em> and let <em>z</em> be the first intersection of <em>ρ</em> with the boundary of <em>P</em>. <em>P<sub>1</sub></em> is the subpolygon induced by <span class=overline><em>vz</em></span> containing <em>e<sub>1</sub></em>.
             </p>
             <p>
