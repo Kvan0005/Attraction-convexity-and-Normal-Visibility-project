@@ -127,6 +127,10 @@ export class Polygon {
     }
 
     getConvexHull() {
+        let a = this.melkman();
+        let b = this.grahamScan();
+        console.log(a);
+        console.log(b);
         return new ConvexHull(this.melkman());
     }
 
@@ -164,7 +168,7 @@ export class Polygon {
         // create a copy of the points
         let points = [...this.points];
         let n = points.length;
-        if (n < 3) {
+        if (n <= 3) {
             return points;
         }
         let deque = new Deque();
@@ -184,7 +188,8 @@ export class Polygon {
             while(!(isLeftTurn(v, deque.peekFront(), deque.peekFrontNext()) || isLeftTurn(deque.peekBackPrev(), deque.peekBack(), v))) {
                 v = points.shift();
                 if (v === undefined) {
-                    return deque.deque;
+                    deque.pop();
+                    return deque.deque.reverse();
                 }
             }
             while(!isRightTurn(deque.peekBackPrev(), deque.peekBack(), v)) {
@@ -196,7 +201,8 @@ export class Polygon {
             }
             deque.unshift(v);
         }
-        return deque.deque;
+        deque.pop();
+        return deque.deque.reverse();
     }
 
     get(index) {
@@ -204,7 +210,7 @@ export class Polygon {
             console.log("Index Error: {}", index);
             return null;
         }
-        return this.points[index]
+        return this.points[index];
     }
 
     rotate() {

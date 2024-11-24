@@ -100,8 +100,8 @@ const s = (p) => {
     }
 
     function ccwScan(polygon) {
-        let s = [polygon.leftmostPoint()];
-        for (let i = 0; i < polygon.length(); i++) { // play with these index for clockwise
+        let s = [polygon.get(0)];
+        for (let i = 1; i < polygon.length(); i++) { // play with these index for clockwise
             let v = polygon.get(i), v_next = polygon.get((i+1) % polygon.length()), v_prev = polygon.get((i-1 + polygon.length()) % polygon.length());
             while (s.length !== 1 && isRightTurn(s[s.length - 2], s[s.length - 1], v)) s.pop();
             s.push(v);
@@ -121,8 +121,8 @@ const s = (p) => {
     }
 
     function cwScan(polygon) {
-        let s = [polygon.leftmostPoint()];
-        for (let i = polygon.length() - 1; i <= 0; i--) { // play with these index for clockwise
+        let s = [polygon.get(polygon.length() - 1)];
+        for (let i = polygon.length() - 2; i <= 0; i--) { // play with these index for clockwise
             let v = polygon.get(i), v_prev = polygon.get((i+1) % polygon.length()), v_next = polygon.get((i-1 + polygon.length()) % polygon.length());
             while (s.length !== 1 && isLeftTurn(s[0], s[s.length - 1], v)) s.pop();
             s.push(v);

@@ -518,7 +518,11 @@ var isAttractionConvex = false;
 
 const s = (p) => {
     p.setup = function () {
-        p.createCanvas(p.windowWidth, p.windowHeight);
+        const parent = document.getElementById('bigAnimationCanvasContainer'); // Récupérer le parent
+        const parentBounds = parent.getBoundingClientRect(); // Obtenir les dimensions du parent
+
+        const canvas = p.createCanvas(parentBounds.width, parentBounds.height); // Taille du canvas = parent
+        canvas.parent('bigAnimationCanvasContainer')
         p.textSize(40);
         p.textAlign(p.CENTER, p.TOP);
     };
@@ -529,7 +533,7 @@ const s = (p) => {
         p.strokeWeight(1);
         switch (phase) {
             case Phase.Draw: {polygon.drawAnimated(p); break;}
-            case Phase.Explanation: { isAttractionConvex = Attraction.compute(polygon.toPolygon())
+            case Phase.Explanation: { //isAttractionConvex = Attraction.compute(polygon.toPolygon())
                                      polygon.toCounterClockwiseOrder();
                                      phase2Dialogs.draw(p);
                                      polygon.draw(p);
