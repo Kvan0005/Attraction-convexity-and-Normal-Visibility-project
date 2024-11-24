@@ -135,7 +135,7 @@ export class WalkingAnt {
         }
         else {
             //end
-            this.turn_nb++;
+            this.turn_nb = (this.turn_nb + 1) % 5;
             observer.notify(this.turn_nb)
         }
     }
