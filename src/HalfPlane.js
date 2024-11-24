@@ -1,5 +1,5 @@
-import { Point } from "./Point.js";
-import { isBetween } from "./SPM.js";
+import { Point, isLeftTurn } from "./Point.js";
+import { isBetween, getIntersection } from "./SPM.js";
 
 export class HalfPlane {
     constructor(p1, p2) {
@@ -68,26 +68,83 @@ export class ConstrainingHalfPlanes {
     constructor(polygon, spt) {
         this.polygon = polygon;
         this.spt = spt;
-        this.planes = this.computePlanes();
-        console.log(this.planes);
+        this.chp = {};
+        this.halfPlanes = this.computePlanes();
+        console.log(this.halfPlanes);
+        console.log(this.chp);
     }
 
     computePlanes() {
-        const planes = [];
+        const halfPlanes = [];
         console.log(this.polygon.points);
+        let j = 0;
         this.spt.tree.forEach(([u, v]) => {
+            if (j !== 3 && j !== 4) {
+                j++;
+                return;
+            }
             let i = this.polygon.points.indexOf(v);
-            let e1 = [this.polygon.points[(i + 1) % this.polygon.points.length], v];
-            let e2 = [this.polygon.points[(i - 1) % this.polygon.points.length], v];
-            let h1 = perpendicularFromTwoPoints(e1[0], e1[1], v);
-            let h2 = perpendicularFromTwoPoints(e2[0], e2[1], v);
-            planes.push(h1, h2);
+            let pe1 = this.polygon.points[(i - 1) % this.polygon.points.length];
+            let pe2 = this.polygon.points[(i + 1) % this.polygon.points.length];
+            let h1 = perpendicularFromTwoPoints(pe1, v, v);
+            let h2 = perpendicularFromTwoPoints(pe2, v, v);
+            halfPlanes.push(h1, h2);
+
+            const key = `${v.x},${v.y}`;
+            this.chp[key] = this.determineSubPolygon(u, v, pe1, pe2, h1, h2);
+
+            j++;
         });
-        return planes;
+        return halfPlanes;
+    }
+
+    determineSubPolygon(u, v, pe1, pe2, h1, h2) {
+        let z, p1, p2;
+        let subPolygon;
+        if (h1.isBelow(u) === h1.isBelow(pe1) && h2.isBelow(u) === h2.isBelow(pe2)) {
+            if (isLeftTurn(pe1, v, pe2) === isLeftTurn(pe1, v, u)) {
+                [z, p1, p2] = this.getProjection(pe2, v);
+                subPolygon = this.createSubPolygon(pe1, v, z, p1, p2);
+            } else {
+                [z, p1, p2] = this.getProjection(pe1, v);
+                subPolygon = this.createSubPolygon(pe2, v, z, p1, p2);
+            }
+        } else if (h1.isBelow(u) === h1.isBelow(pe1)) {
+            [z, p1, p2] = this.getProjection(pe1, v);
+            subPolygon = this.createSubPolygon(pe2, v, z, p1, p2);
+        } else if (h2.isBelow(u) === h2.isBelow(pe2)) {
+            [z, p1, p2] = this.getProjection(pe2, v);
+            subPolygon = this.createSubPolygon(pe1, v, z, p1, p2);
+        } else {
+            subPolygon = [h1, pe2, h2, pe1];
+        }
+        return subPolygon;
+    }
+
+    createSubPolygon(pe, v, z, p1, p2) {
+        if (isLeftTurn(pe, v, z) === isLeftTurn(v, z, p1)) {
+            return [pe, v, z, p1];
+        } else {
+            return [pe, v, z, p2];
+        }
+    }
+
+    getProjection(u, v) {
+        let projections = [];
+        const edges = this.polygon.points.map((point, i) => [point, this.polygon.points[(i + 1) % this.polygon.points.length]]);
+
+        edges.forEach(([p1, p2]) => {
+            if ((u.equals(p1) || v.equals(p2)) || (u.equals(p2) || v.equals(p1))) return;
+            const intersection = getIntersection(u, v, p1, p2);
+            if (intersection && (projections.length === 0 || isBetween(v, projections[0], intersection))) {
+                projections = [intersection, p1, p2];
+            }
+        });
+        return projections;
     }
     
     draw(p) {
-        this.planes.forEach(plane => {
+        this.halfPlanes.forEach(plane => {
             plane.draw(p); // Utiliser la méthode draw de HalfPlane qui inverse les coordonnées y
         });
     }

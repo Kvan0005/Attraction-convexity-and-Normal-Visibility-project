@@ -78,7 +78,7 @@ export class SPM {
         this.spt.tree.forEach(([u, v]) => {
             edges.forEach(([p1, p2]) => {
                 if ((u.equals(p1) || v.equals(p2)) || (u.equals(p2) || v.equals(p1))) return;
-                const intersection = this.getIntersection(u, v, p1, p2);
+                const intersection = getIntersection(u, v, p1, p2);
                 if (intersection) {
                     const key = JSON.stringify([u, v]);
                     if (!(key in projections) || isBetween(v, projections[key], intersection)) {
@@ -90,27 +90,6 @@ export class SPM {
         });
         return projections;
     }
-
-    getIntersection(p1, p2, p3, p4) {
-        let a1 = (p2.y - p1.y) / (p2.x - p1.x);
-        let a2 = (p4.y - p3.y) / (p4.x - p3.x);
-        let b1 = p1.y - a1 * p1.x;
-        let b2 = p3.y - a2 * p3.x;
-
-        if (a1 === a2) return null;
-
-        let x = (b2 - b1) / (a1 - a2);
-        let y = a1 * x + b1;
-        let p = new Point(x, y);
-
-        if (p.equals(p1) || p.equals(p2) || p.equals(p3) || p.equals(p4)) return null;
-
-        if (isBetween(p3, p4, p) && isBetween(p1, p, p2)) {
-            return p;
-        }
-        return null;
-    }
-
     
     draw(p) {
         const colors = [
@@ -139,5 +118,25 @@ export class SPM {
 
 export function isBetween(p1, p2, p) {
     return (p.x >= Math.min(p1.x, p2.x) && p.x <= Math.max(p1.x, p2.x) &&
-            p.y >= Math.min(p1.y, p2.y) && p.y <= Math.max(p1.y, p2.y));
+    p.y >= Math.min(p1.y, p2.y) && p.y <= Math.max(p1.y, p2.y));
+}
+
+export function getIntersection(p1, p2, p3, p4) {
+    let a1 = (p2.y - p1.y) / (p2.x - p1.x);
+    let a2 = (p4.y - p3.y) / (p4.x - p3.x);
+    let b1 = p1.y - a1 * p1.x;
+    let b2 = p3.y - a2 * p3.x;
+
+    if (a1 === a2) return null;
+
+    let x = (b2 - b1) / (a1 - a2);
+    let y = a1 * x + b1;
+    let p = new Point(x, y);
+
+    if (p.equals(p1) || p.equals(p2) || p.equals(p3) || p.equals(p4)) return null;
+
+    if (isBetween(p3, p4, p) && isBetween(p1, p, p2)) {
+        return p;
     }
+    return null;
+}
