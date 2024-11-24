@@ -122,7 +122,7 @@ const s = (p) => {
 
     function cwScan(polygon) {
         let s = [polygon.get(polygon.length() - 1)];
-        for (let i = polygon.length() - 2; i <= 0; i--) { // play with these index for clockwise
+        for (let i = polygon.length() - 2; i >= 0; i--) { // play with these index for clockwise
             let v = polygon.get(i), v_prev = polygon.get((i+1) % polygon.length()), v_next = polygon.get((i-1 + polygon.length()) % polygon.length());
             while (s.length !== 1 && isLeftTurn(s[0], s[s.length - 1], v)) s.pop();
             s.push(v);

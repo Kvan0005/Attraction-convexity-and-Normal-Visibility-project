@@ -6,8 +6,9 @@ export class Point {
         this.y = y;
     }
 
-    draw(p) {
-        p.ellipse(this.x, -this.y, 5, 5);
+    draw(p, size) {
+        if (size === undefined) size = 5;
+        p.ellipse(this.x, -this.y, size, size);
     }
 
     equals(other) {
