@@ -3,36 +3,25 @@ import {Dialog} from "../Dialog.js";
 import {AnimatedText} from "../AnimatedText.js";
 import {ReactivePolygon} from "../ReactivePolygon.js";
 import {Phase} from "./Phase.js";
-
-export class Point {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    draw(p, size) {
-        if (size === undefined) size = 5;
-        p.ellipse(this.x, -this.y, size, size);
-    }
-}
-
+import {Point} from "../../Point.js";
 
 class Sketch{
     constructor() {
         this.polygon = new ReactivePolygon();
         this.phase = Phase.Draw;
         this.dialog1 = new Dialog([
-                new AnimatedText("This polygon is Attraction Convex", 3000, 1000,),
-                new AnimatedText("It means that every point of the polygon can attract every others one", 3000, 1000),
-                new AnimatedText("", 500),
-                new AnimatedText("Now, let's imagine an ant walking counterclockwise\nwith a laser on its right on the edges...", 4000, 500)
+                new AnimatedText("This polygon is Attraction Convex", 4000, 1000,),
+                new AnimatedText("It means that every point in the polygon attracts every other point", 4000, 2000),
+                new AnimatedText("Let's imagine an ant walking along the polygon in a counter-clockwise direction,\nwith a laser pointing to its right", 4500, 500)
             ]);
 
         this.dialog2  = new Dialog([
-                new AnimatedText("The laser doesn't hit the polygon.", 3000, 1000,),
+                new AnimatedText("The laser doesn't hit the polygon.", 4000, 1000),
                 new AnimatedText("Which means the polygon is Normally Visible", 3000, 1000),
-                new AnimatedText("Normal visibility is another way to describe attraction convexity", 5000, 1000),
-                new AnimatedText("These Notions are subject of our study.", 3000, 1000)
+                new AnimatedText("Normal visibility is another way to describe attraction convexity", 3500, 1000),
+                new AnimatedText("These notions are subject of our study.", 3000, 1000),
+                new AnimatedText("As well as Inverse Attraction Region of a point.", 3000, 1000),
+                new AnimatedText("Which is the set of points that can attract the given point", 3000, 1000),
             ]);
         this.ant = new WalkingAnt(this.polygon);
         this.p;
