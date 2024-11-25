@@ -24,8 +24,7 @@ p {
     flex-direction: row;
     width: 100%;
     padding: 20px;
-    margin-top: 80px;
-    height: 100vh;
+    margin-top: 100px;
 }
 
 .sidebar {
@@ -82,7 +81,7 @@ p {
 }
 
 .content {
-    margin-left: 205px;
+    margin-left: 200px;
     padding: 20px;
     width: calc(100% - 205px);
 }
@@ -209,6 +208,21 @@ ul li a:hover {
     /*max-width: 600px; /* Largeur maximale */
     aspect-ratio: 2.5 / 1; /* Maintient le ratio largeur/hauteur */
     margin: 20px auto; /* Centré horizontalement avec un espace vertical */
+    overflow: hidden /* auto; /* Ajoute des scrollbars si nécessaire */ /* Empêche le contenu de dépasser */
+}
+
+#toolContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*border: 1px solid #000000; /* Bordure noire */
+    border-radius: 5px;
+    box-shadow: 0 0 2px rgba(23, 20, 25, 0.5);
+    width: 100%; /* Prend 80% de la largeur de la fenêtre */
+    height: 80%;
+    /*max-width: 600px; /* Largeur maximale */
+    /*aspect-ratio:  / 1; /* Maintient le ratio largeur/hauteur */
+    /*margin: 20px auto; /* Centré horizontalement avec un espace vertical */
     overflow: hidden /* auto; /* Ajoute des scrollbars si nécessaire */ /* Empêche le contenu de dépasser */
 }
 

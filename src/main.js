@@ -12,7 +12,11 @@ var text_to_display = "?"
 var data_pocket_chain_on_lid = [];
 const s = (p) => {
     p.setup = function () {
-        p.createCanvas(p.windowWidth, p.windowHeight);
+        const parent = document.getElementById('toolContainer'); // Récupérer le parent
+        const parentBounds = parent.getBoundingClientRect(); // Obtenir les dimensions du parent
+        const canvas = p.createCanvas(parentBounds.width, parentBounds.height); // Taille du canvas = parent
+        canvas.parent('toolContainer');
+
         p.fill("white");
         p.stroke("white");
         p.textSize(40);
@@ -175,7 +179,7 @@ const s = (p) => {
 
 
     p.draw = function () {
-        p.background(122, 158, 128);
+        p.background(233, 230, 235);
         p.text(text_to_display, p.width / 2, 10);
         poly.draw(p);
         if (ch) {
