@@ -8,37 +8,39 @@ var clearButton;
 var computeButton;
 var display_pocket_chain_projection_on_lid = false;
 var text_to_display = "?"
-
 var data_pocket_chain_on_lid = [];
+var canvas;
 const s = (p) => {
     p.setup = function () {
         const parent = document.getElementById('toolContainer'); // Récupérer le parent
         const parentBounds = parent.getBoundingClientRect(); // Obtenir les dimensions du parent
-        const canvas = p.createCanvas(parentBounds.width, parentBounds.height); // Taille du canvas = parent
+        canvas = p.createCanvas(parentBounds.width, parentBounds.height); // Taille du canvas = parent
         canvas.parent('toolContainer');
 
         p.fill("white");
         p.stroke("white");
         p.textSize(40);
         p.textAlign(p.CENTER, p.TOP);
-        clearButton = p.createButton("Clear");
-        computeButton = p.createButton("Compute");
-        let xCompute = p.width / 2 - (computeButton.width + clearButton.width) / 2;
-        let xClear = p.width / 2;
-        let y = p.height - 50;
-        computeButton.position(xCompute - 30, y);
-        computeButton.mousePressed(compute);
-        clearButton.position(xClear + 30, y);
-        clearButton.mousePressed(reset_points);
-        let displayButton = p.createButton("Display Pocket Chain Projection on Lid");
-        displayButton.position(p.width / 2 - displayButton.width / 2, y + 50);
-        displayButton.mousePressed(() => {
+        clearButton = generateButton(p.width / 2 - 50, p.height - 50, "Clear", reset_points, p);
+        computeButton = generateButton(p.width / 2 + 50, p.height - 50, "Compute", compute, p);
+       generateButton(p.width / 2 - 50, p.height - 100, "Display Pocket Chain Projection on Lid", () => {
             display_pocket_chain_projection_on_lid = !display_pocket_chain_projection_on_lid;
-        });
+        }, p);
     }
+
+    function generateButton(x, y, text, callback, p) {
+        let button = p.createButton(text);
+        button.position(x, y);
+        button.mousePressed(callback);
+        return button;
+    }
+
 
     function reset_points() {
         poly.reset();
+        data_pocket_chain_on_lid = [];
+        ch = null;
+        text_to_display = "?";
     }
 
     function compute() {
@@ -151,6 +153,7 @@ const s = (p) => {
     p.draw = function () {
         p.background(233, 230, 235);
         p.text(text_to_display, p.width / 2, 10);
+        p.stroke("black");
         poly.draw(p);
         if (ch) {
             ch.draw(p);
@@ -161,42 +164,12 @@ const s = (p) => {
         });
     }
 
-    p.mousePressed = function () {
-        const rect = p.canvas.getBoundingClientRect();
-        if (!(
-            p.mouseX >= 0 &&
-            p.mouseX <= rect.width &&
-            p.mouseY >= 0 &&
-            p.mouseY <= rect.height)
-        ) return;
-
-        let computeButtonX = computeButton.position().x;
-        let computeButtonWidth = computeButton.width;
-        let computeButtonHeight = computeButton.height;
-
-        let clearButtonX = clearButton.position().x;
-
-        let y = computeButton.position().y;
-
-        let clearButtonWidth = clearButton.width;
-        let clearButtonHeight = clearButton.height;
-
-        if (
-            !(
-                p.mouseX > computeButtonX &&
-                p.mouseX < computeButtonX + computeButtonWidth &&
-                p.mouseY > y &&
-                p.mouseY < y + computeButtonHeight
-            ) &&
-            !(
-                p.mouseX > clearButtonX &&
-                p.mouseX < clearButtonX + clearButtonWidth &&
-                p.mouseY > y &&
-                p.mouseY < y + clearButtonHeight
-            )
-        ) {
+    p.mousePressed = function (event) {
+        if (event.target === canvas.elt){
+            console.log("canvas");
             poly.addPoint(new Point(p.mouseX, -p.mouseY));
         }
+        
     }
 
     p.windowResized = function () {
