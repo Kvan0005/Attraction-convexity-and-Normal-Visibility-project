@@ -42,11 +42,11 @@ class PocketPolygon {
     draw(p){
         p.stroke("black");
         p.line(this.getFirst().x, -this.getFirst().y, this.getLast().x, -this.getLast().y);
-        p.stroke("red");
+        p.stroke("blue");
         for (let i = 0; i < this.chains.length; i++) {
             p.line(this.chains[i].x, -this.chains[i].y, this.projectionPoints[i].x, -this.projectionPoints[i].y);
         }
-        p.stroke("black");
+        p.stroke("white");
     }
 }
 

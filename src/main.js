@@ -156,10 +156,8 @@ const s = (p) => {
             ch.draw(p);
         }
         if (data_pocket_chain_on_lid.length === 0 || !display_pocket_chain_projection_on_lid) return;
-        array.forEach(element => {
-            element.getChains().forEach(chain => {
-                chain.draw(p);
-            });
+        data_pocket_chain_on_lid.forEach(element => {
+            element.draw(p);
         });
     }
 
