@@ -32,7 +32,7 @@ function getTranslatedPoints() {
         new Point(4 * 80, 1.5 * 80),    // e
         new Point(2.5 * 80, 3 * 80),    // d
 
-        new Point(1.75 * 80, 0.5 * 80)    // p
+        new Point(1.75 * 80, 0.4 * 80)    // p
     ];
 
     // Calculate the bounding box
@@ -69,9 +69,9 @@ const s = (p) => {
         p_point.draw(p);
         polygon.draw(p);
         //spt.draw(p);
-        //spm.draw(p);
+        spm.draw(p);
         //chp.draw(p);
-        free.draw(p);
+        //free.draw(p);
     }
 
     p.windowResized = function () {

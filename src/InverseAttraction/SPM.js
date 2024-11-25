@@ -1,4 +1,5 @@
 import { Point, isRightTurn } from "../Point.js";
+import { Polygon } from "../Polygon.js";
 
 export class SPM {
     constructor(polygon, spt) {
@@ -13,13 +14,13 @@ export class SPM {
         const points = this.insertProjections();
 
         let i = 0;
-        regions[i] = this.getNeighbors(points[0], points);
+        regions[i] = new Polygon(this.getNeighbors(points[0], points), true);
 
         Object.keys(this.projections).forEach(key => {
             i++;
             const [, v] = JSON.parse(key);
             const intersection = this.projections[key][0];
-            regions[i] = this.getNeighbors(new Point(v.x, v.y), points, intersection);
+            regions[i] = new Polygon(this.getNeighbors(new Point(v.x, v.y), points, intersection), true);
         });
         return regions;
     }
@@ -107,9 +108,9 @@ export class SPM {
             const color = colors[index % colors.length];
             p.fill(...color);
             p.beginShape();
-            region.forEach(point => {
+            for (const point of region.points) {
                 p.vertex(point.x, -point.y);
-            });
+            }
             p.endShape(p.CLOSE);
         });
     }

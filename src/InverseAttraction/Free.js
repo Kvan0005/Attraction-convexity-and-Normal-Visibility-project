@@ -1,8 +1,9 @@
+import { Polygon } from "../Polygon.js";
+
 export class Free {
     constructor(constrainingHalfPlane) {
         this.subPolygons = [];
         this.associatedLines = [];
-        this.print;
 
         Object.values(constrainingHalfPlane.chp).forEach(chp => {
             const subPolygon = chp[0];
@@ -25,14 +26,10 @@ export class Free {
         const freeRegions = [];
 
         for (let i = 0; i < this.subPolygons.length; i++) {
-            if (i !== 7) {
-                continue;
-            }
             const subPolygon = this.subPolygons[i];
             const associatedLine = this.associatedLines[i];
             const domain = this.computeDomain(subPolygon, associatedLine);
-            freeRegions.push(domain);
-            this.print = associatedLine;
+            freeRegions.push(new Polygon(domain, true));
         }
         return freeRegions;
     }
@@ -114,11 +111,10 @@ export class Free {
             const color = colors[index % colors.length];
             p.fill(...color);
             p.beginShape();
-            for (const point of region) {
+            for (const point of region.points) {
                 p.vertex(point.x, -point.y);
             }
             p.endShape(p.CLOSE);
         });
-        this.print.draw(p);
     }
 }
