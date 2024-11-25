@@ -4,6 +4,7 @@ import {AnimatedText} from "../AnimatedText.js";
 import {ReactivePolygon} from "../ReactivePolygon.js";
 import {Phase} from "./Phase.js";
 import {Point} from "../../Point.js";
+import {Attraction} from "../../Attraction.js";
 
 class Sketch{
     constructor() {
@@ -37,8 +38,11 @@ class Sketch{
                 this.phase = this.phase.next(); break;
             }
             case Phase.Explanation: {
+                console.log("hi")
                 this.phase = this.phase.next();
                 this.polygon.toCounterClockwiseOrder();
+                let isAttractionConvex = Attraction.compute(this.polygon.toPolygon());
+                console.log("hi", isAttractionConvex);
                 break;
             }
             case Phase.ImagineAnt: {
