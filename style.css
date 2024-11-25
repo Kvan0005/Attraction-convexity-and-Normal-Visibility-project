@@ -21,13 +21,16 @@ p {
 
 .container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     width: 100%;
     padding: 20px;
+    margin-top: 80px;
+    height: 100vh;
 }
 
 .sidebar {
     width: 200px;
+    flex-shrink: 0;
     background-color: #FBF9FD;
     position: fixed;
     height: 100%;
@@ -79,9 +82,9 @@ p {
 }
 
 .content {
-    margin-left: 220px;
+    margin-left: 205px;
     padding: 20px;
-    width: calc(100% - 220px);
+    width: calc(100% - 205px);
 }
 
 header {
@@ -112,12 +115,6 @@ header h1 {
     font-size: 24px;
     color: #333;
 }
-
-.container {
-    margin-top: 80px;
-    display: flex;
-}
-
 
 h1 {
     display: flex;               /* Active le flexbox */
