@@ -2,9 +2,9 @@ import {Polygon} from "../Polygon.js";
 import {Point, det, isRightTurn} from "../Point.js";
 
 export class ReactivePolygon {
-    constructor(points, closed) {
-        points ? this.vertices = points : this.vertices = [];
-        closed ? this.closed = closed : this.closed = false;
+    constructor(points = [], closed = false) {
+        this.vertices = points;
+        this.closed = closed;
         this.perimeter = 0;
     }
 
@@ -31,7 +31,7 @@ export class ReactivePolygon {
     }
 
     isClosed() {
-        return this.closed === undefined;
+        return this.closed;
     }
 
     closedInstant(){
