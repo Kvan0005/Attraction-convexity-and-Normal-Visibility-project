@@ -1,11 +1,11 @@
 import {isRightTurn} from "../Point.js";
 
 export class WalkingAnt {
-    constructor(polygon) {
+    constructor(polygon, totalTime=4000, totalRotationTime=1000) {
         this.polygon = polygon
 
-        this.totalTime = 4000;
-        this.totalRotationTime = 1000;
+        this.totalTime = totalTime;
+        this.totalRotationTime = totalRotationTime;
         this.startTime;
         this.distance = 0;
 

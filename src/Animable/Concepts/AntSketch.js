@@ -30,7 +30,7 @@ class Sketch{
 
         this.polygon = new ReactivePolygon(points, true);
 
-        this.ant = new WalkingAnt(this.polygon);
+        this.ant = new WalkingAnt(this.polygon, 6000, 8000);
         this.p;
     }
 

@@ -31,7 +31,7 @@ export class ReactivePolygon {
     }
 
     isClosed() {
-        return this.closed;
+        return this.closed === undefined;
     }
 
     closedInstant(){
