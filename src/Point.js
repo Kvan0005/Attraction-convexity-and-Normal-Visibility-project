@@ -1,9 +1,13 @@
 import {DIRECTION} from "./Const.js";
 
 export class Point {
+    static count = 0;
+
     constructor(x, y) {
+        this.id = Point.count
         this.x = x;
         this.y = y;
+        Point.count++;
     }
 
     draw(p, size) {
@@ -13,6 +17,10 @@ export class Point {
 
     equals(other) {
         return this.x === other.x && this.y === other.y;
+    }
+
+    toString() {
+        return this.id;
     }
 }
 

@@ -103,19 +103,28 @@ const s = (p) => {
         let s = [polygon.get(0)];
         for (let i = 1; i < polygon.length(); i++) { // play with these index for clockwise
             let v = polygon.get(i), v_next = polygon.get((i+1) % polygon.length()), v_prev = polygon.get((i-1 + polygon.length()) % polygon.length());
-            while (s.length !== 1 && isRightTurn(s[s.length - 2], s[s.length - 1], v)) s.pop();
+            console.log(`v: ${v.toString()}, v_next: ${v_next.toString()}, v_prev: ${v_prev.toString()}, c: ${s[s.length - 1].toString()}`)
+            if (s.length > 1) console.log(`c_prev: ${s[s.length - 2].toString()}`)
+            while (s.length !== 1 && isRightTurn(s[s.length - 2], s[s.length - 1], v)) {
+                console.log("pop");
+                s.pop();
+            }
             s.push(v);
+            console.log(`c_prev: ${s[s.length - 2].toString()}, c: ${s[s.length - 1].toString()}`)
             let c_prev = s[s.length - 2], c = s[s.length - 1];
+            console.log(`RT ? ${c_prev}, ${c} ${v_next}`, isRightTurn(c_prev, c, v_next))
             if (isRightTurn(c_prev, c, v_next) && isAcuteAngle(c_prev, c, v_next)) {
-                console.log("nop");
+                console.log("nop, acute angle");
                 return false;
             }
+            console.log(`LT ? ${c_prev}, ${c} ${v_next}`, isLeftTurn(c_prev, c, v_next))
+            console.log(`RT ? ${v_prev}, ${v} ${v_next}`)
             if (isLeftTurn(c_prev, c, v_next) && isRightTurn(v_prev, v, v_next)) {
-                console.log("nop2");
+                console.log("nop2, rightTurn");
                 return false;
             }
         }
-        console.log("yeepee");
+        console.log("CCW scan passed");
         return true;
 
     }
@@ -124,19 +133,28 @@ const s = (p) => {
         let s = [polygon.get(polygon.length() - 1)];
         for (let i = polygon.length() - 2; i >= 0; i--) { // play with these index for clockwise
             let v = polygon.get(i), v_prev = polygon.get((i+1) % polygon.length()), v_next = polygon.get((i-1 + polygon.length()) % polygon.length());
-            while (s.length !== 1 && isLeftTurn(s[0], s[s.length - 1], v)) s.pop();
+            console.log(`v: ${v.toString()}, v_next: ${v_next.toString()}, v_prev: ${v_prev.toString()}, c: ${s[s.length - 1].toString()}`)
+            if (s.length > 1) console.log(`c_prev: ${s[s.length - 2].toString()}`)
+            while (s.length !== 1 && isLeftTurn(s[s.length - 2], s[s.length - 1], v)) {
+                console.log("pop");
+                s.pop();
+            }
             s.push(v);
-            let c_prev = s[0], c = s[s.length - 1];
+            console.log(`c_prev: ${s[s.length - 2].toString()}, c: ${s[s.length - 1].toString()}`)
+            let c_prev = s[s.length - 2], c = s[s.length - 1];
+            console.log(`LT ? ${c_prev}, ${c} ${v_next}`, isLeftTurn(c_prev, c, v_next))
             if (isLeftTurn(c_prev, c, v_next) && isAcuteAngle(c_prev, c, v_next)) {
-                console.log("pon");
+                console.log("pon, acute angle");
                 return false;
             }
+            console.log(`RT ? ${c_prev}, ${c} ${v_next}`, isRightTurn(c_prev, c, v_next))
+            console.log(`LT ? ${v_prev}, ${v} ${v_next}`)
             if (isRightTurn(c_prev, c, v_next) && isLeftTurn(v_prev, v, v_next)) {
-                console.log("2pon");
+                console.log("2pon, LeftTurn");
                 return false;
             }
         }
-        console.log("eepeey");
+        console.log("CW scan passed");
         return true;
     }
 
