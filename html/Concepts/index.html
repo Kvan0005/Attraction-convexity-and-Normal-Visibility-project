@@ -29,19 +29,52 @@
 
             <h2>Summary</h2>
             <p>
-                Attraction-convex polygons are those where every point in the polygon attracts every other point while Normal-visible polygons are those where the normal to each point on the boundary of the polygon hits no point of the interior of the polygon.
-                A conceptualisation of this second definition is to imagine an ant walking along the polygon counterclockwise, with a laser pointing to its right
+                Attraction-convex polygons are those where every point in the polygon attracts every other point.
+                The attraction of a point <span>\(q\)</span> to a point <span>\(p\)</span> describes
+                a movement system in which <span>\(q\)</span> moves to minimize
+                its Euclidean distance with <span>\(p\)</span><br/>
 
+                Normal-visible polygons are those where the normal to each point on the boundary of the polygon
+                hits no point of the interior of the polygon.
+                A conceptualisation of this second definition is to imagine an ant walking along
+                the polygon counterclockwise, with a laser pointing to its right
             </p>
 
             <div id="antAnimation"></div>
+
+            <p>
+                An important part of the article was to prove that these two classes of polygons coincide,
+                in order to construct an algorithm to verify if a polygon
+                is Attraction-convex, based on Normally-visible polygons.
+            </p>
+
+            <h2>Equivalence between the two classes</h2>
+            To prove equivalence between the two classes, we must concider the points <span>\(q'\)</span>, that are
+            not attract to <span>\(p\)</span> (the <a href="../../html/Glossary/index.html#dead-point">dead points</a>).
+            A dead point can appear in two cases :
+
+            <div class="image-container">
+                <figure>
+                <img src="../../images/deadpoint1.png" alt="pq' perpendicular dead point" width="300">
+                <figcaption>in a <span>\(pq'\)</span> perpendicular dead point. </figcaption>
+                </figure>
+                <figure>
+                <img src="../../images/deadpoint2.png" alt="convex vertex dead point" width="300">
+                <figcaption>or in a Convex vertex dead point.</figcaption>
+                </figure>
+            </div>
 
             <h1>Inverse Attraction Regions</h1>
 
             <h2>Summary</h2>
             <p>
-                The inverse attraction region of a point within a simple polygon is the set of points that can attract the given point. The inverse attraction region is a subset of the polygon which is denoted as <em>IAR(p)</em>.
-                Note that the concept of attraction in the inverse attraction region is the same as the concept of attraction in the attraction region. However, if the point <em>p</em> attracts a point <em>q</em>, then it does not apply that <em>q</em> attracts <em>p</em>. This implies that the attraction region of <em>p</em> and the inverse attraction region of <em>p</em> are asymmetric problems.
+                The inverse attraction region of a point within a simple polygon is the set of points that
+                can attract the given point. The inverse attraction region is a subset of the polygon which is denoted
+                as <em>IAR(p)</em>.
+                Note that the concept of attraction in the inverse attraction region is the same as the concept of
+                attraction in the attraction region. However, if the point <em>p</em> attracts a point <em>q</em>,
+                then it does not apply that <em>q</em> attracts <em>p</em>. This implies that the attraction region of
+                <em>p</em> and the inverse attraction region of <em>p</em> are asymmetric problems.
             </p>
 
             <!-- Figure 1: Inverse Attraction Region : Example-->
@@ -53,7 +86,7 @@
             </p>
             
             <p>
-                The article proposes to consider the inverse attraction region <em>IAR(p)</em> as the union of all <em>Free<sub>i</sub> &cap; R<sub>i</sub></em> for all <em>i</em>. We will explain this in more detail in the following sections.
+                The article proposes to consider the inverse attraction region <a href="../../html/Glossary/index.html#inverse-attraction-region"><em>IAR(p)</em></a> as the union of all <em>Free<sub>i</sub> &cap; R<sub>i</sub></em> for all <em>i</em>. We will explain this in more detail in the following sections.
             </p>
 
             <h3>Region - <em>R<sub>i</sub></em></h3>
@@ -69,7 +102,7 @@
             <h3><em>Free<sub>i</sub></em> and Constraining Half-Planes</h3>
 
             <p>
-                To comprehend the inverse attraction region <em>IAR(p)</em> and what is exactly <em>Free<sub>i</sub></em>, it is important to understand the concept of constraining half-planes. The constraining half-planes are used to identify the regions within the polygon <em>P</em> where points cannot attract <em>p</em> due to the presence of vertex <em>v</em>.
+                To comprehend the inverse attraction region <a href="../../html/Glossary/index.html#inverse-attraction-region"><em>IAR(p)</em></a> and what is exactly <em>Free<sub>i</sub></em>, it is important to understand the concept of constraining half-planes. The constraining half-planes are used to identify the regions within the polygon <em>P</em> where points cannot attract <em>p</em> due to the presence of vertex <em>v</em>.
             </p>
 
             <h4>Constraining Half-Planes</h4>

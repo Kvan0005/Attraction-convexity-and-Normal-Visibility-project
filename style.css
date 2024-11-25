@@ -270,3 +270,33 @@ ul li a:hover {
     right: 0; /* Adjust this value as needed */
     bottom: 10px; /* Adjust this value as needed */
 }
+
+.image-container {
+    display: flex; /* Affiche les images côte à côte par défaut */
+    justify-content: center; /* Centre les images horizontalement */
+    align-items: center; /* Centre verticalement si nécessaire */
+    gap: 200px; /* Ajoute 200px d'espace entre les images */
+    margin: 20px auto; /* Centrage général */
+    flex-wrap: wrap; /* Permet aux images de passer à la ligne si nécessaire */
+    text-align: center; /* Centre le texte à l'intérieur */
+}
+
+.image-container img {
+    max-width: 100%; /* S'adapte à la taille de l'écran */
+    height: auto; /* Conserve les proportions des images */
+    display: block;
+    width: 300px; /* Largeur fixe initiale */
+}
+
+/* Réduction de l'espace et disposition verticale sur petits écrans */
+@media (max-width: 800px) {
+    .image-container {
+        gap: 20px; /* Réduit l'espace entre les images */
+        flex-direction: column; /* Passe les images en colonne */
+    }
+
+    .image-container img {
+        width: 100%; /* Les images prennent toute la largeur disponible */
+        max-width: 500px; /* Limite la largeur pour éviter qu'elles ne soient trop grandes */
+    }
+}
