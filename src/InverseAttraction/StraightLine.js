@@ -49,8 +49,11 @@ export class StraightLine {
         return null;
     }
     
-    draw(p) {
-        p.stroke("black");
+    draw(p , color = "black", dashed = false) {
+        p.stroke(color);
+        if (dashed) {
+            p.drawingContext.setLineDash([5, 10]);
+        }
         const scale = 10000; // Scale factor to draw the line
         const dx = this.p2.x - this.p1.x;
         const dy = this.p2.y - this.p1.y;
@@ -60,6 +63,7 @@ export class StraightLine {
         const extendedP1 = new Point(this.p1.x - ux * scale, this.p1.y - uy * scale);
         const extendedP2 = new Point(this.p2.x + ux * scale, this.p2.y + uy * scale);
         p.line(extendedP1.x, -extendedP1.y, extendedP2.x, -extendedP2.y);
+        p.drawingContext.setLineDash([]);
     }
 }
 

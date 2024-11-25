@@ -1,4 +1,5 @@
 import {Point} from "./Point.js";
+import {StraightLine} from "./InverseAttraction/StraightLine.js";
 class PocketPolygon {
     constructor(chains){
         this.first = chains.shift();
@@ -42,6 +43,7 @@ class PocketPolygon {
     draw(p){
         p.stroke("black");
         p.line(this.getFirst().x, -this.getFirst().y, this.getLast().x, -this.getLast().y);
+        new StraightLine(this.getFirst(), this.getLast()).draw(p, "black", true);
         p.stroke("blue");
         for (let i = 0; i < this.chains.length; i++) {
             p.line(this.chains[i].x, -this.chains[i].y, this.projectionPoints[i].x, -this.projectionPoints[i].y);
