@@ -67,7 +67,7 @@ const s = (p) => {
         p_point.draw(p);
         polygon.draw(p);
         spt.draw(p);
-        //spm.draw(p);
+        spm.draw(p);
         chp.draw(p);
     }
 

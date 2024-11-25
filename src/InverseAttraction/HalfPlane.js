@@ -94,27 +94,56 @@ export class ConstrainingHalfPlanes {
     determineSubPolygon(u, v, pe1, pe2, h1, h2) {
         let z1, z2, p1, p2, p3, p4;
         let subPolygons;
+        let associatedLine = [];
         if (h1.isBelow(u) === h1.isBelow(pe1) && h2.isBelow(u) === h2.isBelow(pe2)) {
             if (isLeftTurn(pe1, v, pe2) === isLeftTurn(pe1, v, u)) {
                 [z1, p1, p2] = this.getProjections(pe2, v);
                 subPolygons = this.createSubPolygon(pe1, v, z1, p1, p2);
+                associatedLine = [h2, pe2];
             } else {
                 [z1, p1, p2] = this.getProjections(pe1, v);
                 subPolygons = this.createSubPolygon(pe2, v, z1, p1, p2);
+                associatedLine = [h1, pe1];
             }
 
         } else if (h1.isBelow(u) === h1.isBelow(pe1)) {
             [z1, p1, p2] = this.getProjections(pe1, v);
             subPolygons = this.createSubPolygon(pe2, v, z1, p1, p2);
+            associatedLine = [h1, pe1];
         } else if (h2.isBelow(u) === h2.isBelow(pe2)) {
             [z1, p1, p2] = this.getProjections(pe2, v);
             subPolygons = this.createSubPolygon(pe1, v, z1, p1, p2);
+            associatedLine = [h2, pe2];
 
         } else {
             let [pu, pv] = this.getPerpendicularsPoints(u, v);
             [z1, p1, p2] = this.getProjections(v, pu);
             [z2, p3, p4] = this.getProjections(v, pv);
             subPolygons = [this.createSubPolygon(pe1, v, z1, p1, p2), this.createSubPolygon(pe2, v, z2, p3, p4)];
+            associatedLine = [new HalfPlane(u, v), pe1, pe2]
+        }
+        this.fillSubPolygons(subPolygons);
+        return [subPolygons, associatedLine];
+    }
+    
+    fillSubPolygons(subPolygons) {
+        if (subPolygons.length === 2) {
+            return [this.fillSubPolygons(subPolygons[0]), this.fillSubPolygons(subPolygons[1])];
+        }
+        let i = this.polygon.points.indexOf(subPolygons[0]);
+        let j = this.polygon.points.indexOf(subPolygons[1]);
+        let k = this.polygon.points.indexOf(subPolygons[3]);
+        if (i > j) {
+            k = i;
+            i = this.polygon.points.indexOf(subPolygons[3]);
+            subPolygons = subPolygons.reverse();
+        }
+        while (k !== i) {
+            subPolygons.push(this.polygon.points[k]);
+            k = (k + 1) % this.polygon.points.length;
+        }
+        if (subPolygons[0] === subPolygons[subPolygons.length - 1]) {
+            subPolygons.pop();
         }
         return subPolygons;
     }
@@ -177,8 +206,11 @@ export class ConstrainingHalfPlanes {
     }    
     
     draw(p) {
-        this.halfPlanes.forEach(plane => {
-            plane.draw(p); // Use the draw method of HalfPlane which inverts the y-coordinates
+        Object.values(this.chp).forEach(([subPolygons, associatedLine]) => {
+            let line = associatedLine[0];
+            p.drawingContext.setLineDash([5, 5]); // Set dashed line style
+            line.draw(p);
+            p.drawingContext.setLineDash([]); // Reset to solid line
         });
     }
 }
