@@ -3,6 +3,7 @@ import { Polygon } from "../../src/Polygon.js";
 import { SPT } from "../../src/InverseAttraction/SPT.js";
 import { SPM } from "../../src/InverseAttraction/SPM.js";
 import { ConstrainingHalfPlanes } from "../../src/InverseAttraction/HalfPlane.js";
+import { Free } from "../../src/InverseAttraction/Free.js";
 
 const translatedPoints = getTranslatedPoints();
 const polygon = new Polygon(translatedPoints.slice(0, -1), true);
@@ -10,6 +11,7 @@ const p_point = translatedPoints[translatedPoints.length - 1];
 const spt = new SPT(polygon, p_point);
 const spm = new SPM(polygon, spt);
 const chp = new ConstrainingHalfPlanes(polygon, spt);
+const free = new Free(chp);
 
 function getTranslatedPoints() {
     // Define the points
@@ -30,7 +32,7 @@ function getTranslatedPoints() {
         new Point(4 * 80, 1.5 * 80),    // e
         new Point(2.5 * 80, 3 * 80),    // d
 
-        new Point(2 * 80, 0.25 * 80)    // p
+        new Point(1.75 * 80, 0.5 * 80)    // p
     ];
 
     // Calculate the bounding box
@@ -66,9 +68,10 @@ const s = (p) => {
         p.translate(p.width / 2, p.height / 2);
         p_point.draw(p);
         polygon.draw(p);
-        spt.draw(p);
-        spm.draw(p);
-        chp.draw(p);
+        //spt.draw(p);
+        //spm.draw(p);
+        //chp.draw(p);
+        free.draw(p);
     }
 
     p.windowResized = function () {

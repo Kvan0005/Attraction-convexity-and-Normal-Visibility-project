@@ -1,94 +1,58 @@
 import { Point, isLeftTurn } from "../Point.js";
 import { isBetween, getIntersection } from "./SPM.js";
+import { StraightLine, perpendicularFromTwoPoints } from "./StraightLine.js";
 
 export class HalfPlane {
-    constructor(p1, p2) {
-        if (p1.x > p2.x || (p1.x === p2.x && p1.y > p2.y)) {
-            [p1, p2] = [p2, p1];
-        }
+    constructor(h, p1) {
+        this.h = h;
         this.p1 = p1;
-        this.p2 = p2;
-        this.a = p2.y - p1.y;
-        this.b = p1.x - p2.x;
-        this.c = this.a * p1.x + this.b * p1.y;
     }
 
-    isAbove(point) {
-        if (this.b === 0) { // Vertical half-plane
-            return point.x > this.p1.x;
-        }
-        return this.a * point.x + this.b * point.y < this.c;
+    isIn(p) {
+        return this.h.isBelow(p) === this.h.isBelow(this.p1);
     }
-    
-    isBelow(point) {
-        if (this.b === 0) { // Vertical half-plane
-            return point.x < this.p1.x;
-        }
-        return this.a * point.x + this.b * point.y > this.c;
+
+    isOn(p) {
+        return this.h.isAbove(p) === this.h.isBelow(p);
     }
-    
+
+    getIntersection(p1, p2) {
+        return this.h.getIntersection(p1, p2);
+    }
+
     draw(p) {
-        p.stroke("black");
-        const scale = 10000; // Scale factor to draw the line
-        const dx = this.p2.x - this.p1.x;
-        const dy = this.p2.y - this.p1.y;
-        const length = Math.sqrt(dx * dx + dy * dy);
-        const ux = dx / length;
-        const uy = dy / length;
-        const extendedP1 = new Point(this.p1.x - ux * scale, this.p1.y - uy * scale);
-        const extendedP2 = new Point(this.p2.x + ux * scale, this.p2.y + uy * scale);
-        p.line(extendedP1.x, -extendedP1.y, extendedP2.x, -extendedP2.y);
+        this.h.draw(p);
     }
 }
 
-export function fromSlopeAndPoint(slope, point) {
-    const a = -slope;
-    const b = 1;
-    const c = a * point.x + b * point.y;
-    return new HalfPlane(new Point(0, c / b), point);
-}
-
-export function perpendicularFromSlopeAndPoint(slope, point) {
-    const perpendicularSlope = -1 / slope;
-    return fromSlopeAndPoint(perpendicularSlope, point);
-}
-
-export function perpendicularFromTwoPoints(p1, p2, point) {
-    if (p1.x === p2.x) { // Vertical line, create a horizontal half-plane
-        return new HalfPlane(new Point(point.x - 1, point.y), new Point(point.x + 1, point.y));
-    }
-    if (p1.y === p2.y) { // Horizontal line, create a vertical half-plane
-        return new HalfPlane(new Point(point.x, point.y - 1), new Point(point.x, point.y + 1));
-    }
-    const slope = (p2.y - p1.y) / (p2.x - p1.x);
-    return perpendicularFromSlopeAndPoint(slope, point);
-}
 
 export class ConstrainingHalfPlanes {
     constructor(polygon, spt) {
         this.polygon = polygon;
         this.spt = spt;
         this.chp = {};
-        this.halfPlanes = this.computePlanes();
-        console.log(this.halfPlanes);
+        this.straightLines = this.computePlanes();
+        console.log(this.straightLines);
         console.log(this.chp);
     }
 
     computePlanes() {
-        const halfPlanes = [];
+        const straightLines = [];
         console.log(this.polygon.points);
+        let j = 0;
         this.spt.tree.forEach(([u, v]) => {
+
             let i = this.polygon.points.indexOf(v);
             let pe1 = this.polygon.points[(i - 1) % this.polygon.points.length];
             let pe2 = this.polygon.points[(i + 1) % this.polygon.points.length];
             let h1 = perpendicularFromTwoPoints(pe1, v, v);
             let h2 = perpendicularFromTwoPoints(pe2, v, v);
-            halfPlanes.push(h1, h2);
+            straightLines.push(h1, h2);
 
             const key = `${v.x},${v.y}`;
             this.chp[key] = this.determineSubPolygon(u, v, pe1, pe2, h1, h2);
         });
-        return halfPlanes;
+        return straightLines;
     }
 
     determineSubPolygon(u, v, pe1, pe2, h1, h2) {
@@ -99,28 +63,30 @@ export class ConstrainingHalfPlanes {
             if (isLeftTurn(pe1, v, pe2) === isLeftTurn(pe1, v, u)) {
                 [z1, p1, p2] = this.getProjections(pe2, v);
                 subPolygons = this.createSubPolygon(pe1, v, z1, p1, p2);
-                associatedLine = [h2, pe2];
+                associatedLine = new HalfPlane(h2, pe2);
             } else {
                 [z1, p1, p2] = this.getProjections(pe1, v);
                 subPolygons = this.createSubPolygon(pe2, v, z1, p1, p2);
-                associatedLine = [h1, pe1];
+                associatedLine = new HalfPlane(h1, pe1);
             }
 
         } else if (h1.isBelow(u) === h1.isBelow(pe1)) {
             [z1, p1, p2] = this.getProjections(pe1, v);
             subPolygons = this.createSubPolygon(pe2, v, z1, p1, p2);
-            associatedLine = [h1, pe1];
+            associatedLine = new HalfPlane(h1, pe1);
         } else if (h2.isBelow(u) === h2.isBelow(pe2)) {
             [z1, p1, p2] = this.getProjections(pe2, v);
             subPolygons = this.createSubPolygon(pe1, v, z1, p1, p2);
-            associatedLine = [h2, pe2];
+            associatedLine = new HalfPlane(h2, pe2);
 
         } else {
             let [pu, pv] = this.getPerpendicularsPoints(u, v);
             [z1, p1, p2] = this.getProjections(v, pu);
             [z2, p3, p4] = this.getProjections(v, pv);
             subPolygons = [this.createSubPolygon(pe1, v, z1, p1, p2), this.createSubPolygon(pe2, v, z2, p3, p4)];
-            associatedLine = [new HalfPlane(u, v), pe1, pe2]
+            const hp1 = new HalfPlane(new StraightLine(u, v), pe2);
+            const hp2 = new HalfPlane(new StraightLine(u, v), pe1);
+            associatedLine = [hp1, hp2];
         }
         this.fillSubPolygons(subPolygons);
         return [subPolygons, associatedLine];
@@ -139,8 +105,8 @@ export class ConstrainingHalfPlanes {
             subPolygons = subPolygons.reverse();
         }
         while (k !== i) {
-            subPolygons.push(this.polygon.points[k]);
             k = (k + 1) % this.polygon.points.length;
+            subPolygons.push(this.polygon.points[k]);
         }
         if (subPolygons[0] === subPolygons[subPolygons.length - 1]) {
             subPolygons.pop();
@@ -207,7 +173,10 @@ export class ConstrainingHalfPlanes {
     
     draw(p) {
         Object.values(this.chp).forEach(([subPolygons, associatedLine]) => {
-            let line = associatedLine[0];
+            let line = associatedLine;
+            if (associatedLine instanceof Array) {
+                line = associatedLine[0];
+            }
             p.drawingContext.setLineDash([5, 5]); // Set dashed line style
             line.draw(p);
             p.drawingContext.setLineDash([]); // Reset to solid line
