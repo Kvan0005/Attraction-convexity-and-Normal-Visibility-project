@@ -1,8 +1,8 @@
 import { Point } from "../../src/Point.js";
 import { Polygon } from "../../src/Polygon.js";
-import { SPT } from "../../src/SPT.js";
-import { SPM } from "../../src/SPM.js";
-import { ConstrainingHalfPlanes } from "../../src/HalfPlane.js";
+import { SPT } from "../../src/InverseAttraction/SPT.js";
+import { SPM } from "../../src/InverseAttraction/SPM.js";
+import { ConstrainingHalfPlanes } from "../../src/InverseAttraction/HalfPlane.js";
 
 const translatedPoints = getTranslatedPoints();
 const polygon = new Polygon(translatedPoints.slice(0, -1), true);

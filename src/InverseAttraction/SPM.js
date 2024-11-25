@@ -1,4 +1,4 @@
-import { Point, isRightTurn } from "./Point.js";
+import { Point, isRightTurn } from "../Point.js";
 
 export class SPM {
     constructor(polygon, spt) {
@@ -84,7 +84,6 @@ export class SPM {
                     if (!(key in projections) || isBetween(v, projections[key], intersection)) {
                         projections[key] = [intersection, p1, p2];
                     }
-                    
                 }
             });
         });

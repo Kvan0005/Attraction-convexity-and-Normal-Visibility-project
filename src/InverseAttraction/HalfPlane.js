@@ -1,4 +1,4 @@
-import { Point, isLeftTurn } from "./Point.js";
+import { Point, isLeftTurn } from "../Point.js";
 import { isBetween, getIntersection } from "./SPM.js";
 
 export class HalfPlane {
@@ -14,14 +14,14 @@ export class HalfPlane {
     }
 
     isAbove(point) {
-        if (this.b === 0) { // half-plane is vertical
+        if (this.b === 0) { // Vertical half-plane
             return point.x > this.p1.x;
         }
         return this.a * point.x + this.b * point.y < this.c;
     }
     
     isBelow(point) {
-        if (this.b === 0) { // half-plane is vertical
+        if (this.b === 0) { // Vertical half-plane
             return point.x < this.p1.x;
         }
         return this.a * point.x + this.b * point.y > this.c;
@@ -29,7 +29,7 @@ export class HalfPlane {
     
     draw(p) {
         p.stroke("black");
-        const scale = 10000; // scale factor to draw the line
+        const scale = 10000; // Scale factor to draw the line
         const dx = this.p2.x - this.p1.x;
         const dy = this.p2.y - this.p1.y;
         const length = Math.sqrt(dx * dx + dy * dy);
@@ -54,10 +54,10 @@ export function perpendicularFromSlopeAndPoint(slope, point) {
 }
 
 export function perpendicularFromTwoPoints(p1, p2, point) {
-    if (p1.x === p2.x) { // half-plane is vertical, create a horizontal half-plane
+    if (p1.x === p2.x) { // Vertical line, create a horizontal half-plane
         return new HalfPlane(new Point(point.x - 1, point.y), new Point(point.x + 1, point.y));
     }
-    if (p1.y === p2.y) { // half-plane is horizontal, create a vertical half-plane
+    if (p1.y === p2.y) { // Horizontal line, create a vertical half-plane
         return new HalfPlane(new Point(point.x, point.y - 1), new Point(point.x, point.y + 1));
     }
     const slope = (p2.y - p1.y) / (p2.x - p1.x);
@@ -77,12 +77,7 @@ export class ConstrainingHalfPlanes {
     computePlanes() {
         const halfPlanes = [];
         console.log(this.polygon.points);
-        let j = 0;
         this.spt.tree.forEach(([u, v]) => {
-            if (j !== 3 && j !== 4) {
-                j++;
-                return;
-            }
             let i = this.polygon.points.indexOf(v);
             let pe1 = this.polygon.points[(i - 1) % this.polygon.points.length];
             let pe2 = this.polygon.points[(i + 1) % this.polygon.points.length];
@@ -92,33 +87,36 @@ export class ConstrainingHalfPlanes {
 
             const key = `${v.x},${v.y}`;
             this.chp[key] = this.determineSubPolygon(u, v, pe1, pe2, h1, h2);
-
-            j++;
         });
         return halfPlanes;
     }
 
     determineSubPolygon(u, v, pe1, pe2, h1, h2) {
-        let z, p1, p2;
-        let subPolygon;
+        let z1, z2, p1, p2, p3, p4;
+        let subPolygons;
         if (h1.isBelow(u) === h1.isBelow(pe1) && h2.isBelow(u) === h2.isBelow(pe2)) {
             if (isLeftTurn(pe1, v, pe2) === isLeftTurn(pe1, v, u)) {
-                [z, p1, p2] = this.getProjection(pe2, v);
-                subPolygon = this.createSubPolygon(pe1, v, z, p1, p2);
+                [z1, p1, p2] = this.getProjections(pe2, v);
+                subPolygons = this.createSubPolygon(pe1, v, z1, p1, p2);
             } else {
-                [z, p1, p2] = this.getProjection(pe1, v);
-                subPolygon = this.createSubPolygon(pe2, v, z, p1, p2);
+                [z1, p1, p2] = this.getProjections(pe1, v);
+                subPolygons = this.createSubPolygon(pe2, v, z1, p1, p2);
             }
+
         } else if (h1.isBelow(u) === h1.isBelow(pe1)) {
-            [z, p1, p2] = this.getProjection(pe1, v);
-            subPolygon = this.createSubPolygon(pe2, v, z, p1, p2);
+            [z1, p1, p2] = this.getProjections(pe1, v);
+            subPolygons = this.createSubPolygon(pe2, v, z1, p1, p2);
         } else if (h2.isBelow(u) === h2.isBelow(pe2)) {
-            [z, p1, p2] = this.getProjection(pe2, v);
-            subPolygon = this.createSubPolygon(pe1, v, z, p1, p2);
+            [z1, p1, p2] = this.getProjections(pe2, v);
+            subPolygons = this.createSubPolygon(pe1, v, z1, p1, p2);
+
         } else {
-            subPolygon = [h1, pe2, h2, pe1];
+            let [pu, pv] = this.getPerpendicularsPoints(u, v);
+            [z1, p1, p2] = this.getProjections(v, pu);
+            [z2, p3, p4] = this.getProjections(v, pv);
+            subPolygons = [this.createSubPolygon(pe1, v, z1, p1, p2), this.createSubPolygon(pe2, v, z2, p3, p4)];
         }
-        return subPolygon;
+        return subPolygons;
     }
 
     createSubPolygon(pe, v, z, p1, p2) {
@@ -129,23 +127,58 @@ export class ConstrainingHalfPlanes {
         }
     }
 
-    getProjection(u, v) {
-        let projections = [];
+    getProjections(u, v) {
+        let projection = [];
         const edges = this.polygon.points.map((point, i) => [point, this.polygon.points[(i + 1) % this.polygon.points.length]]);
 
         edges.forEach(([p1, p2]) => {
             if ((u.equals(p1) || v.equals(p2)) || (u.equals(p2) || v.equals(p1))) return;
             const intersection = getIntersection(u, v, p1, p2);
-            if (intersection && (projections.length === 0 || isBetween(v, projections[0], intersection))) {
-                projections = [intersection, p1, p2];
+            if (intersection) {
+                if (projection.length === 0 || isBetween(v, projection[0], intersection)) {
+                    projection = [intersection, p1, p2];
+                }
             }
         });
-        return projections;
+
+        return projection;
     }
+
+    getPerpendicularsPoints(u, v) {
+        const dx = v.x - u.x;
+        const dy = v.y - u.y;
+    
+        if (dx === 0) {
+            return [
+                new Point(v.x + 1, v.y),
+                new Point(v.x - 1, v.y) 
+            ];
+        }
+    
+        if (dy === 0) {
+            return [
+                new Point(v.x, v.y + 1),
+                new Point(v.x, v.y - 1)
+            ];
+        }
+    
+        const perpendicularSlope = -dx / dy;
+    
+        const point1X = v.x + 1;
+        const point1Y = perpendicularSlope * (point1X - v.x) + v.y;
+    
+        const point2Y = v.y + 1;
+        const point2X = (point2Y - v.y) / perpendicularSlope + v.x;
+    
+        return [
+            new Point(point1X, point1Y), // Premier point
+            new Point(point2X, point2Y)  // Second point
+        ];
+    }    
     
     draw(p) {
         this.halfPlanes.forEach(plane => {
-            plane.draw(p); // Utiliser la méthode draw de HalfPlane qui inverse les coordonnées y
+            plane.draw(p); // Use the draw method of HalfPlane which inverts the y-coordinates
         });
     }
 }
