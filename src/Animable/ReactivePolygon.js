@@ -2,19 +2,22 @@ import {Polygon} from "../Polygon.js";
 import {Point, det, isRightTurn} from "../Point.js";
 
 export class ReactivePolygon {
-    constructor(points = [], closed = false) {
+    constructor(points = [], closed = false, color = [160, 220, 120]) {
         this.vertices = points;
         this.closed = closed;
         this.perimeter = 0;
+        this.color = color;
+    }
+
+    setColor(color) {
+        this.color = color;
     }
 
     add(vertex) {
         if (this.closed) return;
         if (this.length() < 3) {
             this.vertices.push(vertex);
-        } else if (this.isCutting(vertex)) {
-            //textToDisplay = "Do not cut an edge";
-        } else if (!this.closed) {
+        } else if (!this.isCutting(vertex) && !this.closed) {
             this.vertices.push(vertex);
         }
     }
@@ -24,10 +27,12 @@ export class ReactivePolygon {
     }
 
     close(p) {
+        if (this.isCutting(new Point(p.mouseX, -p.mouseY))) return false;
         this.closed = p.millis();
         for (let i = 0; i < this.length() - 1; i++) {
             this.perimeter += p.dist(this.get(i).x, -this.get(i).y, this.get(i + 1).x, -this.get(i + 1).y);
         }
+        return true;
     }
 
     isClosed() {
@@ -57,14 +62,6 @@ export class ReactivePolygon {
         if (isRightTurn(pMinus, p, pPlus)) {
             this.vertices.reverse();
         }
-    }
-
-
-    leftmostPoint() {
-        return this.vertices.reduce(
-            (min, current) => (current.x < min.x ? current : min),
-            this.vertices[0]
-        );
     }
 
     downmostPoint() {
@@ -133,7 +130,7 @@ export class ReactivePolygon {
     drawEnded(p, observer) {
         let t = p.min(1, (p.millis() - this.closedInstant()) / 1000); // 0 <= t <= 1
 
-        p.fill(160, 220, 120);
+        p.fill(this.color[0], this.color[1], this.color[2]);
         p.beginShape();
 
         if (t < 1) {
@@ -168,7 +165,7 @@ export class ReactivePolygon {
     }
 
     draw(p){
-        p.fill(160, 220, 120, this.alpha);
+        p.fill(this.color[0], this.color[1], this.color[2], this.alpha);
         p.stroke(0, 0, 0, this.alpha)
         p.beginShape();
         for (let v of this.vertices) {
@@ -186,6 +183,8 @@ export class ReactivePolygon {
     }
 
     toPolygon(){
-        return new Polygon(this.vertices, true)
+        let p = new Polygon([...this.vertices], true);
+        p.toCounterClockwiseOrder();
+        return p;
     }
 }

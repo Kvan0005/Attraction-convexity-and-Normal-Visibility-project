@@ -50,11 +50,12 @@ class Sketch{
     notify(obj){
         switch(this.phase) {
             case Phase.Draw: {
-                this.phase = this.phase.next(); break;
+                this.polygon.toCounterClockwiseOrder();
+                this.phase = this.phase.next();
+                break;
             }
             case Phase.Explanation: {
                 this.phase = this.phase.next();
-                
                 break;
             }
             case Phase.ImagineAnt: {
@@ -71,12 +72,9 @@ class Sketch{
     draw(){
         switch (this.phase) {
             case Phase.Draw: {
-                this.polygon.drawAnimated(this.p, this); 
-                this.isAttractionConvex = null;
+                this.polygon.drawAnimated(this.p, this);
                 break;}
             case Phase.Explanation: {
-                this.polygon.toCounterClockwiseOrder();
-                this.isAttractionConvex = Attraction.compute(this.polygon.toPolygon())
                 this.polygon.draw(this.p);
                 if (this.isAttractionConvex) this.dialog1.draw(this.p, this);
                 else this.dialog1negative.draw(this.p, this);
@@ -104,8 +102,13 @@ class Sketch{
         return this.polygon.isNearFirstVertex(p);
     }
 
-    closePolygon(p){
-        this.polygon.close(p);
+    tryClosePolygon(p){
+        if (this.polygon.close(p)) {
+            this.isAttractionConvex = Attraction.compute(this.polygon.toPolygon());
+            if (this.isAttractionConvex === false) {
+                this.polygon.setColor([255, 126, 121]);
+            }
+        }
     }
 
     addPoint(point){
@@ -146,7 +149,7 @@ const s = (p) => {
 
         if (sketch.isNearFirstVertexPolygon(p)) {
             p.redraw();
-            sketch.closePolygon(p)
+            sketch.tryClosePolygon(p)
         } else {
             sketch.addPoint(new Point(p.mouseX, -p.mouseY));
         }
