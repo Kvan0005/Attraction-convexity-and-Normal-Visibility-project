@@ -49,7 +49,7 @@
             </p>
 
             <h2>Equivalence between the two classes</h2>
-            To prove equivalence between the two classes, we must concider the points <span>\(q'\)</span>, that are
+            To prove equivalence between the two classes, we must consider the points <span>\(q'\)</span>, that are
             not attract to <span>\(p\)</span> (the <a href="../../html/Glossary/index.html#dead-point">dead points</a>).
             A dead point can appear in two cases :
 
@@ -93,7 +93,7 @@
             </p>
 
             <figure>
-                <img src="../../images/proof1.png" alt="pq' perpendicular edge"  style="width:100%;max-width:300px;display: block; margin: auto;">
+                <img src="../../images/proof1.png" alt="PQ' segment touching the neighbour of p"  style="width:100%;max-width:300px;display: block; margin: auto;">
             </figure>
 
             <p>
@@ -105,7 +105,7 @@
             </p>
 
             <figure>
-                <img src="../../images/proof2.png" alt="convex vertex dead point" style="width:100%;max-width:300px;display: block; margin: auto;">
+                <img src="../../images/proof2.png" alt="A cone intersecting edges" style="width:100%;max-width:300px;display: block; margin: auto;">
             </figure>
 
             <p>
@@ -114,22 +114,68 @@
             </p>
 
             <h2>Construction of an algorithm that recognize attraction-convex polygons</h2>
-            <h2>Computation</h2>
+            Let's define intuitively some new definitions with the following figure :
+
+            <div class="image-container">
+                <figure>
+                    <img src="../../images/pocket2.png" alt="pockets definitions" style="width:100%;max-width:800px;display: block; margin: auto;">
+                </figure>
+            </div>
+
             <p>
+                More precisely, a pocket lid is an edge of the <a href="../../html/Glossary/index.html#convex-hull">Convex Hull</a> from two non-adjacent vertices.
+                The pocket chain is the original path between these two vertices, note that we always consider the pocket chain and the pocket lid in counterclockwise order.
+                A pocket polygon is the polygon formed by these two objects.
+            </p>
+
+            <p>
+                A last definition to show is the definition of terrain polygons. In a very informal way but visual, we can describe
+                those polygons as mountain-shaped polygons. More formally, a terrain polygon is a
+                <a href="../../html/Glossary/index.html#monotone-polygon">monotone polygon</a> <span>\(Q\)</span> with an edge <span>\(e\)</span> such that :
+            </p>
+            <ul>
+                <li> (1) <span>\(Q\)</span> is monotone with respect to the direction of <span>\(e\)</span> </li>
+                <li> (2) <span>\(e\)</span> is one of the two <a href="../../html/Glossary/index.html#monotone-polygon">monotone chains</a> of <span>\(Q\)</span></li>
+            </ul>
+
+            <div class="image-container">
+                <figure>
+                    <img src="../../images/terrain.png" alt="terrain" style="width:100%;max-width:300px;display: block; margin: auto;">
+                    <figcaption> A terrain polygon, monotone with respect to <span>\(e\)</span></figcaption>
+                </figure>
+            </div>
+
+            <p>
+                Hence, we call a pocket chain a terrain with respect to its lid if the corresponding pocket polygon
+                is a terrain with its lid as distinguished edge.<br/>
+            </p>
+
+            <p>
+                We can observe some interesting properties from latest definitions : Let's observe an attraction convex polygon and a non attraction convex one.
+            </p>
+
+            <div class="image-container">
+                <figure>
+                    <img src="../../images/pocket_property1.png" alt="property1"  style="width:100%;max-width:300px;">
+                    <figcaption>(1)</figcaption>
+                </figure>
+                <figure>
+                    <img src="../../images/pocket_property2.png" alt="property2"  style="width:100%;max-width:300px;">
+                    <figcaption>(2)</figcaption>
+                </figure>
+            </div>
+
+
+            <!--<p>
                 As we have seen, the two classes of polygons are equivalent, using the normal visibility property to verify if a polygon is attraction-convex.
                 which is (TODO time complexity) to compute. The main property of a normal visible polygon is that the normal to each edge (note that the normal must intersect the edge) of the polygon 
                 does not intersect with any other edge of the polygon.
-            </p>
+            </p>-->
             <h3>Convex Hull</h3>
             <p>
                 The convex hull of a polygon is the smallest convex polygon that contains all the points of the polygon. Normaly we must use a heavy algorithm to compute the convex hull of a polygon, but in our case given that the polygon is a simple polygon, or a polyline, the convex hull can be computed using the Melkman algorithm. which uses a deque to store the vertices of the convex hull. while iteratively adding new vertices of the polyline to the deque, if it detects that the new vertex is not part of the convex hull, it will remove the vertices using rightmost side and leftmost side of the deque to keep the convexity of the hull at each step.
             </p> 
-            <div class="image-container">
-                <figure>
-                <img src="../../images/placeholder.png" alt="pocket chain" width="300">
-                <figcaption>Example of a pocket chain</figcaption>
-                </figure>
-            </div>
+
             <h3>Terrain property of edges</h3>
             <p>
                 Afterward we by using the convex hull of the polygon, we can determine the different pocket polygons of the polygon, which can be found using the symetric difference between the convex hull and the polygon. This will allow us to verify the lemma that states:
