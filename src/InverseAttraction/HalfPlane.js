@@ -13,7 +13,7 @@ export class HalfPlane {
     }
 
     isOn(p) {
-        return this.h.isAbove(p) === this.h.isBelow(p);
+        return this.h.isOn(p);
     }
 
     getIntersection(p1, p2) {
@@ -32,14 +32,11 @@ export class ConstrainingHalfPlanes {
         this.spt = spt;
         this.chp = {};
         this.straightLines = this.computePlanes();
-        console.log(this.straightLines);
-        console.log(this.chp);
     }
 
     computePlanes() {
         const straightLines = [];
         console.log(this.polygon.points);
-        let j = 0;
         this.spt.tree.forEach(([u, v]) => {
 
             let i = this.polygon.points.indexOf(v);
@@ -58,7 +55,7 @@ export class ConstrainingHalfPlanes {
     determineSubPolygon(u, v, pe1, pe2, h1, h2) {
         let z1, z2, p1, p2, p3, p4;
         let subPolygons;
-        let associatedLine = [];
+        let associatedLine;
         if (h1.isBelow(u) === h1.isBelow(pe1) && h2.isBelow(u) === h2.isBelow(pe2)) {
             if (isLeftTurn(pe1, v, pe2) === isLeftTurn(pe1, v, u)) {
                 [z1, p1, p2] = this.getProjections(pe2, v);
@@ -88,16 +85,22 @@ export class ConstrainingHalfPlanes {
             const hp2 = new HalfPlane(new StraightLine(u, v), pe1);
             associatedLine = [hp1, hp2];
         }
-        this.fillSubPolygons(subPolygons);
-        return [subPolygons, associatedLine];
+         
+        return [this.fillSubPolygons(subPolygons), associatedLine];
     }
     
     fillSubPolygons(subPolygons) {
-        if (subPolygons.length === 2) {
-            return [this.fillSubPolygons(subPolygons[0]), this.fillSubPolygons(subPolygons[1])];
-        }
         let i = this.polygon.points.indexOf(subPolygons[0]);
         let j = this.polygon.points.indexOf(subPolygons[1]);
+        if (subPolygons.length === 2) {
+            return [this.fillSubPolygons(subPolygons[0]), this.fillSubPolygons(subPolygons[1])];
+        } else if (subPolygons[0].equals(subPolygons[subPolygons.length - 1])){
+            subPolygons.pop();
+            if (i > j) {
+                subPolygons = subPolygons.reverse();
+            }
+            return subPolygons;
+        }
         let k = this.polygon.points.indexOf(subPolygons[3]);
         if (i > j) {
             k = i;

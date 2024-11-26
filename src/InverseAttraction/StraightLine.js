@@ -27,6 +27,10 @@ export class StraightLine {
         return this.a * point.x + this.b * point.y > this.c;
     }
 
+    isOn(p) {
+        return this.isAbove(p) === this.isBelow(p);
+    }
+
     getIntersection(p3, p4) {
 
         const a1 = (this.p2.y - this.p1.y) / (this.p2.x - this.p1.x);

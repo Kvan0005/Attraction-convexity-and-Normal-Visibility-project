@@ -47,7 +47,7 @@ export class Free {
         for (const element of intersections) {
             const [intersection, p1, p2] = element;
             intersectionAndFollowingPoints.push(intersection); 
-            if (intersection === p1 || !associatedLine.isIn(p1)) {
+            if (intersection.equals(p1) || !associatedLine.isIn(p1)) {
                 intersectionAndFollowingPoints.push(p1);
             } else {
                 intersectionAndFollowingPoints.push(p2);
@@ -59,25 +59,26 @@ export class Free {
             if (!associatedLine.isIn(element) || associatedLine.isOn(element)) {
                 let j = intersectionAndFollowingPoints.findIndex(point => point.equals(element)) - 1;
                 if (j < 0) {
-                    domain.push(element);
+                    if (domain.length === 0 || !domain[domain.length - 1].equals(element)) {
+                        domain.push(element);
+                    }
                 } else if (lastIntersection) {
                     let tmp = intersectionAndFollowingPoints[j]
                     domain.push(tmp);
-                    if (tmp !== element) {
+                    if (!tmp.equals(element)) {
                         domain.push(element);
                     }
                     lastIntersection = false;
                 } else {
                     let tmp = element;
                     domain.push(tmp);
-                    if (tmp !== intersectionAndFollowingPoints[j]) {
+                    if (!tmp.equals(intersectionAndFollowingPoints[j])) {
                         domain.push(intersectionAndFollowingPoints[j]);
                     }
                     lastIntersection = true;
                 }
             }
         }
-        console.log(domain);
         return domain;
     }
 

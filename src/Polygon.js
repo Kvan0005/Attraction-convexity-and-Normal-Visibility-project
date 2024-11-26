@@ -1,7 +1,11 @@
-import {det, getTurn, isLeftTurn, isRightTurn} from "./Point.js";
+import {det, getTurn, isLeftTurn, isRightTurn, Point} from "./Point.js";
 import {DIRECTION} from "./Const.js";
 import {ConvexHull} from "./ConvexHull.js";
 import {Deque} from "./Deque.js";
+import {getIntersection, isBetween} from "./InverseAttraction/SPM.js";
+import { HalfPlane } from "./InverseAttraction/HalfPlane.js";
+import { StraightLine } from "./InverseAttraction/StraightLine.js";
+
 export class Polygon {
     constructor(points, closed) {
         if (closed === undefined) {closed = false; }
@@ -216,5 +220,135 @@ export class Polygon {
     rotate() {
         let first = this.points.shift();
         this.points.push(first);
+    }
+
+    intersectWith(otherPolygon, startingPoint) {
+        let currentPoint = startingPoint;
+        let result = [currentPoint];
+        let polygonA = this;
+        let polygonB = otherPolygon;
+        let previous = null;
+        let i = 0;
+        console.log("Starting Point: ", startingPoint);
+        while (true) {
+            let nextPointA = this.nextPoint(currentPoint, polygonA);
+            let nextPointB = this.nextPoint(currentPoint, polygonB);
+            let secondNextA = this.nextPoint(nextPointA, polygonA);
+            let secondNextB = this.nextPoint(nextPointB, polygonB);
+            console.log("Current Point: ", currentPoint);
+            console.log(nextPointA, nextPointB, previous);
+    
+            // Si les prochains sommets sont les mêmes, continuer
+            if (nextPointA === nextPointB) {
+                previous = currentPoint
+                currentPoint = nextPointA;
+                result.push(currentPoint);
+            } else {
+
+                let closestPoint = this.nextInPoint(currentPoint, [nextPointA, nextPointB], [secondNextA, secondNextB], previous, [polygonA, polygonB]);
+                console.log("Closest Point: ", closestPoint);
+    
+                if (closestPoint === nextPointA) {
+                    previous = currentPoint;
+                    currentPoint = nextPointA;
+                } else {
+                    previous = currentPoint;
+                    currentPoint = nextPointB;
+                    [polygonA, polygonB] = [polygonB, polygonA];
+                }
+                result.push(currentPoint);
+                    
+            }
+    
+            // Si nous revenons au point de départ, terminer
+            if (currentPoint === startingPoint || i === 20) break;
+            i++;
+        }
+    
+        return new Polygon(result, true);
+    }
+
+    // Trouver le prochain sommet dans le polygone
+    nextPoint(currentPoint, polygon) {
+        let currentIndex = polygon.points.findIndex(point => point.equals(currentPoint));
+        if (currentIndex === -1) {
+            for (let index = 0; index < polygon.points.length; index++) {
+                const point = polygon.points[index];
+                const point2 = polygon.points[(index + 1) % polygon.points.length];
+                const sl = new StraightLine(point, point2);
+                if (sl.isOn(currentPoint)) {
+                    return point2;
+                }
+            }
+        }
+        return polygon.points[(currentIndex + 1) % polygon.points.length];
+    }
+
+    previousPoints(currentPoint, polygon) {
+        let currentIndex = polygon.points.findIndex(point => point.equals(currentPoint));
+        if (currentIndex === -1) {
+            for (let index = 0; index < polygon.points.length; index++) {
+                const point = polygon.points[index];
+                const point2 = polygon.points[(index - 1) % polygon.points.length];
+                const sl = new StraightLine(point, point2);
+                if (sl.isOn(currentPoint)) {
+                    return point2;
+                }
+            }
+        }
+        return polygon.points[(currentIndex - 1) % polygon.points.length];
+    }
+    
+    // Trouver le point le plus proche parmi un ensemble
+    nextInPoint(referencePoint, nextPoints, secondNexts, previousPoint, polygons) {
+        // let h1 = new HalfPlane(new StraightLine(referencePoint, nextPoints[0]), previousPoints[0]);
+        // let h2 = new HalfPlane(new StraightLine(referencePoint, nextPoints[1]), previousPoints[1]);
+        // console.log(h1.isOn(nextPoints[1]), h2.isOn(nextPoints[0]), h1.isIn(nextPoints[1]), h2.isIn(nextPoints[0]), isLeftTurn(nextPoints[1], referencePoint, nextPoints[0]), isLeftTurn(nextPoints[0], referencePoint, nextPoints[1]));
+        // if (h1.isOn(nextPoints[1]) || h2.isOn(nextPoints[0])) {
+        //     return nextPoints[1];
+        // } else if (h1.isIn(nextPoints[1])) {
+        //     return nextPoints[1];
+        // } else if (h2.isIn(nextPoints[0])) {
+        //     return nextPoints[0];
+        // } else if (isLeftTurn(nextPoints[1], referencePoint, nextPoints[0])) {
+        //     return nextPoints[0];
+        // } else if (isLeftTurn(nextPoints[0], referencePoint, nextPoints[1])) {
+        //     return nextPoints[1];
+        // } else {
+        //     return nextPoints[0];
+        // }
+        if (previousPoint === null) {
+            if (isLeftTurn(this.previousPoints(referencePoint, polygons[0]), referencePoint, nextPoints[0])) {
+                return nextPoints[0];
+            } else if (isLeftTurn(this.previousPoints(referencePoint, polygons[1]), referencePoint, nextPoints[1])) {
+                return nextPoints[1];
+            }
+        }
+        const lft1 = isLeftTurn(previousPoint, referencePoint, nextPoints[0]);
+        const lft2 = isLeftTurn(previousPoint, referencePoint, nextPoints[1]);
+        const left3 = isLeftTurn(referencePoint, nextPoints[0], secondNexts[0]);
+        const left4 = isLeftTurn(referencePoint, nextPoints[1], secondNexts[1]);
+        const lft5 = isLeftTurn(secondNexts[1], nextPoints[0], secondNexts[0]);
+        console.log(lft1, lft2, left3, left4, lft5);
+        if (lft1 && lft2) {
+            if (left3 && left4) {
+                if (lft5) {
+                    return nextPoints[1];
+                } else {
+                    return nextPoints[0];
+                }
+            }
+            if (left3) {
+                return nextPoints[0];
+            } else if (left4) {
+                return nextPoints[1];
+            }
+        } else  if (lft1) {
+            return nextPoints[0];
+        } else if (lft2) {
+            return nextPoints[1];
+        }
+            
+        return nextPoints[0];
     }
 }
