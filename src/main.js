@@ -4,12 +4,12 @@ import {PocketPolygon, generatePocketChain} from './PocketPolygon.js'; // Import
 
 var poly = new Polygon(); // Create a new Polygon object
 var ch;
-var clearButton;
-var computeButton;
 var display_pocket_chain_projection_on_lid = false;
 var text_to_display = "?"
 var data_pocket_chain_on_lid = [];
 var canvas;
+var show_convex_hull = false;
+var buttonList = [];
 const s = (p) => {
     p.setup = function () {
         const parent = document.getElementById('toolContainer'); // Récupérer le parent
@@ -21,15 +21,27 @@ const s = (p) => {
         p.stroke("white");
         p.textSize(40);
         p.textAlign(p.CENTER, p.TOP);
-        clearButton = generateButton(p.width / 2 - 50, p.height - 50, "Clear", reset_points, p);
-        computeButton = generateButton(p.width / 2 + 50, p.height - 50, "Compute", compute, p);
-       generateButton(p.width / 2 - 50, p.height - 100, "Display Pocket Chain Projection on Lid", () => {
+        let height = p.height + 50;
+        buttonList.push(generateButton(p.width / 2 + 170 , height, "Compute", compute, p));
+        buttonList.push(generateButton(p.width / 2 + 185, height , "Show convex hull", () => {
+            show_convex_hull = !show_convex_hull;
+
+        }, p));
+        buttonList.push(generateButton(p.width / 2 + 185, height , "Show projection", () => {
             display_pocket_chain_projection_on_lid = !display_pocket_chain_projection_on_lid;
-        }, p);
+        }, p));
+        buttonList.push(generateButton(p.width / 2 + 255, height , "Clear", reset_points, p));
+        let width = p.width / 2 + 80;
+        buttonList.forEach(element => {
+            //place the button (element) to the right of the prevous one
+            element.position(width, height);
+            width += element.width +40;
+        });
     }
 
     function generateButton(x, y, text, callback, p) {
         let button = p.createButton(text);
+        button.width = text.length *5;
         button.position(x, y);
         button.mousePressed(callback);
         return button;
@@ -41,6 +53,7 @@ const s = (p) => {
         data_pocket_chain_on_lid = [];
         ch = null;
         text_to_display = "?";
+        show_convex_hull = false;
     }
 
     function compute() {
@@ -155,7 +168,7 @@ const s = (p) => {
         p.text(text_to_display, p.width / 2, 10);
         p.stroke("black");
         poly.draw(p);
-        if (ch) {
+        if (ch && show_convex_hull) {
             ch.draw(p);
         }
         if (data_pocket_chain_on_lid.length === 0 || !display_pocket_chain_projection_on_lid) return;
@@ -173,11 +186,13 @@ const s = (p) => {
     }
 
     p.windowResized = function () {
-        let xCompute = p.width / 2 - computeButton.width - 5;
-        let xClear = p.width / 2 - clearButton.width + 5;
-        let y = p.height - 50;
-        computeButton.position(xCompute - 30, y);
-        clearButton.position(xClear + 30, y);
+        let height = p.height - 100;
+        let width = p.width / 2 -30;
+        buttonList.forEach(element => {
+            //place the button (element) to the right of the prevous one
+            element.position(width, height);
+            width += element.width +40;
+        });
         p.resizeCanvas(p.windowWidth, p.windowHeight);
     }
 }
