@@ -3,6 +3,8 @@ export class SPT {
         this.polygon = polygon;
         this.source = source;
         this.tree = this.computeSPT();
+        this.limitDraw = false;
+        this.drawLine = 0;
     }
 
     computeSPT() {
@@ -17,12 +19,15 @@ export class SPT {
             queue.push(point);
         });
 
+        const sortTreePoints = [];
+
         distances.set(this.source, 0);
         queue.push(this.source);
 
         while (queue.length > 0) {
             queue.sort((a, b) => distances.get(a) - distances.get(b));
             const u = queue.shift();
+            sortTreePoints.push(u);
 
             points.forEach(v => {
                 if (u !== v && !this.polygon.isCutting2(u, v)) {
@@ -36,7 +41,7 @@ export class SPT {
         }
 
         const tree = [];
-        points.forEach(point => {
+        sortTreePoints.forEach(point => {
             if (previous.get(point)) {
                 tree.push([previous.get(point), point]);
             }
@@ -61,11 +66,26 @@ export class SPT {
         return points;
     }
 
+    switchLimitDrawing() {
+        this.limitDraw = !this.limitDraw;
+    }
+
+    setDrawLine(lineNb) {
+        this.drawLine = lineNb;
+    }
+
     draw(p) {
         p.stroke("red");
         p.strokeWeight(1);
-        this.tree.forEach(([u, v]) => {
-            p.line(u.x, -u.y, v.x, -v.y);
-        });
+
+        if (this.limitDraw) {
+            this.tree.slice(0, this.drawLine).forEach(([u, v]) => {
+                p.line(u.x, -u.y, v.x, -v.y);
+            });
+        } else {
+            this.tree.forEach(([u, v]) => {
+                p.line(u.x, -u.y, v.x, -v.y);
+            });
+        }
     }
 }

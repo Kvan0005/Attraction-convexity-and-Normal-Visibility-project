@@ -46,7 +46,7 @@ export class ConstrainingHalfPlanes {
             let h2 = perpendicularFromTwoPoints(pe2, v, v);
             straightLines.push(h1, h2);
 
-            const key = `${v.x},${v.y}`;
+            const key = JSON.stringify({x: v.x, y: v.y});
             this.chp[key] = this.determineSubPolygon(u, v, pe1, pe2, h1, h2);
         });
         return straightLines;

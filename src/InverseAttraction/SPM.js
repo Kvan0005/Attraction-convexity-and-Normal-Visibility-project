@@ -2,11 +2,15 @@ import { Point, isRightTurn } from "../Point.js";
 import { Polygon } from "../Polygon.js";
 
 export class SPM {
-    constructor(polygon, spt) {
+    constructor(polygon, spt, point) {
         this.polygon = polygon;
+        this.p = point;
         this.spt = spt;
         this.projections = this.computeProjections();
         this.regions = this.computeRegions();
+        console.log(this.regions);
+        this.limitDraw = false;
+        this.drawRegion = 0;
     }
 
     computeRegions() {
@@ -14,13 +18,13 @@ export class SPM {
         const points = this.insertProjections();
 
         let i = 0;
-        regions[i] = new Polygon(this.getNeighbors(points[0], points), true);
+        regions[JSON.stringify({x: this.p.x, y: this.p.y})] = new Polygon(this.getNeighbors(points[0], points), true);
 
         Object.keys(this.projections).forEach(key => {
             i++;
             const [, v] = JSON.parse(key);
             const intersection = this.projections[key][0];
-            regions[i] = new Polygon(this.getNeighbors(new Point(v.x, v.y), points, intersection), true);
+            regions[JSON.stringify({x: v.x, y: v.y})] = new Polygon(this.getNeighbors(new Point(v.x, v.y), points, intersection), true);
         });
         return regions;
     }
@@ -90,6 +94,14 @@ export class SPM {
         });
         return projections;
     }
+
+    switchLimitDrawing() {
+        this.limitDraw = !this.limitDraw;
+    }
+
+    setDrawRegion(regionNb) {
+        this.drawRegion = regionNb;
+    }
     
     draw(p) {
         const colors = [
@@ -103,16 +115,27 @@ export class SPM {
         
         p.stroke("blue");
         p.strokeWeight(1);
-        
-        Object.values(this.regions).forEach((region, index) => {
-            const color = colors[index % colors.length];
-            p.fill(...color);
+
+        if (this.limitDraw) {
+            const region = this.regions[Object.keys(this.regions)[this.drawRegion]];
+            p.fill(colors[this.drawRegion % colors.length]);
             p.beginShape();
             for (const point of region.points) {
                 p.vertex(point.x, -point.y);
             }
             p.endShape(p.CLOSE);
-        });
+
+        } else {
+            Object.values(this.regions).forEach((region, index) => {
+                const color = colors[index % colors.length];
+                p.fill(...color);
+                p.beginShape();
+                for (const point of region.points) {
+                    p.vertex(point.x, -point.y);
+                }
+                p.endShape(p.CLOSE);
+            });
+        }
     }
 }
 
