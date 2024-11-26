@@ -28,14 +28,14 @@ export function det(p1, p2, p3) {
     return (p2.x - p1.x) * (p3.y - p2.y) - (p2.y - p1.y) * (p3.x - p2.x);
 }
 
-export function getTurn(p1, p2, p3) {
+export function getTurn(p1, p2, p3, epsilon = 1e-10) {
     /*
     Returns the direction of the turn
     */
     let cross = det(p1, p2, p3);
-    if (cross > 0) {
+    if (cross > epsilon) {
         return DIRECTION.LEFT;
-    } else if (cross < 0) {
+    } else if (cross < -epsilon) {
         return DIRECTION.RIGHT;
     } else {
         return DIRECTION.STRAIGHT;

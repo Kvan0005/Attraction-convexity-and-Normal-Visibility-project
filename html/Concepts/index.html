@@ -64,6 +64,37 @@
                     when <span>\(pq'\)</span> is exterior to the polygon in the neighborhood of <span>\(q'\)</span>.</figcaption>
                 </figure>
             </div>
+            either when the point <span>\(q'\)</span> in the interior of an edge such that <span>\(pq'\)</span> is perpendicular to the edge which 
+            can result of the point <span>\(q\)</span> sliding along the edge to reach <span>\(p\)</span>. 
+            Or when the point <span>\(q'\)</span> is a convex vertex of the polygon.
+
+            <p>
+                The proof of the equivalence between the two classes is based on the fact that the existance of a dead points
+                in the first class (Attraction-convex polygons) implies the existance of a perpendicular ray that intersects the polygon. <!-- add the thm ?-->
+            </p>
+            
+            <h2>Computation</h2>
+            <p>
+                As we have seen, the two classes of polygons are equivalent, using the normal visibility property to verify if a polygon is attraction-convex.
+                which is (TODO time complexity) to compute. The main property of a normal visible polygon is that the normal to each edge (note that the normal must intersect the edge) of the polygon 
+                does not intersect with any other edge of the polygon.
+            </p>
+            <h3>Convex Hull</h3>
+            <p>
+                The convex hull of a polygon is the smallest convex polygon that contains all the points of the polygon. And it can be trivially show that the convex hull of a normal visible polygon.
+                thus by calculating the convex hull of the polygon, we can discard all the edges which are in the intersection of the convex hull and the polygon.        
+            </p> 
+            <h3>Terrain property of edges</h3>
+            <p>
+                
+            </p>
+            <div class="image-container">
+                <figure>
+                <img src="../../images/placeholder.png" alt="pocket chain" width="300">
+                <figcaption>Example of a pocket chain</figcaption>
+                </figure>
+            </div>
+
 
             <h3>Attraction-convex <span>\(\Rightarrow\)</span> normally visible</h3>
             <!--Knowing that, it is easy to explain that an attraction-convex polygon is normally visible :-->

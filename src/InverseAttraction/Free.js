@@ -4,8 +4,16 @@ export class Free {
     constructor(constrainingHalfPlane) {
         this.subPolygons = [];
         this.associatedLines = [];
+        this.freeRegions = this.computeFreeRegions(constrainingHalfPlane);
+        this.limitDraw = false;
+        this.drawRegion = 0;
+    }
 
-        Object.values(constrainingHalfPlane.chp).forEach(chp => {
+    computeFreeRegions(constrainingHalfPlane) {
+        const freeRegions = {};
+
+        Object.keys(constrainingHalfPlane.chp).forEach(key => {
+            const chp = constrainingHalfPlane.chp[key];
             const subPolygon = chp[0];
             const associatedLines = chp[1];
 
@@ -14,23 +22,17 @@ export class Free {
                 this.associatedLines.push(associatedLines[0]);
                 this.subPolygons.push(subPolygon[1]);
                 this.associatedLines.push(associatedLines[1]);
+                const domain1 = this.computeDomain(subPolygon[0], associatedLines[0]);
+                const domain2 = this.computeDomain(subPolygon[1], associatedLines[1]);
+                freeRegions[key] = [new Polygon(domain1, true), new Polygon(domain2, true)];
             } else {
                 this.subPolygons.push(subPolygon);
                 this.associatedLines.push(associatedLines);
+                const domain = this.computeDomain(subPolygon, associatedLines);
+                freeRegions[key] = new Polygon(domain, true);
             }
         });
-        this.freeRegions = this.computeFreeRegions();
-    }
 
-    computeFreeRegions() {
-        const freeRegions = [];
-
-        for (let i = 0; i < this.subPolygons.length; i++) {
-            const subPolygon = this.subPolygons[i];
-            const associatedLine = this.associatedLines[i];
-            const domain = this.computeDomain(subPolygon, associatedLine);
-            freeRegions.push(new Polygon(domain, true));
-        }
         return freeRegions;
     }
 
@@ -47,7 +49,7 @@ export class Free {
         for (const element of intersections) {
             const [intersection, p1, p2] = element;
             intersectionAndFollowingPoints.push(intersection); 
-            if (intersection === p1 || !associatedLine.isIn(p1)) {
+            if (intersection.equals(p1) || !associatedLine.isIn(p1)) {
                 intersectionAndFollowingPoints.push(p1);
             } else {
                 intersectionAndFollowingPoints.push(p2);
@@ -59,25 +61,26 @@ export class Free {
             if (!associatedLine.isIn(element) || associatedLine.isOn(element)) {
                 let j = intersectionAndFollowingPoints.findIndex(point => point.equals(element)) - 1;
                 if (j < 0) {
-                    domain.push(element);
+                    if (domain.length === 0 || !domain[domain.length - 1].equals(element)) {
+                        domain.push(element);
+                    }
                 } else if (lastIntersection) {
                     let tmp = intersectionAndFollowingPoints[j]
                     domain.push(tmp);
-                    if (tmp !== element) {
+                    if (!tmp.equals(element)) {
                         domain.push(element);
                     }
                     lastIntersection = false;
                 } else {
                     let tmp = element;
                     domain.push(tmp);
-                    if (tmp !== intersectionAndFollowingPoints[j]) {
+                    if (!tmp.equals(intersectionAndFollowingPoints[j])) {
                         domain.push(intersectionAndFollowingPoints[j]);
                     }
                     lastIntersection = true;
                 }
             }
         }
-        console.log(domain);
         return domain;
     }
 
@@ -94,6 +97,14 @@ export class Free {
         return intersections;
     }
 
+    switchLimitDrawing() {
+        this.limitDraw = !this.limitDraw;
+    }
+
+    setDrawRegion(regionNb) {
+        this.drawRegion = regionNb;
+    }
+
     draw(p) {
         const colors = [
             [100, 100, 250, 50],
@@ -106,15 +117,31 @@ export class Free {
         
         p.stroke("blue");
         p.strokeWeight(1);
-        
-        Object.values(this.freeRegions).forEach((region, index) => {
-            const color = colors[index % colors.length];
+
+        if (this.limitDraw) {
+            const color = colors[this.drawRegion % colors.length];
+            let r = this.freeRegions[Object.keys(this.freeRegions)[this.drawRegion]];
+            if (Array.isArray(r)) {
+                r = r[0];
+            }
             p.fill(...color);
             p.beginShape();
-            for (const point of region.points) {
+            for (const point of r.points) {
                 p.vertex(point.x, -point.y);
             }
             p.endShape(p.CLOSE);
-        });
+
+        } else {
+            Object.values(this.freeRegions).forEach((region, index) => {
+                const color = colors[index % colors.length];
+                p.fill(...color);
+                p.beginShape();
+                for (const point of region.points) {
+                    p.vertex(point.x, -point.y);
+                }
+                p.endShape(p.CLOSE);
+            });
+        }
+        
     }
 }
