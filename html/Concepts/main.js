@@ -68,10 +68,10 @@ const s = (p) => {
         p.translate(p.width / 2, p.height / 2);
         p_point.draw(p);
         polygon.draw(p);
-        //spt.draw(p);
+        spt.draw(p);
         spm.draw(p);
-        //chp.draw(p);
-        //free.draw(p);
+        chp.draw(p);
+        free.draw(p);
     }
 
     p.windowResized = function () {
