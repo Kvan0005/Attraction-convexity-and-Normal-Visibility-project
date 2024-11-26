@@ -55,23 +55,65 @@
 
             <div class="image-container">
                 <figure>
-                <img src="../../images/deadpoint1.png" alt="pq' perpendicular dead point" width="300">
-                <figcaption>in a <span>\(pq'\)</span> perpendicular dead point. </figcaption>
+                <img src="../../images/deadpoint1.png" alt="pq' perpendicular edge"  style="width:100%;max-width:300px;">
+                <figcaption>(1) In a <span>\(pq'\)</span> perpendicular edge. </figcaption>
                 </figure>
                 <figure>
-                <img src="../../images/deadpoint2.png" alt="convex vertex dead point" width="300">
-                <figcaption>or in a Convex vertex dead point.</figcaption>
+                <img src="../../images/deadpoint2.png" alt="convex vertex dead point"  style="width:100%;max-width:300px;">
+                <figcaption>(2) or in a <a href="../../html/Glossary/index.html#convex-vertex">Convex vertex</a> <br/>
+                    when <span>\(pq'\)</span> is exterior to the polygon in the neighborhood of <span>\(q'\)</span>.</figcaption>
                 </figure>
             </div>
-            either when the point <span>\(q'\)</span> in the interior of an edge such that <span>\(pq'\)</span> is perpendicular to the edge which 
-            can result of the point <span>\(q\)</span> sliding along the edge to reach <span>\(p\)</span>. 
-            Or when the point <span>\(q'\)</span> is a convex vertex of the polygon.
+
+            <h3>Attraction-convex <span>\(\Rightarrow\)</span> normally visible</h3>
+            <!--Knowing that, it is easy to explain that an attraction-convex polygon is normally visible :-->
+            <p>
+                By absurd.<br/>
+                Let's consider a point <span>\(q \in \)</span> edge <span>\(e\)</span> of <span>\(P\)</span> which is attraction-convex
+                and not normally visible. the normal from <span>\(q\)</span> must touch another point <span>\(q'\)</span> in order to not be attraction-convex.
+                But it means that <span>\(q'\)</span> is a type (1) dead point, then <span>\(P\)</span> was not attraction-convex, which is a contradiction.
+            </p>
+
+            <h3>Attraction-convex <span>\(\Leftarrow\)</span> normally visible</h3>
+            <p>
+                Let's prove the contrapositive, <span>\(\neg\)</span> Attraction-convex <span>\(\Rightarrow \neg\)</span> normally visible<br/>
+            Since the polygon is not attraction-convex, there exists a
+            <a href="../../html/Glossary/index.html#dead-point">dead point</a> <span>\(q'\)</span>. Let the attractive point be <span>\(p\)</span>.<br/>
+            We saw that <a href="../../html/Glossary/index.html#dead-point">dead points</a> are described by 2 cases :
+            (1) <span>\(q' \in e\)</span>, a <span>\( pq'\)</span> perpendicular edge,
+            (2) <span>\(q'\)</span> is a <a href="../../html/Glossary/index.html#convex-vertex">convex vertex</a>
+                and <span>\(pq'\)</span> is exterior to the polygon in the neighborhood of <span>\(q'\)</span>.<br/>
+            </p>
 
             <p>
-                The proof of the equivalence between the two classes is based on the fact that the existance of a dead points
-                in the first class (Attraction-convex polygons) implies the existance of a perpendicular ray that intersects the polygon. <!-- add the thm ?-->
+            Consider (1), then the normal from <span>\(q'\)</span> hits <span>\(p\)</span>, and mandatory a part of its
+            beam <span>\(B(e)\)</span> hits an interior point of the neighbourhood of <span>\(p\)</span>,
+            even the smallest (meaning that it is not normally visible according to the definition).<br/>
+                The following figure illustrate the contradiction. The red circle shows that we encountered an interior point in such case.
             </p>
-            
+
+            <figure>
+                <img src="../../images/proof1.png" alt="pq' perpendicular edge"  style="width:100%;max-width:300px;display: block; margin: auto;">
+            </figure>
+
+            <p>
+            Consider (2), <span>\(p\)</span> must be in <span>\(C(q')\)</span>, otherwise <span>\(q'\)</span>
+                would slide until arriving in case (1). since our polygon is simple, <span>\(p\)</span> must be connected
+                to the rest of the polygon, implying at least one intersection with our polygon and so, that we hit an interior point
+                (meaning that it is not normally visible again).<br/>
+                Again, the figure illustrate the contradiction.
+            </p>
+
+            <figure>
+                <img src="../../images/proof2.png" alt="convex vertex dead point" style="width:100%;max-width:300px;display: block; margin: auto;">
+            </figure>
+
+            <p>
+                Since the contrapositive has been proven. we are certain that normal-visibility also implies attraction-convexity.
+                Therefore, we know that both classes are equals.
+            </p>
+
+            <h2>Construction of an algorithm that recognize attraction-convex polygons</h2>
             <h2>Computation</h2>
             <p>
                 As we have seen, the two classes of polygons are equivalent, using the normal visibility property to verify if a polygon is attraction-convex.
