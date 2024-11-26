@@ -28,12 +28,12 @@
             <h2>Edges And Trajectories</h2>
             <ul>
                 <li><a href="">Attraction Trajectory [<em>AT(p,b)</em>]</a>: Indicate the movement path of a point <em>p</em> from its original location to the beacon <em>b</em></li>
+                <li><a href="">Pocket Lid</a>: an edge which is part of the convex hull of a polygon but not part of the polygon itself</li>
+                <li><a href="">Pocket Chain</a>: A sequence of edges from the polygon which connect the two vertex of a pocket lid</li>
                 <li><a href="">Pull Edge</a>: Straight movement towards the beacon</li>
                 <li><a href="">Separation Edge</a>: A split edge between a dead region and <em>AR(b)</em></li>
                 <li><a href="">Slide Edges</a>: Consecutive sliding movements</li>
                 <li><a href="">Split Edge</a>: The boundary between two dead regions, or a dead region and <em>AR(b)</em></li>
-                <li><a href="">Pocket Lid</a>: the edge wich is part of the convex hull of a polygon but not part of the polygon itself</li>
-                <li><a href="">Pocket Chain</a>: A sequence of edges from the polygon which connect the two vertex of a pocket lid</li>
             </ul>
 
             <h2>Edges set</h2>
@@ -45,10 +45,13 @@
 
             <h2>Polygons</h2>
             <ul>
-                <li><a href="">Simple Polygon</a>: A Simple Polygon is a polygon that does not intersect itself and has no holes</li>
-                <li><a href="">Normal Visible Polygon</a>: A polygon which the normal vector of each edge that is pointing towards the exterior can't not intersect with any other edge</li>
                 <li><a href="">Attraction-Convex Polygon</a>: A polygon where every point attracts every other point</li>
+                <li id="convex-hull"><a href="">Convex Hull</a>: The convex hull of a polygon is the smallest convex
+                    polygon that contains all the points of the polygon</li>
+                <li><a href="">Normal Visible Polygon</a>: A polygon which the normal vector of each edge that is pointing towards the exterior
+                    cannot hit any point of the interior of the polygon</li>
                 <li><a href="">Pocket polygon</a>: the polygon formed by the pocket chain and the pocket lid</li>
+                <li><a href="">Simple Polygon</a>: A Simple Polygon is a polygon that does not intersect itself and has no holes</li>
             </ul>
 
             <h2>Regions</h2>
@@ -64,29 +67,30 @@
             <ul>
                 <li ><a href="">Shortest Path [<em>SP (p,q)</em>]</a>: The shortest path between <em>p</em> and <em>q</em> in <em>P</em></li>
                 <li id="shortest-path-map"> <a href="">Shortest Path Map [<em>SPM (p)</em>]</a>: A shortest path map for a given point <em>p</em>, denoted as <em>SPM (p)</em>, is a subdivision of <em>P</em> into regions such that shortest paths from <em>p</em> to all the points inside the same region pass through the same set of vertices of <em>P</em>
+                <img src="../../images/Figure9.png" alt="Figure 9: Shortest Path Map" style="width:100%;max-width:600px;display: block; margin: auto;">
                 </li>
 
-                 <!-- Figure 9: Shortest Path Map TODO -->
-                <li style="text-align:center;">
-                <img src="../../images/Figure9.png" alt="Figure 9: Shortest Path Map" style="width:100%;max-width:600px;">
-                </li>
-
-                <li id="shortest-path-tree" ><a href="">Shortest Path Tree [<em>SPT (p)</em>]</a>: The union of shortest paths from <em>p</em> to all vertices of <em>P</em>
-                </li>
-                <li style="text-align:center;">
-                    <img src="../../images/ShortestPathTree.png" alt="Figure 0: Shortest Path Tree" style="width:100%;max-width:600px;">
-                </li>
-                <li style="text-align: center;">The tree formed by <em>(Tree<sub>red</sub> &cup; Tree<sub>blue</sub>)</em> is the Shortest Path Tree from <em>p</em> to all vertices of <em>P</em>. In the Inverse Attraction Region (IAR), we are only interested in the red tree, which is the <em>SPT (p)</em> pruned of all non-reflex vertices, denoted <em>SPT<sub>r</sub> (p)</em>.
+                <li id="shortest-path-tree" ><a href="">Shortest Path Tree [<em>SPT (p)</em>]</a>:
+                    The union of shortest paths from <em>p</em> to all vertices of <em>P</em><br/>
+                    <div class="image-container">
+                    <figure>
+                    <img src="../../images/ShortestPathTree.png" alt="Figure 0: Shortest Path Tree" style="width:100%;max-width:600px;display: block; margin: auto;">
+                    <figcaption style="">The tree formed by <em>(Tree<sub>red</sub> &cup;
+                    Tree<sub>blue</sub>)</em> is the Shortest Path Tree from <em>p</em> to all vertices of <em>P</em>.
+                    In the Inverse Attraction Region (IAR), we are only interested in the red tree,
+                    which is the <em>SPT (p)</em> pruned of all non-reflex vertices, denoted <em>SPT<sub>r</sub> (p)</em>.</figcaption>
+                    </figure>
+                    </div>
                 </li>
 
             </ul>
 
             <h2>Vertex</h2>
             <ul>
-                <li id="reflex-vertex"><a href="">Reflex Vertex</a>: A reflex vertex <span>\(v\)</span> of a polygon <span>\(P\)</span>
-                    is a vertex where the internal angle with the two edges of <span>\(v\)</span> exceeds 180 degrees</li>
                 <li id="convex-vertex"><a href="">Convex Vertex</a>: A convex vertex <span>\(v\)</span> of a polygon <span>\(P\)</span>
                     is a vertex where the internal angle with the two edges of <span>\(v\)</span> is lower than 180 degrees</li>
+                <li id="reflex-vertex"><a href="">Reflex Vertex</a>: A reflex vertex <span>\(v\)</span> of a polygon <span>\(P\)</span>
+                    is a vertex where the internal angle with the two edges of <span>\(v\)</span> exceeds 180 degrees</li>
             </ul>
 
             <br/>
