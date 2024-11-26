@@ -15,6 +15,11 @@ class Sketch{
                 new AnimatedText("It means that every point in the polygon attracts every other point", 4000, 2000),
                 new AnimatedText("Let's imagine an ant walking along the polygon in a counter-clockwise direction,\nwith a laser pointing to its right", 4500, 500)
             ]);
+        this.dialog1negative = new Dialog([
+            new AnimatedText("This polygon is not Attraction Convex", 4000, 1000,),
+            new AnimatedText("It means that there are points that don't attract every other point", 4000, 2000),
+            new AnimatedText("Let's imagine an ant walking along the polygon in a counter-clockwise direction,\nwith a laser pointing to its right", 4500, 500)
+        ]);
 
         this.dialog2  = new Dialog([
                 new AnimatedText("The laser doesn't hit the polygon.", 4000, 1000),
@@ -24,8 +29,18 @@ class Sketch{
                 new AnimatedText("As well as Inverse Attraction Region of a point.", 3000, 1000),
                 new AnimatedText("Which is the set of points that can attract the given point", 3000, 1000),
             ]);
+
+        this.dialog2negative = new Dialog([
+            new AnimatedText("The laser hits the polygon.", 4000, 1000),
+            new AnimatedText("Which means the polygon is not Normally Visible", 3000, 1000),
+            new AnimatedText("Normal visibility is another way to describe attraction convexity", 3500, 1000),
+            new AnimatedText("These notions are subject of our study.", 3000, 1000),
+            new AnimatedText("As well as Inverse Attraction Region of a point.", 3000, 1000),
+            new AnimatedText("Which is the set of points that can attract the given point", 3000, 1000),
+        ]);
         this.ant = new WalkingAnt(this.polygon);
         this.p;
+        this.isAttractionConvex = null;
     }
 
     setP(p){
@@ -38,11 +53,8 @@ class Sketch{
                 this.phase = this.phase.next(); break;
             }
             case Phase.Explanation: {
-                console.log("hi")
                 this.phase = this.phase.next();
-                this.polygon.toCounterClockwiseOrder();
-                let isAttractionConvex = Attraction.compute(this.polygon.toPolygon());
-                console.log("hi", isAttractionConvex);
+                
                 break;
             }
             case Phase.ImagineAnt: {
@@ -58,11 +70,16 @@ class Sketch{
 
     draw(){
         switch (this.phase) {
-            case Phase.Draw: {this.polygon.drawAnimated(this.p, this); break;}
+            case Phase.Draw: {
+                this.polygon.drawAnimated(this.p, this); 
+                this.isAttractionConvex = null;
+                break;}
             case Phase.Explanation: {
-                //isAttractionConvex = Attraction.compute(polygon.toPolygon())
+                this.polygon.toCounterClockwiseOrder();
+                this.isAttractionConvex = Attraction.compute(this.polygon.toPolygon())
                 this.polygon.draw(this.p);
-                this.dialog1.draw(this.p, this);
+                if (this.isAttractionConvex) this.dialog1.draw(this.p, this);
+                else this.dialog1negative.draw(this.p, this);
                 break;}
             case Phase.ImagineAnt: {
                 this.ant.init(this.p);
@@ -72,7 +89,8 @@ class Sketch{
             case Phase.EndVisible: {
                 this.polygon.draw(this.p);
                 this.ant.draw(this.p, this);
-                this.dialog2.draw(this.p, this);
+                if (this.isAttractionConvex) this.dialog2.draw(this.p, this);
+                else this.dialog2negative.draw(this.p, this);
             }
         }
     }
