@@ -1,4 +1,4 @@
-import {det, getTurn, isLeftTurn, isRightTurn, Point} from "./Point.js";
+import {det, getTurn, isLeftTurn, isRightTurn} from "./Point.js";
 import {DIRECTION} from "./Const.js";
 import {ConvexHull} from "./ConvexHull.js";
 import {Deque} from "./Deque.js";
@@ -222,122 +222,214 @@ export class Polygon {
         this.points.push(first);
     }
 
-    intersectWith(otherPolygon, startingPoint) {
-        let currentPoint = startingPoint;
-        let result = [currentPoint];
-        let polygonA = this;
-        let polygonB = otherPolygon;
-        let previous = null;
-        let i = 0;
-
-        while (true) {
-            let nextPointA = this.nextPoint(currentPoint, polygonA, previous);
-            let nextPointB = this.nextPoint(currentPoint, polygonB, previous);
-            let secondNextA = this.nextPoint(nextPointA, polygonA, previous);
-            let secondNextB = this.nextPoint(nextPointB, polygonB, previous)
-    
-            // Si les prochains sommets sont les mêmes, continuer
-            if (nextPointA === nextPointB) {
-                previous = currentPoint
-                currentPoint = nextPointA;
-                result.push(currentPoint);
-            } else {
-
-                let closestPoint = this.nextInPoint(currentPoint, [nextPointA, nextPointB], [secondNextA, secondNextB], previous, [polygonA, polygonB]);
-    
-                if (closestPoint === nextPointA) {
-                    previous = currentPoint;
-                    currentPoint = nextPointA;
-                } else {
-                    previous = currentPoint;
-                    currentPoint = nextPointB;
-                    [polygonA, polygonB] = [polygonB, polygonA];
+    findStartingPoint(otherPolygon) {
+        for (let pointA of this.points) {
+            for (let pointB of otherPolygon.points) {
+                if (pointA.equals(pointB)) {
+                    return pointA;
                 }
-                result.push(currentPoint);
-                    
             }
-    
-            // Si nous revenons au point de départ, terminer
-            if (currentPoint === startingPoint || i === 20) break;
-            i++;
         }
-    
-        return new Polygon(result, true);
+        return null;
     }
 
-    // Trouver le prochain sommet dans le polygone
+    getIntersections(otherPolygon) {
+        const intersections = [];
+        for (let i = 0; i < this.points.length; i++) {
+            const p1 = this.points[i];
+            const p2 = this.points[(i + 1) % this.points.length];
+            const line1 = new StraightLine(p1, p2);
+
+            for (let j = 0; j < otherPolygon.points.length; j++) {
+                const p3 = otherPolygon.points[j];
+                const p4 = otherPolygon.points[(j + 1) % otherPolygon.points.length];
+                if (line1.isOn(p3) || line1.isOn(p4)) {
+                    continue;
+                }
+                
+                const intersection = line1.getIntersection(p3, p4);
+                if (intersection && isBetween(p1, p2, intersection) && isBetween(p3, p4, intersection)) {
+                    intersections.push(intersection);
+                }
+            }
+        }
+        return intersections;
+    }
+
+    intersectWith(otherPolygon) {
+    
+        const startingPoint = this.findStartingPoint(otherPolygon);
+        if (!startingPoint) {
+            throw new Error("No common starting point found between the polygons.");
+        }
+    
+        let currentPoint = startingPoint;
+        let result = [currentPoint];
+        let currentPolygon = this;
+        let otherPolygonRef = otherPolygon;
+        let previousPoint = null;
+        let visitedPoints = new Set(); // Pour détecter les cycles
+
+        let nextPoint = this.nextPoint(currentPoint, currentPolygon, previousPoint);
+        let secondPoint = this.nextPoint(nextPoint, currentPolygon, currentPoint);
+        let sl = new StraightLine(currentPoint, nextPoint);
+        let hp = new HalfPlane(sl, secondPoint);
+        let i = 0;
+        for (let point of otherPolygon.points) {
+            if (hp.isIn(point)) {
+                break;
+            }
+            i++;
+        }
+        if (i === otherPolygon.points.length) {
+            return null;
+        }
+
+        if (hp.isIn(otherPolygon.nextPoint(currentPoint, otherPolygon, previousPoint))) {
+            const temp = currentPolygon;
+            currentPolygon = otherPolygonRef;
+            otherPolygonRef = temp;
+        }
+        nextPoint = null;
+        while (true) {
+            const currentSegmentStart = currentPoint;
+            const currentSegmentEnd = currentPolygon.nextPoint(currentPoint, currentPolygon, previousPoint);
+    
+            // Vérifier les chevauchements colinéaires
+            let overlap = null;
+            for (let i = 0; i < otherPolygonRef.points.length; i++) {
+                const otherStart = otherPolygonRef.points[i];
+                const otherEnd = otherPolygonRef.points[(i + 1) % otherPolygonRef.points.length];
+                
+                overlap = this.getCollinearOverlap(currentSegmentStart, currentSegmentEnd, otherStart, otherEnd);
+                if (overlap) {
+                    // Si chevauchement trouvé, on l'ajoute et on passe à l'autre polygone
+                    if (!result.includes(overlap.start)) {
+                        result.push(overlap.start);
+                    }
+                    if (overlap.end.equals(otherEnd)) {
+                        const temp = currentPolygon;
+                        currentPolygon = otherPolygonRef;
+                        otherPolygonRef = temp;
+                    }
+    
+                    nextPoint = overlap.end;
+                    break;  // Sortir de la boucle pour passer au prochain segment
+                }
+            }
+    
+            // Calculer les intersections après avoir vérifié les chevauchements et arêtes partagées
+            const intersections = currentPolygon.getIntersections(otherPolygonRef);
+    
+            // Si aucun chevauchement ou arête partagée n'est trouvé, chercher un prochain point
+            if (!nextPoint) {
+    
+                // Vérifier si un candidat est valide (proche du segment courant)
+                for (const candidate of [...intersections, ...currentPolygon.points]) {
+                    if (candidate.equals(currentPoint) || (previousPoint && candidate.equals(previousPoint))) continue;
+    
+                    const onSegment = isOn(currentSegmentStart, currentSegmentEnd, candidate);
+                    const between = isBetween(currentSegmentStart, currentSegmentEnd, candidate);
+    
+                    if (onSegment && between) {
+                        if (intersections.includes(candidate)) {
+                            const temp = currentPolygon;
+                            currentPolygon = otherPolygonRef;
+                            otherPolygonRef = temp;
+                        }
+                        nextPoint = candidate;
+                        break;
+                    }
+                }
+    
+            }
+
+            if (!nextPoint) {
+                nextPoint = this.nextPoint(currentPoint, currentPolygon, previousPoint);
+            }
+    
+            // Vérification des cycles
+            if (visitedPoints.has(nextPoint)) {
+                console.log("Cycle detected, terminating...");
+                break;
+            }
+            visitedPoints.add(nextPoint);
+    
+            // Ajouter le point trouvé et vérifier si on a fait une boucle complète
+            result.push(nextPoint);
+            if (nextPoint.equals(startingPoint)) break;
+    
+            // Mettre à jour pour le prochain tour
+            previousPoint = currentPoint;
+            currentPoint = nextPoint;
+            nextPoint = null;
+        }
+        
+        result.pop();  // Enlever le dernier point qui est le même que le premier
+        return new Polygon(result, true);
+    }
+    
+    getCollinearOverlap(start1, end1, start2, end2) {
+    
+        const isCollinear = getTurn(start1, end1, start2) === DIRECTION.STRAIGHT && getTurn(start1, end1, end2) === DIRECTION.STRAIGHT;
+        if (!isCollinear) {
+            return null;
+        }
+
+        if (start1.x < end1.x !== start2.x < end2.x) {
+            return null;
+        }
+
+        let overlapStart = null;
+        let overlapEnd = null;
+        
+        if (start1.x < end1.x && start1.x < end2.x) {
+            overlapStart = start1.x > start2.x ? start1 : start2;
+            overlapEnd = end1.x < end2.x ? end1 : end2;
+        } else if (start1.x > end1.x && start1.x > end2.x) {
+            overlapStart = start1.x < start2.x ? start1 : start2;
+            overlapEnd = end1.x > end2.x ? end1 : end2;
+        } else if (start1.y < end1.y && start1.y < end2.y) {
+            overlapStart = start1.y > start2.y ? start1 : start2;
+            overlapEnd = end1.y < end2.y ? end1 : end2;
+        } else if (start1.y > end1.y && start1.y > end2.y) {
+            overlapStart = start1.y < start2.y ? start1 : start2;
+            overlapEnd = end1.y > end2.y ? end1 : end2;
+        } else {
+            return null;
+        }
+    
+        if (overlapStart.equals(overlapEnd)) {
+            return null;
+        }
+    
+        return { start: overlapStart, end: overlapEnd };
+    }       
+
     nextPoint(currentPoint, polygon, previous = null) {
+        // Trouver l'index du point actuel dans le polygone
         let currentIndex = polygon.points.findIndex(point => point.equals(currentPoint));
+    
+        // Si currentPoint n'est pas exactement un sommet, rechercher sur les segments
         if (currentIndex === -1) {
             for (let index = 0; index < polygon.points.length; index++) {
                 const point = polygon.points[index];
                 const point2 = polygon.points[(index + 1) % polygon.points.length];
-                if (previous && point2.equals(previous)) {
-                    continue;
-                }
+                if (previous && point2.equals(previous)) continue;
+    
                 const sl = new StraightLine(point, point2);
-                if (sl.isOn(currentPoint)) {
-                    return point2;
+                if (sl.isOn(currentPoint) && isBetween(point, point2, currentPoint)) {
+                    return point2; // Retourne le prochain point du segment
                 }
             }
         }
+    
+        // Si currentPoint est un sommet, retourner le suivant dans l'ordre
         return polygon.points[(currentIndex + 1) % polygon.points.length];
     }
+}
 
-    previousPoints(currentPoint, polygon, previous =null) {
-        let currentIndex = polygon.points.findIndex(point => point.equals(currentPoint));
-        if (currentIndex === -1) {
-            for (let index = 0; index < polygon.points.length; index++) {
-                const point = polygon.points[index];
-                const point2 = polygon.points[(index - 1) % polygon.points.length];
-                if (previous && point2.equals(previous)) {
-                    continue;
-                }
-                const sl = new StraightLine(point, point2);
-                if (sl.isOn(currentPoint)) {
-                    return point2;
-                }
-            }
-        }
-        if (currentIndex === 0) {
-            return polygon.points[polygon.points.length - 1];
-        }
-        return polygon.points[currentIndex - 1];
-    }
-    
-    // Trouver le point le plus proche parmi un ensemble
-    nextInPoint(referencePoint, nextPoints, secondNexts, previousPoint, polygons) {
-        if (previousPoint === null) {
-            if (isLeftTurn(this.previousPoints(referencePoint, polygons[0]), referencePoint, nextPoints[0])) {
-                return nextPoints[0];
-            } else if (isLeftTurn(this.previousPoints(referencePoint, polygons[1]), referencePoint, nextPoints[1])) {
-                return nextPoints[1];
-            }
-        }
-        const lft1 = isLeftTurn(previousPoint, referencePoint, nextPoints[0]);
-        const lft2 = isLeftTurn(previousPoint, referencePoint, nextPoints[1]);
-        const left3 = isLeftTurn(referencePoint, nextPoints[0], secondNexts[0]);
-        const left4 = isLeftTurn(referencePoint, nextPoints[1], secondNexts[1]);
-        const lft5 = isLeftTurn(secondNexts[1], nextPoints[0], secondNexts[0]);
-        if (lft1 && lft2) {
-            if (left3 && left4) {
-                if (lft5) {
-                    return nextPoints[1];
-                } else {
-                    return nextPoints[0];
-                }
-            }
-            if (left3) {
-                return nextPoints[0];
-            } else if (left4) {
-                return nextPoints[1];
-            }
-        } else  if (lft1) {
-            return nextPoints[0];
-        } else if (lft2) {
-            return nextPoints[1];
-        }
-            
-        return nextPoints[0];
-    }
+function isOn(start, end, point) {
+    const line = new StraightLine(start, end);
+    return line.isOn(point);
 }

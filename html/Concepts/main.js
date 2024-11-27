@@ -10,23 +10,24 @@ const iar = new IAR(polygon, p_point);
 function getTranslatedPoints() {
     // Define the points
     const points = [
-        new Point(1 * 80, 2 * 80),      // a
-        new Point(2 * 80, -0.5 * 80),   // m
-        new Point(2.5 * 80, 0.5 * 80),  // l
-        new Point(4.5 * 80, 0.5 * 80),  // c
-        new Point(2.5 * 80, 1.5 * 80),  // k
-        new Point(5 * 80, 1 * 80),      // j
-        new Point(6 * 80, 0 * 80),      // i
-        new Point(6.5 * 80, 1 * 80),    // n
-        new Point(5.5 * 80, 1.75 * 80), // b
-        new Point(6 * 80, 2.5 * 80),    // o
-        new Point(5 * 80, 2.5 * 80),    // h
-        new Point(4.5 * 80, 3 * 80),    // f
-        new Point(4 * 80, 2.25 * 80),   // g
-        new Point(4 * 80, 1.5 * 80),    // e
-        new Point(2.5 * 80, 3 * 80),    // d
+        new Point(680, -375),  // a
+        new Point(680, -485),  // m
+        new Point(830, -590),  // l
+        new Point(850, -520),  // c
+        new Point(810, -480),  // k
+        new Point(880, -470),  // j
+        new Point(840, -620),  // i
+        new Point(680, -515),  // n
+        new Point(680, -650),  // b
+        new Point(920, -650),  // o
+        new Point(900, -600),  // h
+        new Point(940, -650),  // f
+        new Point(1065, -650), // g
+        new Point(950, -405),  // e
+        new Point(1065, -405), // d
+        new Point(1065, -380),  // p
 
-        new Point(1.75 * 80, 0.4 * 80)    // p
+        new Point(1040, -392.5)    // p
     ];
 
     // Calculate the bounding box
