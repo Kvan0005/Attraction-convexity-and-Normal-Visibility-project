@@ -336,10 +336,9 @@
 
             <h2>Complexity</h2>
             <p>
-                If we had used the <em>Brodal and Jacob</em> data structure for the convex hull. The overall whould have been <span>\(O(n \log n)\)</span> times.
-                given that the compleate proof is a little bit heavy to digest we will exclude some few part, The idee is using the <em>Brodal and Jacob</em> data structure for computing the free space, which is an incremental data structure that can add or remove a constraint in <span>\(O(\log n)\)</span> time, 
-                this has also the particularity to be able to compute the next free space in <span>\(O(\log n)\)</span> time, the reason given in the article is that the next free space is only 2 dual points away from the current free space(the dual point of the subpolygon that we are leaving and the dual point of the subpolygon that we are entering).
-                thus for P which has <span>\(n\)</span> vertices, the total time complexity is <span>\(O(n \log n)\)</span>. 
+                If we had used the <em>Brodal and Jacob</em> data structure for the convex hull, the overall complexity would have been <span>O(nlogn)</span>. Since the complete proof is somewhat challenging to grasp, we will omit certain parts for clarity. The main idea is to utilize the <em>Brodal and Jacob</em> data structure for computing the free space. This incremental data structure allows constraints to be added or removed in <span>O(logn)</span> time.
+                Additionally, the structure can compute the next free space in <span>O(log⁡n)</span> time. The article explains that the next free space is always just two dual points away from the current free space: the dual point of the subpolygon we are leaving and the dual point of the subpolygon we are entering.
+                Consequently, for a polygon with <span>n</span> vertices, the total time complexity is <span>O(nlog⁡n)</span>.
             </p>
             <br/>
             <br/>
