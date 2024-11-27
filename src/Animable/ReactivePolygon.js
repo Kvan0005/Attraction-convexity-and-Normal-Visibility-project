@@ -15,9 +15,7 @@ export class ReactivePolygon {
 
     add(vertex) {
         if (this.closed) return;
-        if (this.length() < 3) {
-            this.vertices.push(vertex);
-        } else if (!this.isCutting(vertex) && !this.closed) {
+        if (this.length() < 3 || (!this.isCutting(vertex) && !this.closed)) { // either the polygon is not closed or the vertex is not cutting
             this.vertices.push(vertex);
         }
     }
@@ -26,6 +24,10 @@ export class ReactivePolygon {
         return this.vertices.length;
     }
 
+    reset(){
+        this.vertices = [];
+        this.closed = false;
+    }
     close(p) {
         if (this.isCutting(new Point(p.mouseX, -p.mouseY))) return false;
         this.closed = p.millis();
@@ -182,9 +184,23 @@ export class ReactivePolygon {
         return this.vertices[index]
     }
 
+    modularGet(index) {
+        while (index < 0) {
+            index += this.vertices.length;
+        }
+        return this.get(index % this.vertices.length);
+    }
+
     toPolygon(){
         let p = new Polygon([...this.vertices], true);
         p.toCounterClockwiseOrder();
         return p;
+    }
+
+    getConvexHull(){
+        if (this.isClosed()){
+            return this.toPolygon().getConvexHull();
+        }
+        return null;
     }
 }

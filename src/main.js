@@ -1,8 +1,7 @@
-import {Polygon} from "./Polygon.js"; // Import the Polygon class
 import {isAcuteAngle, isLeftTurn, isRightTurn, Point} from "./Point.js"; // Import the Point class
 import {PocketPolygon, generatePocketChain} from './PocketPolygon.js'; // Import the PocketPolygon class
-
-var poly = new Polygon(); // Create a new Polygon object
+import { ReactivePolygon } from "./Animable/ReactivePolygon.js";
+var poly = new ReactivePolygon(); // Create a new Polygon object
 var ch;
 var display_pocket_chain_projection_on_lid = false;
 var text_to_display = "?"
@@ -22,7 +21,9 @@ const s = (p) => {
         p.textSize(40);
         p.textAlign(p.CENTER, p.TOP);
         let height = p.height + 50;
-        buttonList.push(generateButton(p.width / 2 + 170 , height, "Compute", compute, p));
+        buttonList.push(generateButton(p.width / 2 + 170 , height, "Compute", () => {
+            compute(p);
+        }, p));
         buttonList.push(generateButton(p.width / 2 + 185, height , "Show convex hull", () => {
             show_convex_hull = !show_convex_hull;
 
@@ -56,10 +57,14 @@ const s = (p) => {
         show_convex_hull = false;
     }
 
-    function compute() {
+    function compute(p) {
 
-        poly.compute();
+        poly.close(p);
         ch = poly.getConvexHull()
+        if (ch === null) {
+            text_to_display = "Error: the polygon is not closed";
+            return;
+        }
         let count = 0;
         while (ch.get(0) !== poly.get(0)) {
             count++;
@@ -86,7 +91,7 @@ const s = (p) => {
                 continue;
             }
 
-            let pocket_chain = generatePocketChain(poly, v_p, v_q, i);
+            let pocket_chain = generatePocketChain(poly, v_p, v_q, i); // note pocket_chain is a list of points (not a class)
             let pocket_polygon = new PocketPolygon(pocket_chain);
             data_pocket_chain_on_lid.push(pocket_polygon)
             if (! pocket_polygon.isOrderedProjection()) {
@@ -99,7 +104,7 @@ const s = (p) => {
     function ccwScan(polygon) {
         let s = [polygon.get(0)];
         for (let i = 1; i < polygon.length(); i++) { // play with these index for clockwise
-            let v = polygon.get(i), v_next = polygon.get((i+1) % polygon.length()), v_prev = polygon.get((i-1 + polygon.length()) % polygon.length());
+            let v = polygon.get(i), v_next = polygon.modularGet(i+1), v_prev = polygon.modularGet(i-1);
             console.log(`v: ${v.toString()}, v_next: ${v_next.toString()}, v_prev: ${v_prev.toString()}, c: ${s[s.length - 1].toString()}`)
             if (s.length > 1) console.log(`c_prev: ${s[s.length - 2].toString()}`)
             while (s.length !== 1 && isRightTurn(s[s.length - 2], s[s.length - 1], v)) {
@@ -127,9 +132,9 @@ const s = (p) => {
     }
 
     function cwScan(polygon) {
-        let s = [polygon.get(polygon.length() - 1)];
+        let s = [polygon.modularGet(-1)];
         for (let i = polygon.length() - 2; i >= 0; i--) { // play with these index for clockwise
-            let v = polygon.get(i), v_prev = polygon.get((i+1) % polygon.length()), v_next = polygon.get((i-1 + polygon.length()) % polygon.length());
+            let v = polygon.get(i), v_prev = polygon.modularGet(i+1), v_next = polygon.modularGet(i-1);
             console.log(`v: ${v.toString()}, v_next: ${v_next.toString()}, v_prev: ${v_prev.toString()}, c: ${s[s.length - 1].toString()}`)
             if (s.length > 1) console.log(`c_prev: ${s[s.length - 2].toString()}`)
             while (s.length !== 1 && isLeftTurn(s[s.length - 2], s[s.length - 1], v)) {
@@ -156,11 +161,7 @@ const s = (p) => {
     }
 
     function step3(polygon) {
-        if (ccwScan(polygon)) {
-            return cwScan(polygon); // not sure if it is correct, but it seems to work
-        }
-        return false;
-
+        return ccwScan(polygon) && cwScan(polygon);
     }
 
     p.draw = function () {
@@ -178,10 +179,18 @@ const s = (p) => {
     }
 
     p.mousePressed = function (event) {
-        if (event.target === canvas.elt){
-            console.log("canvas");
-            poly.addPoint(new Point(p.mouseX, -p.mouseY));
+        if (event.target === canvas.elt){ // we need to be in the canvas to draw not buttons or other elements
+            if (sketch.polygonIsClosed())
+                return;
+    
+            if (sketch.isNearFirstVertexPolygon(p)) {
+                p.redraw();
+                sketch.tryClosePolygon(p)
+            } else {
+                sketch.addPoint(new Point(p.mouseX, -p.mouseY));
+            }
         }
+
         
     }
 
