@@ -54,6 +54,7 @@
             </p>
 
             <h2>Equivalence between the two classes</h2>
+            Note that our proofs here are less formal but tend to be more simple than the original article.
             To prove equivalence between the two classes, we must consider the points <span>\(q'\)</span>, that are
             not attract to <span>\(p\)</span> (the <a href="../../html/Glossary/index.html#dead-point">dead points</a>).
             A dead point can appear in two cases :
@@ -156,7 +157,7 @@
             </p>
 
             <p>
-                We can observe some interesting properties from latest definitions : Let's observe an attraction convex polygon and a non attraction convex one.
+                We can observe some interesting properties from latest definitions : Let's observe an attraction convex polygon and a non-attractive one.
             </p>
 
             <div class="image-container">
@@ -170,28 +171,62 @@
                 </figure>
             </div>
 
+            <p>
+                Firstly, observe that the pocket polygon of the attraction convex polygon is a terrain with respect to its lid
+                while it is not the case for the non-attractive one.
+                In fact, if a simple polygon <span>\(P\)</span> is normally visible,
+                then every pocket chain of <span>\(P\)</span> is a terrain with respect to its pocket lid (for a proof, see the reference).
+                Note that it does not reject the existence of non-attraction convex polygons which contains terrains with respect to their lid as we can see on the following polygon : <br/><br/>
+
+                <img src="../../images/terrain_non_attractive.png" alt="terrain non attractive" style="width:100%;max-width:150px;display: block; margin: auto;">
+
+                <br/>
+                We can see in (1) that the projection of the beam - from and edge <span>\(bc\)</span>
+                of the pocket chain - on the pocket lid, in order to be orthogonal with it, result in a subsegment of it.
+                We can also remark that the projection of each point still be counterclockwise sorted.
+                (2) shows that this sequence could not be sorted in a non-attractive polygon.<br/>
+                This property will be used in the algorithm since we can reject every polygon for which the pocket polygon is not a terrain with respect to its lid.
+            </p>
+
 
             <!--<p>
                 As we have seen, the two classes of polygons are equivalent, using the normal visibility property to verify if a polygon is attraction-convex.
                 which is (TODO time complexity) to compute. The main property of a normal visible polygon is that the normal to each edge (note that the normal must intersect the edge) of the polygon 
                 does not intersect with any other edge of the polygon.
             </p>-->
-            <h3>Convex Hull</h3>
+            <h3> Steps of the algorithm</h3>
+            <h4>Convex Hull</h4>
             <p>
-                The convex hull of a polygon is the smallest convex polygon that contains all the points of the polygon. Normaly we must use a heavy algorithm to compute the convex hull of a polygon, but in our case given that the polygon is a simple polygon, or a polyline, the convex hull can be computed using the Melkman algorithm. which uses a deque to store the vertices of the convex hull. while iteratively adding new vertices of the polyline to the deque, if it detects that the new vertex is not part of the convex hull, it will remove the vertices using rightmost side and leftmost side of the deque to keep the convexity of the hull at each step.
+                We must compute it to check if every pocket polygon are terrains with respect to their lid.
+                Since we only study simple polygons <!--, or a polyline-->, the convex hull can be computed using
+                the linear <a href="../../html/Reference/index.html#melkman">Melkman's algorithm</a>.
+                which uses a deque to store the vertices of the convex hull. while iteratively adding
+                new vertices of the input polygon, interpreted as a simple polyline (a <a href="../../html/Glossary/index.html#chain">polygonal chain</a>) to the deque, if it detects that the new vertex is not part of
+                the convex hull, it will remove the vertices using rightmost side and leftmost side of
+                the deque to keep the convexity of the hull at each step.
             </p> 
 
-            <h3>Terrain property of edges</h3>
+            <h4>Check that every Pocket Polygon is a Terrain with respect to its lid</h4>
             <p>
-                Afterward we by using the convex hull of the polygon, we can determine the different pocket polygons of the polygon, which can be found using the symetric difference between the convex hull and the polygon. This will allow us to verify the lemma that states:
-                <em>If a simple polygon P is normally visible, then every pocket chain of P is a terrain with respect to its pocket lid</em>
-                this lemma is important to verify the normal visibility of the polygon. thus we need to verify that the pocket chain is a terrain with respect to its pocket lid.
-                To simple verify if the pocket chain is a terrain, we can use the the Projection of the pocket chain on the pocket lid, and verify that the projection is a ordered sequence of vertex, This step can be observed on the Tool page by activating the "Show projection" Button. This part of the algorithm give us a nessessary condition to verify the normal visibility of the polygon. But it is not sufficient.
+                We can determine the different pocket polygons of the polygon using the symmetric difference between the convex hull and the polygon.
+                Using the Projection of the pocket chain on the pocket lid, we can simply verify that the projection is an ordered sequence of vertex.
+                This step can be observed on the Tool page by activating the "Show projection" Button.
+                This part of the algorithm give us a necessary condition to verify the normal visibility of the polygon, but it is not sufficient.
+                Therefore, it means that whenever we find a pocket polygon which is not a terrain, we can stop the algorithm and simply returns false.
             </p>
 
-            <h3>Bidirectionnal Scan</h3>
+            <h4>Clockwise-scan and Counterclockwise-scan</h4>
             <p>
-                As for the last step of the algorithm, we need to 2 scan of the polygon, one in the clockwise direction and the other in the counter clockwise direction. The scan will verify of presence of acute angles in the polygon, 
+                Let's analyse a bit more a polygon that enter this step.
+
+                <img src="../../images/terrain_non_attractive.png" alt="terrain non attractive" style="width:100%;max-width:150px;display: block; margin: auto;">
+
+                The property that let us reject this polygon is the fact that we have an acute angle in a recess of our polygon (a right turn in our previous image).
+                Indeed, the interior angles of attraction-convex polygon is always at most <span>\(3\pi / 2\)</span> (implying that the exterior angles is at least <span>\(\pi / 2\)</span>).<br/>
+
+
+                For the last step of the algorithm, we need to scan our polygon twice, one in clockwise direction and the other in the counterclockwise direction.
+                The scans will verify namely the presence of acute angles outside the polygon. for more details, refer to the <a href="../../html/Code/index.html#ccw"> pseudocode</a>.
             </p>
 
             <h1>Inverse Attraction Regions</h1>

@@ -1,5 +1,13 @@
 import {Polygon} from "../Polygon.js";
-import {Point, det, isRightTurn} from "../Point.js";
+import {det, isRightTurn} from "../Point.js";
+
+class Point {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
 
 export class ReactivePolygon {
     constructor(points = [], closed = false, color = [160, 220, 120]) {

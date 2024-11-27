@@ -150,7 +150,10 @@ h2 {
 
 h3 {
     color: #009BB8;
-    font-size: 16px;
+}
+
+h4 {
+    font-size: 18px;
     margin-top: 15px;
 }
 
