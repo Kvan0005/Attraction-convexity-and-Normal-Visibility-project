@@ -340,6 +340,17 @@
                 Additionally, the structure can compute the next free space in <span>O(log⁡n)</span> time. The article explains that the next free space is always just two dual points away from the current free space: the dual point of the subpolygon we are leaving and the dual point of the subpolygon we are entering.
                 Consequently, for a polygon with <span>n</span> vertices, the total time complexity is <span>O(nlog⁡n)</span>.
             </p>
+            <h3> Lower bound of the IAR</h3>
+            <p>
+                The lower bound for computing the inverse attraction region (IAR) is established at &#x3A9;(n log n), meaning no algorithm can solve this problem faster than <span>O(n log n)</span> time in the worst case. The key idea behind this lower bound is that we can proof that the IAR problem is at least as hard as the lower envelope problem. 
+                And the lower envelope problem is known to have a lower bound of &#x3A9;(n log n). Thus by reducing the IAR problem to the lower envelope problem, we can also establish a lower bound of &#x3A9;(n log n) for the IAR problem. The ways to reduce the IAR problem to the lower envelope problem is given as follows:
+                construct a monotone polygon based on a set of n lines:
+                <li>
+                    <ul>1.The polygon edges align with the lines .</ul>
+                    <ul>2.Reflex vertices and constraints enforce that points in the IAR must lie below the lower envelope of these lines.</ul>
+                </li>
+                and if we compute the IAR of this polygon is equivalent to computing the lower envelope of the lines, which is known to have a lower bound of &#x3A9;(n log n).
+            </p>
             <br/>
             <br/>
             <div id="authorContainer">By Loïc Blommaert, Quentin Lecocq and Kevin Vandervaeren</div>
