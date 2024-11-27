@@ -1,10 +1,12 @@
-import {isAcuteAngle, isLeftTurn, isRightTurn, Point} from "./Point.js";
-import {ReactivePolygon} from "./Animable/ReactivePolygon.js"; // Import the Polygon class
+import {isAcuteAngle, isLeftTurn, isRightTurn} from "./Point.js";
 import {PocketPolygon, generatePocketChain} from './PocketPolygon.js'; // Import the PocketPolygon class
 
 export class Attraction {
 
-    static compute(poly) {
+    static projection = [];
+
+    static compute(poly, ret_val=false) {
+        Attraction.projection = [];
         poly.compute();
         let ch = poly.getConvexHull()
         let count = 0;
@@ -16,14 +18,14 @@ export class Attraction {
             }
             poly.rotate();
         }
-        if (Attraction.step2(ch, poly)) {
+        if (Attraction.step2(ch, poly, ret_val)) {
             console.log("step2 passed");
             return Attraction.step3(poly);
         }
         return false;
     }
 
-    static step2(ch, poly) {
+    static step2(ch, poly, ret_val) {
         for (let i = 0; i < ch.length(); i++) {
             let i_1 = (i + 1) % ch.length();
             const v_p = ch.get(i);
@@ -37,6 +39,9 @@ export class Attraction {
 
             let pocket_chain = generatePocketChain(poly, v_p, v_q, i);
             let pocket_polygon = new PocketPolygon(pocket_chain);
+            if (ret_val){
+                Attraction.projection.push(pocket_polygon);
+            }
             //data_pocket_chain_on_lid.push(pocket_polygon)
             if (! pocket_polygon.isOrderedProjection()) {
                 return false;
