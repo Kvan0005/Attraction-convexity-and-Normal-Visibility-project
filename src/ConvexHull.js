@@ -7,7 +7,6 @@ export class ConvexHull {
         let n = this.points.length - 1;
         this.points.forEach((point) => point.draw(p));
 
-        //p.fill("red")
         p.stroke("#7F4FF9")
         for (let i = 0; i < this.points.length - 1; i++) {
             p.line(this.points[i].x, -this.points[i].y, this.points[i + 1].x, -this.points[i + 1].y);

@@ -119,9 +119,9 @@ class Sketch{
 var sketch = new Sketch();
 const s = (p) => {
     p.setup = function () {
-        const parent = document.getElementById('bigAnimationCanvasContainer'); // Récupérer le parent
-        const parentBounds = parent.getBoundingClientRect(); // Obtenir les dimensions du parent
-        const canvas = p.createCanvas(parentBounds.width, parentBounds.height); // Taille du canvas = parent
+        const parent = document.getElementById('bigAnimationCanvasContainer');
+        const parentBounds = parent.getBoundingClientRect();
+        const canvas = p.createCanvas(parentBounds.width, parentBounds.height);
         canvas.parent('bigAnimationCanvasContainer')
         sketch.setP(p);
         p.textSize(20);

@@ -15,7 +15,7 @@
                 <li><a class="active" href="../../html/Concepts/index.html">Concepts</a></li>
                 <li><a class="" href="../../html/Code/index.html">Code</a></li>
                 <li><a class="" href="../../html/Tool/index.html">Tool</a></li>
-                <li><a class="" href="../../html/Reference/index.html">References</a></li>
+                <li><a class="" href="../Materials/index.html">Materials</a></li>
                 <li><a class="" href="../../html/Glossary/index.html">Glossary</a></li>
             </ul>
         </nav>
@@ -72,7 +72,6 @@
             </div>
 
             <h3>Attraction-convex <span>\(\Rightarrow\)</span> normally visible</h3>
-            <!--Knowing that, it is easy to explain that an attraction-convex polygon is normally visible :-->
             <p>
                 By absurd.<br/>
                 Let's consider a point <span>\(q \in \)</span> edge <span>\(e\)</span> of <span>\(P\)</span> which is attraction-convex
@@ -188,20 +187,15 @@
                 This property will be used in the algorithm since we can reject every polygon for which the pocket polygon is not a terrain with respect to its lid.
             </p>
 
-
-            <!--<p>
-                As we have seen, the two classes of polygons are equivalent, using the normal visibility property to verify if a polygon is attraction-convex.
-                which is (TODO time complexity) to compute. The main property of a normal visible polygon is that the normal to each edge (note that the normal must intersect the edge) of the polygon 
-                does not intersect with any other edge of the polygon.
-            </p>-->
             <h3> Steps of the algorithm</h3>
             <h4>Convex Hull</h4>
             <p>
                 We must compute it to check if every pocket polygon are terrains with respect to their lid.
-                Since we only study simple polygons <!--, or a polyline-->, the convex hull can be computed using
-                the linear <a href="../../html/Reference/index.html#melkman">Melkman's algorithm</a>.
+                Since we only study simple polygons, the convex hull can be computed using
+                the linear <a href="../Materials/index.html#melkman">Melkman's algorithm</a>.
                 which uses a deque to store the vertices of the convex hull. while iteratively adding
-                new vertices of the input polygon, interpreted as a simple polyline (a <a href="../../html/Glossary/index.html#chain">polygonal chain</a>) to the deque, if it detects that the new vertex is not part of
+                new vertices of the input polygon, interpreted as a simple polyline
+                (a <a href="../../html/Glossary/index.html#chain">polygonal chain</a>) to the deque, if it detects that the new vertex is not part of
                 the convex hull, it will remove the vertices using rightmost side and leftmost side of
                 the deque to keep the convexity of the hull at each step.
             </p> 
@@ -222,11 +216,14 @@
                 <img src="../../images/terrain_non_attractive.png" alt="terrain non attractive" style="width:100%;max-width:150px;display: block; margin: auto;">
 
                 The property that let us reject this polygon is the fact that we have an acute angle in a recess of our polygon (a right turn in our previous image).
-                Indeed, the interior angles of attraction-convex polygon is always at most <span>\(3\pi / 2\)</span> (implying that the exterior angles is at least <span>\(\pi / 2\)</span>).<br/>
+                Indeed, the interior angles of attraction-convex polygon is always at most <span>\(3\pi / 2\)</span>
+                (implying that the exterior angles is at least <span>\(\pi / 2\)</span>).<br/>
 
 
-                For the last step of the algorithm, we need to scan our polygon twice, one in clockwise direction and the other in the counterclockwise direction.
-                The scans will verify namely the presence of acute angles outside the polygon. for more details, refer to the <a href="../../html/Code/index.html#ccw"> pseudocode</a>.
+                For the last step of the algorithm, we need to scan our polygon twice, one in clockwise direction and
+                the other in the counterclockwise direction.
+                The scans will verify namely the presence of acute angles outside the polygon. for more details,
+                refer to the <a href="../../html/Code/index.html#ccw"> pseudocode</a>.
             </p>
 
             <h1>Inverse Attraction Regions</h1>
@@ -247,11 +244,21 @@
 
             <h2>Computation</h2>
             <p>
-                As the inverse attraction region is a subset of the polygon, it is important to determine the points that can attract the given point. The computation of the inverse attraction region is done by constructing the shortest path map <a href="../../html/Glossary/index.html#shortest-path-map"><em>SPM(p)</em></a> of the given point <em>p</em> within the polygon <em>P</em>. The inverse attraction region is then constructed by considering the regions of the shortest path map <a href="../../html/Glossary/index.html#shortest-path-map"><em>SPM(p)</em></a> independently.
+                As the inverse attraction region is a subset of the polygon, it is important
+                to determine the points that can attract the given point. The computation of the inverse attraction
+                region is done by constructing the shortest path map
+                <a href="../../html/Glossary/index.html#shortest-path-map"><em>SPM(p)</em></a>
+                of the given point <em>p</em> within the polygon <em>P</em>.
+                The inverse attraction region is then constructed by considering the
+                regions of the shortest path map <a href="../../html/Glossary/index.html#shortest-path-map">
+                <em>SPM(p)</em></a> independently.
             </p>
             
             <p>
-                The article proposes to consider the inverse attraction region <a href="../../html/Glossary/index.html#inverse-attraction-region"><em>IAR(p)</em></a> as the union of all <em>Free<sub>i</sub> &cap; R<sub>i</sub></em> for all <em>i</em>. We will explain this in more detail in the following sections.
+                The article proposes to consider the inverse attraction region
+                <a href="../../html/Glossary/index.html#inverse-attraction-region"><em>IAR(p)</em></a>
+                as the union of all <em>Free<sub>i</sub> &cap; R<sub>i</sub></em> for all <em>i</em>.
+                We will explain this in more detail in the following sections.
             </p>
 
             <h3>Region - <em>R<sub>i</sub></em></h3>

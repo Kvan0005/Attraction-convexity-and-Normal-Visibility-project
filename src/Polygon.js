@@ -2,14 +2,13 @@ import {det, getTurn, isLeftTurn, isRightTurn} from "./Point.js";
 import {DIRECTION} from "./Const.js";
 import {ConvexHull} from "./ConvexHull.js";
 import {Deque} from "./Deque.js";
-import {getIntersection, isBetween} from "./InverseAttraction/SPM.js";
+import {isBetween} from "./InverseAttraction/SPM.js";
 import { HalfPlane } from "./InverseAttraction/HalfPlane.js";
 import { StraightLine } from "./InverseAttraction/StraightLine.js";
 
 export class Polygon {
-    constructor(points, closed) {
-        if (closed === undefined) {closed = false; }
-        points ? this.points = points : this.points = [];
+    constructor(points = [], closed = false) {
+        this.points = points;
         this.closed = closed;
     }
 
@@ -17,9 +16,7 @@ export class Polygon {
         if (this.closed) return;
         if (this.length() < 3) {
             this.points.push(point);
-        } else if (this.isCutting(point)) {
-            //textToDisplay = "Do not cut an edge";
-        } else if (!this.closed) {
+        } else if (!this.isCutting(point) && !this.closed) {
             this.points.push(point);
         }
     }
@@ -31,39 +28,24 @@ export class Polygon {
     reset() {
         this.points = [];
         this.closed = false;
-        //textToDisplay = "Construct a Polygon";
     }
 
     compute() {
         if (!this.closed && !this.isCutting()) {
             this.closed = true;
             this.toCounterClockwiseOrder();
-            //textToDisplay = "Poof !";
         }
-        //textToDisplay = "Close without cutting an edge";
     }
 
     toCounterClockwiseOrder() {
         let p = this.downmostPoint();
         let pIndex = this.points.indexOf(p);
-        let pMinus = pIndex - 1 >= 0 ? this.points[pIndex - 1] : this.points[this.length() - 1];
+        let pMinus = this.points[(pIndex - 1 + this.length()) % this.length()]
         let pPlus = this.points[(pIndex + 1) % this.length()];
 
         if (isRightTurn(pMinus, p, pPlus)) {
             this.points.reverse();
         }
-    }
-
-    getClockWiseOrder() {
-        return new Polygon([...this.points].reverse(), true);
-    }
-
-
-    leftmostPoint() {
-        return this.points.reduce(
-            (min, current) => (current.x < min.x ? current : min),
-            this.points[0]
-        );
     }
 
     downmostPoint() {
@@ -131,41 +113,7 @@ export class Polygon {
     }
 
     getConvexHull() {
-        let a = this.melkman();
-        let b = this.grahamScan();
-        console.log(a);
-        console.log(b);
         return new ConvexHull(this.melkman());
-    }
-
-    grahamScan() {
-        let points = [...this.points]
-        let n = points.length;
-        if (n < 3) {
-            return points;
-        }
-        points.sort((a, b) => {
-            return a.x - b.x;
-        });
-        let firstPoint = points[0];
-        points.shift(); // to
-
-        points.sort((a, b) => {
-            let turn = getTurn(a, firstPoint, b); // this will return which point is higher the other based on the first point
-            return turn === DIRECTION.RIGHT ? -1 : 1;
-            // this only works for when the first point is the lowest point on the x-axis
-        });
-        let hull = [];
-        hull.push(firstPoint);
-        hull.push(points[0]);
-        hull.push(points[1]);
-        for (let i = 1; i < n - 1; i++) {
-            while (getTurn(hull[hull.length - 2], hull[hull.length - 1], points[i]) !== DIRECTION.LEFT) {
-                hull.pop();
-            }
-            hull.push(points[i]);
-        }
-        return hull;
     }
 
     melkman() {
@@ -257,7 +205,6 @@ export class Polygon {
     }
 
     intersectWith(otherPolygon) {
-    
         const startingPoint = this.findStartingPoint(otherPolygon);
         if (!startingPoint) {
             throw new Error("No common starting point found between the polygons.");
@@ -268,7 +215,7 @@ export class Polygon {
         let currentPolygon = this;
         let otherPolygonRef = otherPolygon;
         let previousPoint = null;
-        let visitedPoints = new Set(); // Pour détecter les cycles
+        let visitedPoints = new Set(); // Detect cycles
 
         let nextPoint = this.nextPoint(currentPoint, currentPolygon, previousPoint);
         let secondPoint = this.nextPoint(nextPoint, currentPolygon, currentPoint);

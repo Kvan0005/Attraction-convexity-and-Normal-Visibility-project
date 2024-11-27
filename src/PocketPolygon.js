@@ -7,11 +7,7 @@ class PocketPolygon {
         this.chains = chains;
         this.order = this.getFirst().x < this.getLast().x ? 1 : -1; // 1: left to right, -1: right to left and assuming general position
     }
-    
-    getChains(){
-        return [this.first, ...this.chains, this.last];
-    }
-    
+
     getFirst(){
         return this.first;
     }
@@ -21,10 +17,11 @@ class PocketPolygon {
     }
     
     isOrderedProjection(){
-        this.projectionPoints = [];
+        this.projectionPoints = [this.getFirst()];
         for (const element of this.chains) {
             this.projectionPoints.push(this.projection(this.getFirst(), this.getLast(), element));
         }
+        this.projectionPoints.push(this.getLast);
         for (let i = 0; i < this.projectionPoints.length - 1; i++) {
             if (this.order*this.projectionPoints[i].x > this.order*this.projectionPoints[i+1].x) {
                 return false;

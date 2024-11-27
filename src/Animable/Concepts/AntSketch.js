@@ -22,7 +22,6 @@ class Sketch{
         const minY = Math.min(...points.map(p => p.y));
         const maxY = Math.max(...points.map(p => p.y));
 
-        // Calculate the center of the bounding box
         const centerX = (minX + maxX) / 2;
         const centerY = (minY + maxY) / 2;
 
@@ -52,9 +51,9 @@ class Sketch{
 var sketch = new Sketch();
 const s = (p) => {
     p.setup = function () {
-        const parent = document.getElementById('antAnimation'); // Récupérer le parent
-        const parentBounds = parent.getBoundingClientRect(); // Obtenir les dimensions du parent
-        const canvas = p.createCanvas(parentBounds.width, parentBounds.height); // Taille du canvas = parent
+        const parent = document.getElementById('antAnimation');
+        const parentBounds = parent.getBoundingClientRect();
+        const canvas = p.createCanvas(parentBounds.width, parentBounds.height);
         canvas.parent('antAnimation')
         sketch.setP(p);
         p.textSize(20);

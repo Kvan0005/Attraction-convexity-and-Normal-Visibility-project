@@ -36,6 +36,7 @@ export class ReactivePolygon {
         this.vertices = [];
         this.closed = false;
     }
+
     close(p) {
         if (this.isCutting(new Point(p.mouseX, -p.mouseY))) return false;
         this.closed = p.millis();
