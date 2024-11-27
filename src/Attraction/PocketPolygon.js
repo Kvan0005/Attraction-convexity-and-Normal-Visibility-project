@@ -7,6 +7,10 @@ class PocketPolygon {
         this.chains = chains;
         this.order = this.getFirst().x < this.getLast().x ? 1 : -1; // 1: left to right, -1: right to left and assuming general position
     }
+    
+    getChains(){
+        return [this.first, ...this.chains, this.last];
+    }
 
     getFirst(){
         return this.first;
@@ -42,8 +46,8 @@ class PocketPolygon {
         p.line(this.getFirst().x, -this.getFirst().y, this.getLast().x, -this.getLast().y);
         new StraightLine(this.getFirst(), this.getLast()).draw(p, "black", true);
         p.stroke("blue");
-        for (let i = 0; i < this.chains.length; i++) {
-            p.line(this.chains[i].x, -this.chains[i].y, this.projectionPoints[i].x, -this.projectionPoints[i].y);
+        for (let i = 0; i < this.getChains().length; i++) {
+            p.line(this.getChains()[i].x, -this.getChains()[i].y, this.projectionPoints[i].x, -this.projectionPoints[i].y);
         }
         p.stroke("white");
     }
