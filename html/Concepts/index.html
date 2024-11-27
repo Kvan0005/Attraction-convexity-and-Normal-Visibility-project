@@ -31,21 +31,26 @@
             <p>
                 Attraction-convex polygons are those where every point in the polygon attracts every other point.
                 The attraction of a point <span>\(q\)</span> to a point <span>\(p\)</span> describes
-                a movement system in which <span>\(q\)</span> moves to minimize
-                its Euclidean distance with <span>\(p\)</span><br/>
+                a movement system in which <span>\(q\)</span> moves to minimize at each instant
+                its Euclidean distance with <span>\(p\)</span>.<br/>
 
                 Normal-visible polygons are those where the normal to each point on the boundary of the polygon
                 hits no point of the interior of the polygon.
                 A conceptualisation of this second definition is to imagine an ant walking along
-                the polygon counterclockwise, with a laser pointing to its right
+                the polygon counterclockwise, with a laser pointing to its right.
             </p>
 
             <div id="antAnimation"></div>
 
             <p>
+                Observe the two movement of the ant : its rotation on the vertices with its normal sweeping Cones <span>\(C(v)\)</span> and
+                its walking along the edges with its normal sweeping beams <span>\(B(e)\)</span>.
+            </p>
+            <p>
                 An important part of the article was to prove that these two classes of polygons coincide,
                 in order to construct an algorithm to verify if a polygon
-                is Attraction-convex, based on Normally-visible polygons.
+                is Attraction-convex, based on Normally-visible polygons. Remind that we only study
+                <a href="../../html/Glossary/index.html#simple-polygon">simple polygons</a> here.
             </p>
 
             <h2>Equivalence between the two classes</h2>
@@ -55,14 +60,14 @@
 
             <div class="image-container">
                 <figure>
-                <img src="../../images/deadpoint1.png" alt="pq' perpendicular edge"  style="width:100%;max-width:300px;">
-                <figcaption>(1) In a <span>\(pq'\)</span> perpendicular edge. </figcaption>
+                    <img src="../../images/deadpoint1.png" alt="pq' perpendicular edge"  style="width:100%;max-width:300px;">
+                    <figcaption>(1) In a <span>\(pq'\)</span> perpendicular edge. </figcaption>
                 </figure>
                 <figure>
-                <img src="../../images/deadpoint2.png" alt="convex vertex dead point"  style="width:100%;max-width:300px;">
-                <figcaption>(2) or in a <a href="../../html/Glossary/index.html#convex-vertex">Convex vertex</a> <br/>
-                    when <span>\(pq'\)</span> is exterior to the polygon in the neighborhood of <span>\(q'\)</span>.</figcaption>
-                </figure>
+                    <img src="../../images/deadpoint2.png" alt="convex vertex dead point"  style="width:100%;max-width:300px;">
+                    <figcaption>(2) or in a <a href="../../html/Glossary/index.html#convex-vertex">Convex vertex</a> <br/>
+                        when <span>\(pq'\)</span> is exterior to the polygon in the neighborhood of <span>\(q'\)</span>.</figcaption>
+                    </figure>
             </div>
 
             <h3>Attraction-convex <span>\(\Rightarrow\)</span> normally visible</h3>
