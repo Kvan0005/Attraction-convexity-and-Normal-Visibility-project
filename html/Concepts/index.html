@@ -192,18 +192,18 @@
             <p>
                 We must compute it to check if every pocket polygon are terrains with respect to their lid.
                 Since we only study simple polygons, the convex hull can be computed using
-                the linear <a href="../Materials/index.html#melkman">Melkman's algorithm</a>.
+                the linear <a href="../Materials/index.html#melkman">Melkman's convex hull algorithm</a>.
                 which uses a deque to store the vertices of the convex hull. while iteratively adding
                 new vertices of the input polygon, interpreted as a simple polyline
                 (a <a href="../../html/Glossary/index.html#chain">polygonal chain</a>) to the deque, if it detects that the new vertex is not part of
                 the convex hull, it will remove the vertices using rightmost side and leftmost side of
                 the deque to keep the convexity of the hull at each step.
-            </p> 
+            </p>
 
             <h4>Check that every Pocket Polygon is a Terrain with respect to its lid</h4>
             <p>
                 We can determine the different pocket polygons of the polygon using the symmetric difference between the convex hull and the polygon.
-                Using the Projection of the pocket chain on the pocket lid, we can simply verify that the projection is an ordered sequence of vertex.
+                Using the Projection of the pocket chain on the pocket lid, we can simply verify that the projection of each vertex in the pocket chain form an ordered sequence of vertex on the pocket lid.
                 This step can be observed on the Tool page by activating the "Show projection" Button.
                 This part of the algorithm give us a necessary condition to verify the normal visibility of the polygon, but it is not sufficient.
                 Therefore, it means that whenever we find a pocket polygon which is not a terrain, we can stop the algorithm and simply returns false.
@@ -213,7 +213,9 @@
             <p>
                 Let's analyse a bit more a polygon that enter this step.
 
+                <br/>
                 <img src="../../assets/terrain_non_attractive.png" alt="terrain non attractive" style="width:100%;max-width:150px;display: block; margin: auto;">
+                <br/>
 
                 The property that let us reject this polygon is the fact that we have an acute angle in a recess of our polygon (a right turn in our previous image).
                 Indeed, the interior angles of attraction-convex polygon is always at most <span>\(3\pi / 2\)</span>
@@ -221,10 +223,25 @@
 
 
                 For the last step of the algorithm, we need to scan our polygon twice, one in clockwise direction and
-                the other in the counterclockwise direction.
-                The scans will verify namely the presence of acute angles outside the polygon. for more details,
-                refer to the <a href="../../html/Code/index.html#ccw"> pseudocode</a>.
+                the other in the counterclockwise direction.<br/>
+                The scans will verify namely the presence of acute angles outside the polygon and a really specific other case.
+                Hence, we won't detail more this part of the algorithm which is quite difficult, we mainly want here to give an intuition
+                of the standing of this part of the algorithm. For more details and explanation,
+                refer to the original article and the <a href="../../html/Code/index.html#ccw"> pseudocode</a>.
+
+                If both scans passed, we now know that our polygon is attraction-convex.
             </p>
+
+            <h3>Complexity</h3>
+            <p>
+                Each step of the algorithm is linear, since Melkman is a linear convex hull algorithm for simple polygons,
+                checking if a pocket polygon is a terrain only require the projection of a part of our vertices
+                and both scans iterate once on each vertex to (mostly to check left turn and right turn).
+                Therefore, the algorithm linear.
+            </p>
+            <br/>
+            <br/>
+
 
             <h1>Inverse Attraction Regions</h1>
 
