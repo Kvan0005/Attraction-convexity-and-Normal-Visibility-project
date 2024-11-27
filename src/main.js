@@ -9,6 +9,46 @@ var data_pocket_chain_on_lid = [];
 var canvas;
 var show_convex_hull = false;
 var buttonList = [];
+var sketch = new Sketch();
+class Sketch{
+    constructor() {
+        this.polygon = new ReactivePolygon();
+        this.phase = Phase.Draw;
+        this.p;
+        this.isAttractionConvex = null;
+    }
+    draw(){
+        switch (this.phase) {
+            case Phase.Draw: {
+                this.polygon.drawAnimated(this.p, this);
+                break;}
+            case Phase.Explanation: {
+                this.polygon.draw(this.p);
+                if (this.isAttractionConvex) text_to_display = "True";
+                else text_to_display = "False";
+                break;}
+        }
+    }
+    polygonIsClosed(){
+        return this.polygon.isClosed();
+    }
+    isNearFirstVertexPolygon(p) {
+        return this.polygon.isNearFirstVertex(p);
+    }
+    tryClosePolygon(p){
+        if (this.polygon.close(p)) {
+            this.isAttractionConvex = Attraction.compute(this.polygon.toPolygon());
+            if (this.isAttractionConvex === false) {
+                this.polygon.setColor([255, 126, 121]);
+            }
+        }
+    }
+    addPoint(point){
+        this.polygon.add(point);
+    }
+}
+
+
 const s = (p) => {
     p.setup = function () {
         const parent = document.getElementById('toolContainer'); // Récupérer le parent
