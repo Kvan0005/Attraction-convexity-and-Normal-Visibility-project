@@ -227,4 +227,93 @@ export class ConstrainingHalfPlanes {
                 }
             });
     }
+
+    drawH1(p, i = 1) {
+        const colors = [
+            [100, 100, 250, 50],
+            [250, 100, 100, 50],
+            [100, 250, 100, 50],
+            [250, 250, 100, 50],
+            [100, 250, 250, 50],
+            [250, 100, 250, 50]
+        ];
+        
+        p.stroke("blue");
+        p.strokeWeight(1);
+
+        Object.values(this.chp).forEach(([subPolygons, associatedLine], index) => {
+            if (i !== index) {
+                return;
+                }
+            if (subPolygons.length === 2) {
+                let j = 0;
+                for (const subPolygon of subPolygons) {
+                    const color = colors[j++];
+                    p.fill(...color);
+                    p.beginShape();
+                    for (const point of subPolygon) {
+                    p.vertex(point.x, -point.y);
+                    }
+                    p.endShape(p.CLOSE);
+                }
+                associatedLine[0].draw(p);
+                const [u, v] = this.spt.tree[1];
+                p.fill("red");
+                p.stroke("red");
+                u.draw(p);
+                v.draw(p);
+                p.line(u.x, -u.y, v.x, -v.y);
+
+                p.stroke("black");
+                p.fill("black");
+                this.spt.tree[0][0].draw(p);
+
+                this.straightLines[2 * index].draw(p, "blue", true);
+                this.straightLines[2 * index + 1].draw(p, "blue", true);
+
+                p.textSize(10);
+                p.stroke("black");
+                p.fill("black");
+                p.text(`v`, v.x + 5, -v.y - 10);
+                p.text(`u`, u.x - 5, -u.y - 5);
+                p.textSize(9);
+                p.text(`H1`, this.straightLines[2 * index].p1.x + 5, -this.straightLines[2 * index].p1.y - 15);
+                p.text(`H2`, this.straightLines[2 * index + 1].p2.x + 80, -this.straightLines[2 * index + 1].p2.y + 40);
+                p.text(`e1`, -50, -40);
+                p.text(`e2`, 0, -5);
+            } else {
+                const color = colors[index % colors.length];
+                p.fill(...color);
+                p.beginShape();
+                for (const point of subPolygons) {
+                    p.vertex(point.x, -point.y);
+                }
+                p.endShape(p.CLOSE);
+                associatedLine.draw(p);
+                const [u, v] = this.spt.tree[0];
+                p.fill("red");
+                p.stroke("red");
+                p.line(u.x, -u.y, v.x, -v.y);
+                
+                u.draw(p);
+                v.draw(p);
+                
+                this.straightLines[2 * index].draw(p, "blue", true);
+                this.straightLines[2 * index + 1].draw(p, "blue", true);
+
+                p.textSize(10);
+                p.stroke("black");
+                p.fill("black");
+                p.text(`v`, v.x + 5, -v.y - 5);
+                p.text(`u`, u.x + 5, -u.y - 5);
+                p.textSize(9);
+                p.text(`H1`, this.straightLines[2 * index].p1.x + 5, -this.straightLines[2 * index].p1.y - 15);
+                p.text(`H2`, this.straightLines[2 * index + 1].p2.x + 5, -this.straightLines[2 * index + 1].p2.y + 150);
+                p.text(`e1`, 120, -25);
+                p.text(`e2`, 135, -95);
+            }
+        });
+    }
+
+
 }
