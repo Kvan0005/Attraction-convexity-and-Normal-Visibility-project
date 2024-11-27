@@ -230,7 +230,7 @@ ul li a:hover {
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-#example_IAR, #example_Freei, #example_Freei2, #example_Freei3, #example_H1_H2, #example_Ri, #example_H1_H2_2 {
+#example_IAR, #example_Freei, #example_Freei2, #example_Freei3, #example_H1_H2, #example_Ri, #example_H1_H2_2, #SPM {
     display: flex;
     justify-content: center;
     align-items: center;

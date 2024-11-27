@@ -22,6 +22,7 @@
 
         <!-- Main Content Area -->
         <main class="content">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.10.0/p5.min.js"></script>
             <header>Glossary</header>
 
 
@@ -84,8 +85,8 @@
             <ul>
                 <li ><a href="">Shortest Path [<em>SP (p,q)</em>]</a>: The shortest path between <em>p</em> and <em>q</em> in <em>P</em></li>
                 <li id="shortest-path-map"> <a href="">Shortest Path Map [<em>SPM (p)</em>]</a>: A shortest path map for a given point <em>p</em>, denoted as <em>SPM (p)</em>, is a subdivision of <em>P</em> into regions such that shortest paths from <em>p</em> to all the points inside the same region pass through the same set of vertices of <em>P</em>
-                <img src="../../assets/Figure9.png" alt="Figure 9: Shortest Path Map" style="width:100%;max-width:600px;display: block; margin: auto;">
-                </li>
+                
+                    <div id="SPM"></div>
 
                 <li id="shortest-path-tree" ><a href="">Shortest Path Tree [<em>SPT (p)</em>]</a>:
                     The union of shortest paths from <em>p</em> to all vertices of <em>P</em><br/>
@@ -114,6 +115,7 @@
         </main>
     </div>
     <div id="authorContainer">By Loïc Blommaert, Quentin Lecocq and Kevin Vandervaeren</div>
+    <script type="module" src="../../src/InverseAttraction/GlossaryExample.js"></script>
     <script type="text/javascript" async
             src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.min.js">
     </script>
