@@ -1,7 +1,8 @@
 import { Polygon } from "../Polygon.js";
 
 export class Free {
-    constructor(constrainingHalfPlane) {
+    constructor(constrainingHalfPlane, polygon) {
+        this.polygon = polygon;
         this.subPolygons = [];
         this.associatedLines = [];
         this.freeRegions = this.computeFreeRegions(constrainingHalfPlane);
@@ -24,7 +25,17 @@ export class Free {
                 this.associatedLines.push(associatedLines[1]);
                 const domain1 = this.computeDomain(subPolygon[0], associatedLines[0]);
                 const domain2 = this.computeDomain(subPolygon[1], associatedLines[1]);
-                freeRegions[key] = [new Polygon(domain1, true), new Polygon(domain2, true)];
+
+                if (domain1.length === 0 && domain2.length === 0) {
+                    return;
+                } else if (domain1.length === 0) {
+                    freeRegions[key] = new Polygon(domain2, true);
+                } else if (domain2.length === 0) {
+                    freeRegions[key] = new Polygon(domain1, true);
+                } else {
+                    freeRegions[key] = [new Polygon(domain1, true), new Polygon(domain2, true)];
+                }
+
             } else {
                 this.subPolygons.push(subPolygon);
                 this.associatedLines.push(associatedLines);
@@ -32,56 +43,76 @@ export class Free {
                 freeRegions[key] = new Polygon(domain, true);
             }
         });
-
         return freeRegions;
     }
 
     computeDomain(subPolygon, associatedLine) {
         const intersections = this.getIntersections(subPolygon, associatedLine);
-        const intersectionAndFollowingPoints = [];
-        const domain = []
+        let intersectionAndFollowingPoints = [];
+        const domain = [];
 
         if (intersections.length < 2 && (!associatedLine.isIn(subPolygon[0]) || !associatedLine.isIn(subPolygon[1]))) {
             return subPolygon;
         } else if (intersections.length < 2) {
             return [];
         }
+
         for (const element of intersections) {
             const [intersection, p1, p2] = element;
-            intersectionAndFollowingPoints.push(intersection); 
-            if (intersection.equals(p1) || !associatedLine.isIn(p1)) {
-                intersectionAndFollowingPoints.push(p1);
+            if (!intersection.equals(p1) && !associatedLine.isIn(p1)) {
+                intersectionAndFollowingPoints.push([intersection, p1, -1]);
             } else {
-                intersectionAndFollowingPoints.push(p2);
+                intersectionAndFollowingPoints.push([intersection, p2, 1]);
             }
         }
 
-        let lastIntersection = false;
+        let firstInsert = true;
+        subPolygon.push(subPolygon[0]);
         for (const element of subPolygon) {
             if (!associatedLine.isIn(element) || associatedLine.isOn(element)) {
-                let j = intersectionAndFollowingPoints.findIndex(point => point.equals(element)) - 1;
-                if (j < 0) {
-                    if (domain.length === 0 || !domain[domain.length - 1].equals(element)) {
+                let j = 0;
+                let cond = true;
+                while (j >= 0 && intersectionAndFollowingPoints.length > 0) {
+                    j = intersectionAndFollowingPoints.findIndex(tuple => tuple[1].equals(element));
+                    if (j >= 0) {
+                        cond = false;
+                        let inter = intersectionAndFollowingPoints[j];
+                        intersectionAndFollowingPoints.splice(j, 1);
+                        if (inter[2] === 1) {
+                            domain.push(inter[0]);
+                            if (!inter[0].equals(element)) {
+                                domain.push(element);
+                            }
+                        } else {
+                            domain.push(element);
+                            if (!element.equals(inter[0])) {
+                                domain.push(inter[0]);
+                            }
+                        }
+                    }
+                    if (firstInsert) {
+                        firstInsert = false;
+                        break;
+                    }
+                }
+                if (cond) {
+                    if (domain.length === 0 || !domain.includes(element)) {
                         domain.push(element);
                     }
-                } else if (lastIntersection) {
-                    let tmp = intersectionAndFollowingPoints[j]
-                    domain.push(tmp);
-                    if (!tmp.equals(element)) {
-                        domain.push(element);
-                    }
-                    lastIntersection = false;
-                } else {
-                    let tmp = element;
-                    domain.push(tmp);
-                    if (!tmp.equals(intersectionAndFollowingPoints[j])) {
-                        domain.push(intersectionAndFollowingPoints[j]);
-                    }
-                    lastIntersection = true;
                 }
             }
         }
-        return domain;
+        this.removeDuplicates(domain);
+        return domain; 
+    }
+
+    removeDuplicates(domain) {
+        for (let i = 0; i < domain.length; i++) {
+            if (domain[i].equals(domain[(i + 1) % domain.length])) {
+                domain.splice(i, 1);
+                i--;
+            }
+        }
     }
 
     getIntersections(subPolygon, halfPlane) {
@@ -120,26 +151,44 @@ export class Free {
 
         if (this.limitDraw) {
             const color = colors[this.drawRegion % colors.length];
-            let r = this.freeRegions[Object.keys(this.freeRegions)[this.drawRegion]];
-            if (Array.isArray(r)) {
-                r = r[0];
-            }
             p.fill(...color);
-            p.beginShape();
-            for (const point of r.points) {
-                p.vertex(point.x, -point.y);
-            }
-            p.endShape(p.CLOSE);
-
-        } else {
-            Object.values(this.freeRegions).forEach((region, index) => {
-                const color = colors[index % colors.length];
-                p.fill(...color);
+            let region = this.freeRegions[Object.keys(this.freeRegions)[this.drawRegion]];
+            if (region.length === 2) {
+                for (const subPolygon of region) {
+                    p.beginShape();
+                    for (const point of subPolygon.points) {
+                        p.vertex(point.x, -point.y);
+                    }
+                    p.endShape(p.CLOSE);
+                }
+            } else {
                 p.beginShape();
                 for (const point of region.points) {
                     p.vertex(point.x, -point.y);
                 }
                 p.endShape(p.CLOSE);
+            }
+
+        } else {
+            Object.values(this.freeRegions).forEach((region, index) => {
+                const color = colors[index % colors.length];
+                p.fill(...color);
+                
+                if (region.length === 2) {
+                    for (const subPolygon of region) {
+                        p.beginShape();
+                        for (const point of subPolygon.points) {
+                            p.vertex(point.x, -point.y);
+                        }
+                        p.endShape(p.CLOSE);
+                    }
+                } else {
+                    p.beginShape();
+                    for (const point of region.points) {
+                        p.vertex(point.x, -point.y);
+                    }
+                    p.endShape(p.CLOSE);
+                }
             });
         }
         
