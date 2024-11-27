@@ -15,7 +15,7 @@
                 <li><a class="" href="../../html/Concepts/index.html">Concepts</a></li>
                 <li><a class="" href="../../html/Code/index.html">Code</a></li>
                 <li><a class="" href="../../html/Tool/index.html">Tool</a></li>
-                <li><a class="" href="../../html/Reference/index.html">Materials</a></li>
+                <li><a class="" href="../Materials/index.html">Materials</a></li>
                 <li><a class="active" href="../../html/Glossary/index.html">Glossary</a></li>
             </ul>
         </nav>
@@ -68,7 +68,7 @@
                 <li><a href="">Normal Visible Polygon</a>: A polygon which the normal vector of each edge that is pointing towards the exterior
                     cannot hit any point of the interior of the polygon</li>
                 <li><a href="">Pocket polygon</a>: the polygon formed by the pocket chain and the pocket lid</li>
-                <li><a href="">Simple Polygon</a>: A Simple Polygon is a polygon that does not intersect itself and has no holes</li>
+                <li id="simple-polygon"><a href="">Simple Polygon</a>: A Simple Polygon is a polygon that does not intersect itself and has no holes</li>
             </ul>
 
             <h2>Regions</h2>
@@ -84,14 +84,14 @@
             <ul>
                 <li ><a href="">Shortest Path [<em>SP (p,q)</em>]</a>: The shortest path between <em>p</em> and <em>q</em> in <em>P</em></li>
                 <li id="shortest-path-map"> <a href="">Shortest Path Map [<em>SPM (p)</em>]</a>: A shortest path map for a given point <em>p</em>, denoted as <em>SPM (p)</em>, is a subdivision of <em>P</em> into regions such that shortest paths from <em>p</em> to all the points inside the same region pass through the same set of vertices of <em>P</em>
-                <img src="../../images/Figure9.png" alt="Figure 9: Shortest Path Map" style="width:100%;max-width:600px;display: block; margin: auto;">
+                <img src="../../assets/Figure9.png" alt="Figure 9: Shortest Path Map" style="width:100%;max-width:600px;display: block; margin: auto;">
                 </li>
 
                 <li id="shortest-path-tree" ><a href="">Shortest Path Tree [<em>SPT (p)</em>]</a>:
                     The union of shortest paths from <em>p</em> to all vertices of <em>P</em><br/>
                     <div class="image-container">
                     <figure>
-                    <img src="../../images/ShortestPathTree.png" alt="Figure 0: Shortest Path Tree" style="width:100%;max-width:600px;display: block; margin: auto;">
+                    <img src="../../assets/ShortestPathTree.png" alt="Figure 0: Shortest Path Tree" style="width:100%;max-width:600px;display: block; margin: auto;">
                     <figcaption style="">The tree formed by <em>(Tree<sub>red</sub> &cup;
                     Tree<sub>blue</sub>)</em> is the Shortest Path Tree from <em>p</em> to all vertices of <em>P</em>.
                     In the Inverse Attraction Region (IAR), we are only interested in the red tree,

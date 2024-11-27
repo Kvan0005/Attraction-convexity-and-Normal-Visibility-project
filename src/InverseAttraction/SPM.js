@@ -1,5 +1,5 @@
-import { Point, isRightTurn, det, isLeftTurn } from "../Point.js";
-import { Polygon } from "../Polygon.js";
+import { Point, isRightTurn, isLeftTurn } from "../geometry/Point.js";
+import { Polygon } from "../geometry/Polygon.js";
 
 export class SPM {
     constructor(polygon, spt, point) {
@@ -83,8 +83,8 @@ export class SPM {
             edges.forEach(([p1, p2]) => {
                 if ((u.equals(p1) || v.equals(p2)) || (u.equals(p2) || v.equals(p1))) return;
                 const intersection = getIntersection(u, v, p1, p2);
-                let w = this.polygon.points.findIndex(point => point.equals(v)) - 1;
-                let x = w + 2;
+                let w = (this.polygon.points.findIndex(point => point.equals(v)) - 1 + this.polygon.points.length) % this.polygon.points.length;
+                let x = (w + 2) % this.polygon.points.length;
                 if (intersection && (isLeftTurn(this.polygon.points[w], v, intersection) || isLeftTurn(v, this.polygon.points[x], intersection))) {
                     const key = JSON.stringify([u, v]);
                     if (!(key in projections) || isBetween(v, projections[key], intersection)) {

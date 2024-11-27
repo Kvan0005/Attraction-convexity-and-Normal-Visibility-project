@@ -11,7 +11,6 @@ export class IAR {
         this.spm = new SPM(this.polygon, this.spt, this.p);
         this.chp = new ConstrainingHalfPlanes(this.polygon, this.spt);
         this.free = new Free(this.chp, this.polygon);
-        //this.limitDrawing();
         this.iar = this.computeIAR();
     }
 
@@ -21,7 +20,6 @@ export class IAR {
         let path = [this.p];
 
         this.spt.tree.forEach(([, v]) => {
-
             let spmRegion = this.spm.regions[JSON.stringify({x: v.x, y: v.y})];
             path.push(v);
             if (spmRegion === undefined) {
@@ -48,7 +46,6 @@ export class IAR {
                 return;
             }
             iar[JSON.stringify({x: v.x, y: v.y})] = res;
-
         });
         return iar;
     }
@@ -106,34 +103,94 @@ export class IAR {
 
     draw(p) {
         // draw attracted point
-        this.p.draw(p);
-
-        this.polygon.draw(p);
-        //this.spt.draw(p);
-        //this.spm.draw(p);
-        //this.chp.draw(p);
-        //this.free.draw(p);
-
-        const colors = [
-            [100, 100, 250, 50],
-            [250, 100, 100, 50],
-            [100, 250, 100, 50],
-            [250, 250, 100, 50],
-            [100, 250, 250, 50],
-            [250, 100, 250, 50]
-        ];
-        
-        p.stroke("blue");
-        p.strokeWeight(1);
+        this.drawPoly(p);
         
         Object.values(this.iar).forEach((region, index) => {
-            const color = colors[index % colors.length];
-            p.fill(...color);
+            p.fill(100, 100, 250, 50);
             p.beginShape();
             for (const point of region.points) {
                 p.vertex(point.x, -point.y);
             }
             p.endShape(p.CLOSE);
         });
+    }
+
+    drawPoly(p) {
+        p.fill("red");
+        p.stroke("red");
+        this.p.draw(p);
+
+        p.stroke("black");
+        p.fill("black");
+        p.strokeWeight(1);
+        this.polygon.draw(p);
+
+        p.stroke("blue");
+        p.strokeWeight(0);
+    }
+
+    drawSPT(p) {
+        this.spt.draw(p);
+    }
+
+    drawSPM(p) {
+        this.spm.draw(p);
+    }
+
+    drawCHP(p) {
+        this.chp.draw(p);
+    }
+
+    drawFree(p) {
+        this.free.draw(p);
+    }
+
+    drawRi(p) {
+        
+        this.drawPoly(p);
+        
+        const region = this.spm.regions[Object.keys(this.spm.regions)[1]];
+        if (region) {
+            p.fill( 100, 100, 250, 50);
+            p.beginShape();
+            for (const point of region.points) {
+                p.vertex(point.x, -point.y);
+                this.drawDashedLines(p, region.points[0], point);
+            }
+            p.endShape(p.CLOSE);
+        }
+        
+        p.fill("turquoise");
+        this.polygon.points[5].draw(p);
+
+    }
+
+    drawDashedLines(p, start, end) {
+        p.stroke("green");
+        p.strokeWeight(1);
+        p.drawingContext.setLineDash([5, 5]);
+
+        p.line(start.x, -start.y, end.x, -end.y);
+        p.drawingContext.setLineDash([]);
+    }
+
+    drawH1(p) {
+        this.drawPoly(p);
+        this.chp.drawH1(p)
+    }
+
+    drawH2(p) {
+        this.drawPoly(p);
+        this.chp.drawH1(p, 0)
+    }
+
+    drawFreei(p) {
+        this.drawPoly(p);
+        this.free.drawFreei(p, 1);
+    }
+
+    drawFreei2(p) {
+        this.drawPoly(p);
+        this.free.drawFreei(p);
     }
 }

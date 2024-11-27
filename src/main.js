@@ -1,7 +1,9 @@
-import { Point} from "./Point.js"; // Import the Point class
+import { Point} from "./geometry/Point.js";
 import { ReactivePolygon } from "./Animable/ReactivePolygon.js";
 import { Phase } from "./Animable/Home/Phase.js";
-import { Attraction } from "./Attraction.js";
+import { Attraction } from "./Attraction/Attraction.js";
+import {WalkingAnt} from "./Animable/WalkingAnt.js";
+
 var canvas;
 var buttonList = [];
 class Sketch{
@@ -14,18 +16,24 @@ class Sketch{
         this.data_pocket_chain_on_lid = [];
         this.convex_hull = null;
         this.show_projection = false;
-        this.text_to_display = "?";
+        this.text_to_display = "";
+        this.is_ant = false;
+        this.ant;
     }
 
     setP(p){
         this.p = p;
     }
-    notify(obj){
+
+    notify(){
         if (this.phase === Phase.Draw){
-                this.polygon.toCounterClockwiseOrder();
-                this.phase = this.phase.next();
-            }
+            this.polygon.toCounterClockwiseOrder();
+            this.phase = this.phase.next();
         }
+        if (this.phase === Phase.Explanation) {
+            this.is_ant = false;
+        }
+    }
 
     draw(){
         switch (this.phase) {
@@ -35,9 +43,10 @@ class Sketch{
             case Phase.Explanation: {
                 this.p.text(this.text_to_display, this.p.width / 2, 10);
                 this.polygon.draw(this.p);
-                this.text_to_display = this.isAttractionConvex ? "True" : "False";
+                this.text_to_display = this.isAttractionConvex ? "The polygon is Attraction-convex" : "The polygon is NOT Attraction-convex";
                 if (this.show_convex_hull===true && this.convex_hull !== null ) this.convex_hull.draw(this.p);
                 if (this.show_projection && this.data_pocket_chain_on_lid.length > 0) this.data_pocket_chain_on_lid.forEach(elem => elem.draw(this.p));
+                if (this.is_ant) this.ant.draw(this.p, this);
                 break;}
         }
     }
@@ -73,15 +82,24 @@ class Sketch{
         this.show_projection = !this.show_projection;
     }
 
+    summonAnt() {
+        if (this.is_ant || this.phase === Phase.Draw) return;
+        this.is_ant = true;
+        this.ant = new WalkingAnt(this.polygon, 2000, 2000);
+        this.ant.init(this.p);
+    }
+
     reset(){
         this.polygon = new ReactivePolygon();
         this.data_pocket_chain_on_lid = [];
         this.convex_hull = null;
         this.show_convex_hull = false;
+        this.show_projection = false;
         this.phase = Phase.Draw;
         this.isAttractionConvex = null;
-        this.text_to_display = "?";
-        this.show_projection = false;
+        this.text_to_display = "";
+        this.is_ant = false;
+        this.ant = undefined;
     }
 }
 
@@ -89,9 +107,9 @@ let sketch;
 
 const s = (p) => {
     p.setup = function () {
-        const parent = document.getElementById('toolContainer'); // Récupérer le parent
-        const parentBounds = parent.getBoundingClientRect(); // Obtenir les dimensions du parent
-        canvas = p.createCanvas(parentBounds.width, parentBounds.height); // Taille du canvas = parent
+        const parent = document.getElementById('toolContainer');
+        const parentBounds = parent.getBoundingClientRect();
+        canvas = p.createCanvas(parentBounds.width, parentBounds.height);
         canvas.parent('toolContainer');
         sketch = new Sketch();
         sketch.setP(p);
@@ -100,22 +118,29 @@ const s = (p) => {
         p.textSize(40);
         p.textAlign(p.CENTER, p.TOP);
         let height = p.height + 50;
-        buttonList.push(generateButton(p.width / 2 + 185, height , "Show convex hull", () => sketch.toggleShowConvexHull(), p));
-        buttonList.push(generateButton(p.width / 2 + 185, height , "Show projection", () => sketch.toggleShowProjection(), p));
-        buttonList.push(generateButton(p.width / 2 + 255, height , "Clear", reset_points, p));
-        let width = p.width / 2 + 80;
+        buttonList.push(generateButton("Show convex hull", () => sketch.toggleShowConvexHull(), p));
+        buttonList.push(generateButton("Show projection", () => sketch.toggleShowProjection(), p));
+        buttonList.push(generateButton("Clear", reset_points, p));
+        buttonList.push(generateButton("Summon an ant", () => sketch.summonAnt(), p));
+        let buttonListSize = buttonList.reduce((a, b) => a + b.size().width, 0);
+        let width = parentBounds.width / 2 - buttonListSize / 6;
         buttonList.forEach(element => {
-            //place the button (element) to the right of the prevous one
             element.position(width, height);
-            width += element.width +40;
+            width += element.size().width + 15;
         });
     }
 
-    function generateButton(x, y, text, callback, p) {
+    function generateButton(text, callback, p) {
         let button = p.createButton(text);
-        button.width = text.length *5;
-        button.position(x, y);
         button.mousePressed(callback);
+        button.style('background-color', '#009BB8');
+        button.style('color', 'white');
+        button.style('border', 'none');
+        button.style('padding', '10px 20px');
+        button.style('text-align', 'center');
+        button.style('font-size', '16px');
+        button.style('border-radius', '5px');
+        button.style('cursor', 'pointer');
         return button;
     }
 
@@ -134,7 +159,7 @@ const s = (p) => {
         if (event.target === canvas.elt){ // we need to be in the canvas to draw not buttons or other elements
             if (sketch.polygonIsClosed())
                 return;
-    
+
             if (sketch.isNearFirstVertexPolygon()) {
                 p.redraw();
                 sketch.tryClosePolygon()
@@ -142,15 +167,12 @@ const s = (p) => {
                 sketch.addPoint(new Point(p.mouseX, -p.mouseY));
             }
         }
-
-        
     }
 
     p.windowResized = function () {
         let height = p.height - 100;
         let width = p.width / 2 -30;
         buttonList.forEach(element => {
-            //place the button (element) to the right of the prevous one
             element.position(width, height);
             width += element.width +40;
         });

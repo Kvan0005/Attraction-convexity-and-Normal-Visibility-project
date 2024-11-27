@@ -1,4 +1,4 @@
-import {isRightTurn} from "../Point.js";
+import {isRightTurn} from "../geometry/Point.js";
 
 export class WalkingAnt {
     constructor(polygon, totalTime=4000, totalRotationTime=1000) {
@@ -39,7 +39,6 @@ export class WalkingAnt {
 
     calculateRotation(p, start, end, nextEnd) {
         this.rotationStartAngle = Math.atan2(end.y - start.y, end.x - start.x) - Math.PI / 2;
-        //console.log(this.rotationStartAngle, rawTargetAngle);
         this.rotationTargetAngle = Math.atan2(nextEnd.y - end.y, nextEnd.x - end.x) - Math.PI / 2;
 
         if (isRightTurn(start, end, nextEnd)) {
@@ -67,7 +66,6 @@ export class WalkingAnt {
         let progress = elapsedTime / this.timePerEdge;
         let distanceTravelled = progress * this.distance;
 
-        //console.log(distanceTravelled, this.distance);
         if (distanceTravelled <= this.distance) {
             let ratio = distanceTravelled / this.distance;
 
@@ -105,7 +103,7 @@ export class WalkingAnt {
             angle = Math.atan2(end.y - start.y, end.x - start.x) - Math.PI/2;
         }
 
-        // Dessiner la demi-droite
+        // light
         let lineLength = 5000;
         let endX = x + lineLength * Math.cos(angle);
         let endY = y + lineLength * Math.sin(angle);
@@ -114,7 +112,6 @@ export class WalkingAnt {
         p.line(x, -y, endX, -endY);
 
         p.stroke(84, 79, 99);
-        //p.noStroke();
         p.ellipse(x, -y, 10, 10);
     }
 
@@ -123,8 +120,6 @@ export class WalkingAnt {
             let start = this.polygon.get(this.currentEdge);
             let end = this.polygon.get((this.currentEdge + 1) % this.polygon.length());
             let nextEnd = this.polygon.get((this.currentEdge + 2) % this.polygon.length());
-
-            //console.log(start, end, nextEnd);
 
             if (!this.inRotation) {
                 let {point, angle} = this.getPositionAndLightAngle(p, start, end, nextEnd);
@@ -135,7 +130,7 @@ export class WalkingAnt {
         }
         else {
             //end
-            this.turn_nb = (this.turn_nb + 1) % 5;
+            this.turn_nb = (this.turn_nb + 1) % 5; // % only to bound the size of the int since we don't care
             observer.notify(this.turn_nb)
         }
     }

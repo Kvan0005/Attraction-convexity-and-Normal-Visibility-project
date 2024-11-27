@@ -8,6 +8,7 @@ export class Phase {
         this.name = name;
         this.n = next;
     }
+
     toString() {
         return `Phase.${this.name}`;
     }

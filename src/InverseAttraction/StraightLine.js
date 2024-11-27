@@ -1,4 +1,4 @@
-import { Point } from "../Point.js";
+import { Point } from "../geometry/Point.js";
 import { isBetween } from "./SPM.js";
 
 export class StraightLine {

@@ -3,8 +3,8 @@ import {Dialog} from "../Dialog.js";
 import {AnimatedText} from "../AnimatedText.js";
 import {ReactivePolygon} from "../ReactivePolygon.js";
 import {Phase} from "./Phase.js";
-import {Point} from "../../Point.js";
-import {Attraction} from "../../Attraction.js";
+import {Point} from "../../geometry/Point.js";
+import {Attraction} from "../../Attraction/Attraction.js";
 
 class Sketch{
     constructor() {
@@ -119,9 +119,9 @@ class Sketch{
 var sketch = new Sketch();
 const s = (p) => {
     p.setup = function () {
-        const parent = document.getElementById('bigAnimationCanvasContainer'); // Récupérer le parent
-        const parentBounds = parent.getBoundingClientRect(); // Obtenir les dimensions du parent
-        const canvas = p.createCanvas(parentBounds.width, parentBounds.height); // Taille du canvas = parent
+        const parent = document.getElementById('bigAnimationCanvasContainer');
+        const parentBounds = parent.getBoundingClientRect();
+        const canvas = p.createCanvas(parentBounds.width, parentBounds.height);
         canvas.parent('bigAnimationCanvasContainer')
         sketch.setP(p);
         p.textSize(20);

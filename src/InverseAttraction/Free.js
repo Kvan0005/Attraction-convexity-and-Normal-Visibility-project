@@ -1,4 +1,4 @@
-import { Polygon } from "../Polygon.js";
+import { Polygon } from "../geometry/Polygon.js";
 
 export class Free {
     constructor(constrainingHalfPlane, polygon) {
@@ -192,5 +192,41 @@ export class Free {
             });
         }
         
+    }
+
+    drawFreei(p, i = 0) {
+        const colors = [
+            [100, 100, 250, 50],
+            [250, 100, 100, 50],
+            [100, 250, 100, 50],
+            [250, 250, 100, 50],
+            [100, 250, 250, 50],
+            [250, 100, 250, 50]
+        ];
+        
+        p.stroke("blue");
+        p.strokeWeight(1);
+
+        let region = this.freeRegions[Object.keys(this.freeRegions)[i]];
+        if (region.length === 2) {
+            for (const subPolygon of region) {
+                i++;
+                const color = colors[i-2];
+                p.fill(...color);
+                p.beginShape();
+                for (const point of subPolygon.points) {
+                    p.vertex(point.x, -point.y);
+                }
+                p.endShape(p.CLOSE);
+            }
+        } else {
+            const color = colors[i % colors.length];
+            p.fill(...color);
+            p.beginShape();
+            for (const point of region.points) {
+                p.vertex(point.x, -point.y);
+            }
+            p.endShape(p.CLOSE);
+        }
     }
 }

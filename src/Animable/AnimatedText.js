@@ -32,10 +32,9 @@ export class AnimatedText{
         p.stroke(84, 79, 99, alpha);
         p.text(this.message, p.width / 2, 10);
 
-        // Arrêter l'animation après 5 secondes
+        // Stop animation
         if (elapsedTime > this.displayDuration) {
             this.ended = true;
-            //p.noLoop();
         }
     }
 
