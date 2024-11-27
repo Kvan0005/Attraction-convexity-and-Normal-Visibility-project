@@ -222,7 +222,7 @@ ul li a:hover {
     border-radius: 5px;
     box-shadow: 0 0 2px rgba(23, 20, 25, 0.5);
     width: 100%; /* Prend 80% de la largeur de la fenêtre */
-    height: 80%;
+    height: 90%;
     /*max-width: 600px; /* Largeur maximale */
     /*aspect-ratio:  / 1; /* Maintient le ratio largeur/hauteur */
     /*margin: 20px auto; /* Centré horizontalement avec un espace vertical */
