@@ -1,4 +1,4 @@
-import {isRightTurn} from "../Point.js";
+import {isRightTurn} from "../geometry/Point.js";
 
 export class WalkingAnt {
     constructor(polygon, totalTime=4000, totalRotationTime=1000) {

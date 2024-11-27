@@ -1,4 +1,4 @@
-import {isAcuteAngle, isLeftTurn, isRightTurn} from "./Point.js";
+import {isAcuteAngle, isLeftTurn, isRightTurn} from "../geometry/Point.js";
 import {PocketPolygon, generatePocketChain} from './PocketPolygon.js'; // Import the PocketPolygon class
 
 export class Attraction {

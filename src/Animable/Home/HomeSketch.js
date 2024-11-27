@@ -3,8 +3,8 @@ import {Dialog} from "../Dialog.js";
 import {AnimatedText} from "../AnimatedText.js";
 import {ReactivePolygon} from "../ReactivePolygon.js";
 import {Phase} from "./Phase.js";
-import {Point} from "../../Point.js";
-import {Attraction} from "../../Attraction.js";
+import {Point} from "../../geometry/Point.js";
+import {Attraction} from "../../Attraction/Attraction.js";
 
 class Sketch{
     constructor() {

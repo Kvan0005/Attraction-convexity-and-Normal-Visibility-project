@@ -1,5 +1,5 @@
-import {Point} from "./Point.js";
-import {StraightLine} from "./InverseAttraction/StraightLine.js";
+import {Point} from "../geometry/Point.js";
+import {StraightLine} from "../InverseAttraction/StraightLine.js";
 class PocketPolygon {
     constructor(chains){
         this.first = chains.shift();

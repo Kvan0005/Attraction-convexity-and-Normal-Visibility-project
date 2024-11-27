@@ -1,6 +1,6 @@
 import {WalkingAnt} from "../WalkingAnt.js"
 import {ReactivePolygon} from "../ReactivePolygon.js";
-import {Point} from "../../Point.js";
+import {Point} from "../../geometry/Point.js";
 
 class Sketch{
     constructor() {

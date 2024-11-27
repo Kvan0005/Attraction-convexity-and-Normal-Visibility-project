@@ -1,5 +1,5 @@
-import { Point, isRightTurn, det, isLeftTurn } from "../Point.js";
-import { Polygon } from "../Polygon.js";
+import { Point, isRightTurn, isLeftTurn } from "../geometry/Point.js";
+import { Polygon } from "../geometry/Polygon.js";
 
 export class SPM {
     constructor(polygon, spt, point) {

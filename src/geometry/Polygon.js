@@ -1,10 +1,10 @@
 import {det, getTurn, isLeftTurn, isRightTurn} from "./Point.js";
-import {DIRECTION} from "./Const.js";
+import {DIRECTION} from "../Const.js";
 import {ConvexHull} from "./ConvexHull.js";
-import {Deque} from "./Deque.js";
-import {isBetween} from "./InverseAttraction/SPM.js";
-import { HalfPlane } from "./InverseAttraction/HalfPlane.js";
-import { StraightLine } from "./InverseAttraction/StraightLine.js";
+import {Deque} from "../Attraction/Deque.js";
+import {isBetween} from "../InverseAttraction/SPM.js";
+import { HalfPlane } from "../InverseAttraction/HalfPlane.js";
+import { StraightLine } from "../InverseAttraction/StraightLine.js";
 
 export class Polygon {
     constructor(points = [], closed = false) {

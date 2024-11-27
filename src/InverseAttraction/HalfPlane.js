@@ -1,4 +1,4 @@
-import { Point, isLeftTurn } from "../Point.js";
+import { Point, isLeftTurn } from "../geometry/Point.js";
 import { isBetween, getIntersection } from "./SPM.js";
 import { StraightLine, perpendicularFromTwoPoints } from "./StraightLine.js";
 

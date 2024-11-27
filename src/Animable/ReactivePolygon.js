@@ -1,5 +1,5 @@
-import {Polygon} from "../Polygon.js";
-import {det, isRightTurn} from "../Point.js";
+import {Polygon} from "../geometry/Polygon.js";
+import {det, isRightTurn} from "../geometry/Point.js";
 
 class Point {
     constructor(x, y) {

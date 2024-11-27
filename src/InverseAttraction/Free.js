@@ -1,4 +1,4 @@
-import { Polygon } from "../Polygon.js";
+import { Polygon } from "../geometry/Polygon.js";
 
 export class Free {
     constructor(constrainingHalfPlane, polygon) {

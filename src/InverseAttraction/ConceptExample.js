@@ -1,5 +1,5 @@
-import { Point } from "../Point.js";
-import { Polygon } from "../Polygon.js";
+import { Point } from "../geometry/Point.js";
+import { Polygon } from "../geometry/Polygon.js";
 import { IAR } from "./IAR.js";
 
 const translatedPoints = getTranslatedPoints();

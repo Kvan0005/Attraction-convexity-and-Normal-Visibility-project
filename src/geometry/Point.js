@@ -1,4 +1,4 @@
-import {DIRECTION} from "./Const.js";
+import {DIRECTION} from "../Const.js";
 
 export class Point {
 

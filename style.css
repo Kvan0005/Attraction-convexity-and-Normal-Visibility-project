@@ -264,18 +264,18 @@ ul li a:hover {
 }
 
 .image-container {
-    display: flex; /* Affiche les images côte à côte par défaut */
-    justify-content: center; /* Centre les images horizontalement */
+    display: flex; /* Affiche les assets côte à côte par défaut */
+    justify-content: center; /* Centre les assets horizontalement */
     align-items: center; /* Centre verticalement si nécessaire */
-    gap: 200px; /* Ajoute 200px d'espace entre les images */
+    gap: 200px; /* Ajoute 200px d'espace entre les assets */
     margin: 20px auto; /* Centrage général */
-    flex-wrap: wrap; /* Permet aux images de passer à la ligne si nécessaire */
+    flex-wrap: wrap; /* Permet aux assets de passer à la ligne si nécessaire */
     text-align: center; /* Centre le texte à l'intérieur */
 }
 
 .image-container img {
     max-width: 100%; /* S'adapte à la taille de l'écran */
-    height: auto; /* Conserve les proportions des images */
+    height: auto; /* Conserve les proportions des assets */
     display: block;
     width: 300px;
 }
@@ -283,8 +283,8 @@ ul li a:hover {
 /* Réduction de l'espace et disposition verticale sur petits écrans */
 @media (max-width: 800px) {
     .image-container {
-        gap: 20px; /* Réduit l'espace entre les images */
-        flex-direction: column; /* Passe les images en colonne */
+        gap: 20px; /* Réduit l'espace entre les assets */
+        flex-direction: column; /* Passe les assets en colonne */
     }
 
     .image-container img {

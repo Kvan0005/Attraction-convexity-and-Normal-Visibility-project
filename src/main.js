@@ -1,7 +1,7 @@
-import { Point} from "./Point.js";
+import { Point} from "./geometry/Point.js";
 import { ReactivePolygon } from "./Animable/ReactivePolygon.js";
 import { Phase } from "./Animable/Home/Phase.js";
-import { Attraction } from "./Attraction.js";
+import { Attraction } from "./Attraction/Attraction.js";
 import {WalkingAnt} from "./Animable/WalkingAnt.js";
 
 var canvas;
