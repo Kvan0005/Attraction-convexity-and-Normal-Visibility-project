@@ -25,23 +25,34 @@
             <header>Code</header>
 
             <h2>Pseudo Code used</h2>
-
             <pre>
             <code>
+            <b>Algorithm 1</b> Melkman Algorithm.  
 
-            <b>Algorithm 1</b> Inverse attraction region.
-
-            <b>Input:</b> Simple polygon P , and a point p ∈ P.
-            <b>Output:</b> Inverse attraction region of p.
-                1: Compute SPT<sub>r</sub>(p) and SPM(p).
-                2: for <b>for each</b> e ∈ SPT<sub>r</sub>(p) <b>do</b> 
-                3:     Compute constraining half-planes of e and corresponding domain subpolygons.
-                4: <b>end for</b>
-                5: <b>for each</b> region R<sub>i</sub> of SPM(p) with base vertex v<sub>i</sub> <b>do</b> 
-                6:     Find all the domain subpolygons that contain v<sub>i</sub>, and compute Free<sub>i</sub>.
-                7:     Intersect R with Free<sub>i</sub>, and add the resulting set to the inverse attraction region of p.
-                8: <b>end for</b>
-                9: <b>return</b> Inverse attraction region of p.
+            <b>Input:</b> A simple polygon P with none crossing edges with vertices v<sub>1</sub>, v<sub>2</sub>, ..., v<sub>n</sub>
+            <b>Output:</b> Convex hull of P
+                1: initialize empty deque d
+                2: v<sub>1</sub> &larr; next_vertex; v<sub>2</sub> &larr; next_vertex; v<sub>3</sub> &larr; next_vertex
+                3: <b>if</b> (v<sub>1</sub>, v<sub>2</sub>, v<sub>3</sub>) is a right turn <b>then</b>
+                4:     d.push(v<sub>1</sub>); d.push(v<sub>2</sub>)
+                5: <b>else</b>
+                6:     d.push(v<sub>2</sub>); d.push(v<sub>1</sub>)
+                7: <b>end if</b>
+                8: d.push(v<sub>3</sub>); d.insert(v<sub>3</sub>)
+                9: <b>while</b> (not all vertex visited in P) <b>do</b>
+                10:     v &larr; next_vertex
+                11:     <b>while</b> (v, d<sub>b</sub>, d<sub>b+1</sub>) is not a left turn <b>and</b> (d<sub>t-1</sub>, d<sub>t</sub>, v) is not a left turn <b>do</b>
+                12:         v &larr; next_vertex
+                13:     <b>end while</b>
+                14:     <b>while</b> (d<sub>t-1</sub>, d<sub>t</sub>, v) is not a right turn <b>do</b>
+                15:         d.pop()
+                16:     <b>end while</b>
+                17:     d.push(v)
+                18:     <b>while</b> (v, d<sub>b</sub>, d<sub>b+1</sub>) is not a right turn <b>do</b>
+                19:         d.remove()
+                20:     <b>end while</b>
+                21:     d.insert(v)
+                22: <b>end while</b>
             </code>
             </pre>
 
@@ -71,35 +82,23 @@
 
             <pre>
             <code>
-            <b>Algorithm 3</b> Melkman Algorithm.
             
-            <b>Input:</b> A simple polygon P with none crossing edges with vertices v<sub>1</sub>, v<sub>2</sub>, ..., v<sub>n</sub>
-            <b>Output:</b> Convex hull of P
-                1: initialize empty deque d
-                2: v<sub>1</sub> &larr; next_vertex; v<sub>2</sub> &larr; next_vertex; v<sub>3</sub> &larr; next_vertex
-                3: <b>if</b> (v<sub>1</sub>, v<sub>2</sub>, v<sub>3</sub>) is a right turn <b>then</b>
-                4:     d.push(v<sub>1</sub>); d.push(v<sub>2</sub>)
-                5: <b>else</b>
-                6:     d.push(v<sub>2</sub>); d.push(v<sub>1</sub>)
-                7: <b>end if</b>
-                8: d.push(v<sub>3</sub>); d.insert(v<sub>3</sub>)
-                9: <b>while</b> (not all vertex visited in P) <b>do</b>
-                10:     v &larr; next_vertex
-                11:     <b>while</b> (v, d<sub>b</sub>, d<sub>b+1</sub>) is not a left turn <b>and</b> (d<sub>t-1</sub>, d<sub>t</sub>, v) is not a left turn <b>do</b>
-                12:         v &larr; next_vertex
-                13:     <b>end while</b>
-                14:     <b>while</b> (d<sub>t-1</sub>, d<sub>t</sub>, v) is not a right turn <b>do</b>
-                15:         d.pop()
-                16:     <b>end while</b>
-                17:     d.push(v)
-                18:     <b>while</b> (v, d<sub>b</sub>, d<sub>b+1</sub>) is not a right turn <b>do</b>
-                19:         d.remove()
-                20:     <b>end while</b>
-                21:     d.insert(v)
-                22: <b>end while</b>
+            <b>Algorithm 3</b> Inverse attraction region.
+            
+            <b>Input:</b> Simple polygon P , and a point p ∈ P.
+            <b>Output:</b> Inverse attraction region of p.
+                1: Compute SPT<sub>r</sub>(p) and SPM(p).
+                2: for <b>for each</b> e ∈ SPT<sub>r</sub>(p) <b>do</b> 
+                3:     Compute constraining half-planes of e and corresponding domain subpolygons.
+                4: <b>end for</b>
+                5: <b>for each</b> region R<sub>i</sub> of SPM(p) with base vertex v<sub>i</sub> <b>do</b> 
+                6:     Find all the domain subpolygons that contain v<sub>i</sub>, and compute Free<sub>i</sub>.
+                7:     Intersect R with Free<sub>i</sub>, and add the resulting set to the inverse attraction region of p.
+                8: <b>end for</b>
+                9: <b>return</b> Inverse attraction region of p.
             </code>
             </pre>
-
+            
             <div id="authorContainer">By Loïc Blommaert, Quentin Lecocq and Kevin Vandervaeren</div>
         </main>
     </div>

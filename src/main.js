@@ -81,6 +81,7 @@ class Sketch{
         this.phase = Phase.Draw;
         this.isAttractionConvex = null;
         this.text_to_display = "?";
+        this.show_projection = false;
     }
 }
 
