@@ -1,4 +1,4 @@
-import { Point, isRightTurn } from "../Point.js";
+import { Point, isRightTurn, det, isLeftTurn } from "../Point.js";
 import { Polygon } from "../Polygon.js";
 
 export class SPM {
@@ -8,7 +8,6 @@ export class SPM {
         this.spt = spt;
         this.projections = this.computeProjections();
         this.regions = this.computeRegions();
-        console.log(this.regions);
         this.limitDraw = false;
         this.drawRegion = 0;
     }
@@ -84,7 +83,9 @@ export class SPM {
             edges.forEach(([p1, p2]) => {
                 if ((u.equals(p1) || v.equals(p2)) || (u.equals(p2) || v.equals(p1))) return;
                 const intersection = getIntersection(u, v, p1, p2);
-                if (intersection) {
+                let w = this.polygon.points.findIndex(point => point.equals(v)) - 1;
+                let x = w + 2;
+                if (intersection && (isLeftTurn(this.polygon.points[w], v, intersection) || isLeftTurn(v, this.polygon.points[x], intersection))) {
                     const key = JSON.stringify([u, v]);
                     if (!(key in projections) || isBetween(v, projections[key], intersection)) {
                         projections[key] = [intersection, p1, p2];
@@ -145,15 +146,38 @@ export function isBetween(p1, p2, p) {
 }
 
 export function getIntersection(p1, p2, p3, p4) {
-    let a1 = (p2.y - p1.y) / (p2.x - p1.x);
-    let a2 = (p4.y - p3.y) / (p4.x - p3.x);
-    let b1 = p1.y - a1 * p1.x;
-    let b2 = p3.y - a2 * p3.x;
+    let a1, a2, b1, b2;
+
+    if (p1.x === p2.x) {
+        a1 = Infinity;
+        b1 = p1.x;
+    } else {
+        a1 = (p2.y - p1.y) / (p2.x - p1.x);
+        b1 = p1.y - a1 * p1.x;
+    }
+
+    if (p3.x === p4.x) {
+        a2 = Infinity;
+        b2 = p3.x;
+    } else {
+        a2 = (p4.y - p3.y) / (p4.x - p3.x);
+        b2 = p3.y - a2 * p3.x;
+    }
 
     if (a1 === a2) return null;
 
-    let x = (b2 - b1) / (a1 - a2);
-    let y = a1 * x + b1;
+    let x, y;
+    if (a1 === Infinity) {
+        x = b1;
+        y = a2 * x + b2;
+    } else if (a2 === Infinity) {
+        x = b2;
+        y = a1 * x + b1;
+    } else {
+        x = (b2 - b1) / (a1 - a2);
+        y = a1 * x + b1;
+    }
+
     let p = new Point(x, y);
 
     if (p.equals(p1) || p.equals(p2) || p.equals(p3) || p.equals(p4)) return null;

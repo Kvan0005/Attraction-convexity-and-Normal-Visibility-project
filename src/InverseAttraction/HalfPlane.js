@@ -17,6 +17,11 @@ export class HalfPlane {
     }
 
     getIntersection(p1, p2) {
+        if (this.h.p1.equals(p1) || this.h.p1.equals(p2)) {
+            return this.h.p1;
+        } else if (this.h.p2.equals(p1) || this.h.p2.equals(p2)) {
+            return this.h.p2;
+        }
         return this.h.getIntersection(p1, p2);
     }
 
@@ -36,9 +41,8 @@ export class ConstrainingHalfPlanes {
 
     computePlanes() {
         const straightLines = [];
-        console.log(this.polygon.points);
-        this.spt.tree.forEach(([u, v]) => {
 
+        this.spt.tree.forEach(([u, v]) => {
             let i = this.polygon.points.indexOf(v);
             let pe1 = this.polygon.points[(i - 1) % this.polygon.points.length];
             let pe2 = this.polygon.points[(i + 1) % this.polygon.points.length];
@@ -47,7 +51,11 @@ export class ConstrainingHalfPlanes {
             straightLines.push(h1, h2);
 
             const key = JSON.stringify({x: v.x, y: v.y});
-            this.chp[key] = this.determineSubPolygon(u, v, pe1, pe2, h1, h2);
+            const subPolygon = this.determineSubPolygon(u, v, pe1, pe2, h1, h2);
+            if (subPolygon === undefined) {
+                return;
+            }
+            this.chp[key] = subPolygon; 
         });
         return straightLines;
     }
@@ -59,10 +67,16 @@ export class ConstrainingHalfPlanes {
         if (h1.isBelow(u) === h1.isBelow(pe1) && h2.isBelow(u) === h2.isBelow(pe2)) {
             if (isLeftTurn(pe1, v, pe2) === isLeftTurn(pe1, v, u)) {
                 [z1, p1, p2] = this.getProjections(pe2, v);
+                if (z1 === undefined) {
+                    return;
+                }
                 subPolygons = this.createSubPolygon(pe1, v, z1, p1, p2);
                 associatedLine = new HalfPlane(h2, pe2);
             } else {
                 [z1, p1, p2] = this.getProjections(pe1, v);
+                if (z1 === undefined) {
+                    return;
+                }
                 subPolygons = this.createSubPolygon(pe2, v, z1, p1, p2);
                 associatedLine = new HalfPlane(h1, pe1);
             }
@@ -78,8 +92,12 @@ export class ConstrainingHalfPlanes {
 
         } else {
             let [pu, pv] = this.getPerpendicularsPoints(u, v);
+            if (!isLeftTurn(pe1, v, pu)) {
+                [pu, pv] = [pv, pu];
+            }
             [z1, p1, p2] = this.getProjections(v, pu);
             [z2, p3, p4] = this.getProjections(v, pv);
+
             subPolygons = [this.createSubPolygon(pe1, v, z1, p1, p2), this.createSubPolygon(pe2, v, z2, p3, p4)];
             const hp1 = new HalfPlane(new StraightLine(u, v), pe2);
             const hp2 = new HalfPlane(new StraightLine(u, v), pe1);
@@ -175,14 +193,38 @@ export class ConstrainingHalfPlanes {
     }    
     
     draw(p) {
-        Object.values(this.chp).forEach(([subPolygons, associatedLine]) => {
-            let line = associatedLine;
-            if (associatedLine instanceof Array) {
-                line = associatedLine[0];
-            }
-            p.drawingContext.setLineDash([5, 5]); // Set dashed line style
-            line.draw(p);
-            p.drawingContext.setLineDash([]); // Reset to solid line
-        });
+        const colors = [
+            [100, 100, 250, 50],
+            [250, 100, 100, 50],
+            [100, 250, 100, 50],
+            [250, 250, 100, 50],
+            [100, 250, 250, 50],
+            [250, 100, 250, 50]
+        ];
+        
+        p.stroke("blue");
+        p.strokeWeight(1);
+
+        Object.values(this.chp).forEach(([subPolygons, associatedLine], index) => {
+                if (subPolygons.length === 2) {
+                    for (const subPolygon of subPolygons) {
+                        const color = colors[index % colors.length];
+                        p.fill(...color);
+                        p.beginShape();
+                        for (const point of subPolygon) {
+                            p.vertex(point.x, -point.y);
+                        }
+                        p.endShape(p.CLOSE);
+                    }
+                } else {
+                    const color = colors[index % colors.length];
+                    p.fill(...color);
+                    p.beginShape();
+                    for (const point of subPolygons) {
+                        p.vertex(point.x, -point.y);
+                    }
+                    p.endShape(p.CLOSE);
+                }
+            });
     }
 }

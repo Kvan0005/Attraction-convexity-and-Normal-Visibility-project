@@ -15,9 +15,10 @@ export class Point {
         p.ellipse(this.x, -this.y, size, size);
     }
 
-    equals(other) {
-        return this.x === other.x && this.y === other.y;
-    }
+    equals(other, epsilon = 1e-10) {
+        if (!other) return false;
+        return Math.abs(this.x - other.x) < epsilon && Math.abs(this.y - other.y) < epsilon;
+    }    
 
     toString() {
         return this.id;
