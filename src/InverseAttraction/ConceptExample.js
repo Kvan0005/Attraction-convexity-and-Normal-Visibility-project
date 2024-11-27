@@ -26,7 +26,6 @@ function getTranslatedPoints() {
         new Point(950, -405),  // e
         new Point(1065, -405), // d
         new Point(1065, -380),  // p
-
         new Point(1040, -392.5)    // p
     ];
 
@@ -44,167 +43,48 @@ function getTranslatedPoints() {
     return points.map(p => new Point(p.x - centerX, p.y - centerY));
 }
 
-const r = (p) => {
-    p.setup = function () {
-        const canvas = p.createCanvas(600, 400);
-        canvas.parent('example_IAR'); // Attach the canvas to the specified container
-        p.background(255);
-        p.stroke("black");
-        p.fill("black");
-        p.strokeWeight(2);
-        p.translate(p.width / 2, p.height / 2);
-    }
-
-    p.draw = function () {
-        p.background(255);
-        p.stroke("black");
-        p.fill("black");
-        p.strokeWeight(2);
-        p.translate(p.width / 2, p.height / 2);
-        iar.draw(p);
-    }
-
-    p.windowResized = function () {
-        p.resizeCanvas(p.windowWidth, p.windowHeight);
-        p.translate(p.width / 2, p.height / 2);
-    }
-};
-
-const s = (p) => {
-    p.setup = function () {
-        const canvas = p.createCanvas(600, 400);
-        canvas.parent('example_Ri'); // Attach the canvas to the specified container
-        p.background(255);
-        p.stroke("black");
-        p.fill("black");
-        p.strokeWeight(2);
-        p.translate(p.width / 2, p.height / 2);
-    }
-
-    p.draw = function () {
-        p.background(255);
-        p.stroke("black");
-        p.fill("black");
-        p.strokeWeight(2);
-        p.translate(p.width / 2, p.height / 2);
-        iar.drawRi(p);
-    }
-
-    p.windowResized = function () {
-        p.resizeCanvas(p.windowWidth, p.windowHeight);
-        p.translate(p.width / 2, p.height / 2);
-    }
-};
-
-
-const t = (p) => {
-    p.setup = function () {
-        const canvas = p.createCanvas(600, 400);
-        canvas.parent('example_H1_H2'); // Attach the canvas to the specified container
-        p.background(255);
-        p.stroke("black");
-        p.fill("black");
-        p.strokeWeight(2);
-        p.translate(p.width / 2, p.height / 2);
-    }
-
-    p.draw = function () {
-        p.background(255);
-        p.stroke("black");
-        p.fill("black");
-        p.strokeWeight(2);
-        p.translate(p.width / 2, p.height / 2);
-        iar.drawH1(p);
-    }
-
-    p.windowResized = function () {
-        p.resizeCanvas(p.windowWidth, p.windowHeight);
-        p.translate(p.width / 2, p.height / 2);
-    }
+function setupCanvas(p, containerId) {
+    const canvas = p.createCanvas(600, 400);
+    canvas.parent(containerId); // Attach the canvas to the specified container
+    p.background(255);
+    p.stroke("black");
+    p.fill("black");
+    p.strokeWeight(2);
+    p.translate(p.width / 2, p.height / 2);
 }
 
-const u = (p) => {
-    p.setup = function () {
-        const canvas = p.createCanvas(600, 400);
-        canvas.parent('example_H1_H2_2'); // Attach the canvas to the specified container
-        p.background(255);
-        p.stroke("black");
-        p.fill("black");
-        p.strokeWeight(2);
-        p.translate(p.width / 2, p.height / 2);
-    }
-
-    p.draw = function () {
-        p.background(255);
-        p.stroke("black");
-        p.fill("black");
-        p.strokeWeight(2);
-        p.translate(p.width / 2, p.height / 2);
-        iar.drawH2(p);
-    }
-
-    p.windowResized = function () {
-        p.resizeCanvas(p.windowWidth, p.windowHeight);
-        p.translate(p.width / 2, p.height / 2);
-    }
+function drawSketch(p, drawFunction) {
+    p.background(255);
+    p.stroke("black");
+    p.fill("black");
+    p.strokeWeight(2);
+    p.translate(p.width / 2, p.height / 2);
+    drawFunction(p);
+    p.noLoop();
 }
 
-const v = (p) => {
-    p.setup = function () {
-        const canvas = p.createCanvas(600, 400);
-        canvas.parent('example_Freei'); // Attach the canvas to the specified container
-        p.background(255);
-        p.stroke("black");
-        p.fill("black");
-        p.strokeWeight(2);
-        p.translate(p.width / 2, p.height / 2);
-    }
+const sketches = [
+    { containerId: 'example_IAR', drawFunction: (p) => iar.draw(p) },
+    { containerId: 'example_Ri', drawFunction: (p) => iar.drawRi(p) },
+    { containerId: 'example_H1_H2', drawFunction: (p) => iar.drawH1(p) },
+    { containerId: 'example_H1_H2_2', drawFunction: (p) => iar.drawH2(p) },
+    { containerId: 'example_Freei', drawFunction: (p) => iar.drawFreei(p) },
+    { containerId: 'example_Freei2', drawFunction: (p) => iar.drawFreei2(p) }
+];
 
-    p.draw = function () {
-        p.background(255);
-        p.stroke("black");
-        p.fill("black");
-        p.strokeWeight(2);
-        p.translate(p.width / 2, p.height / 2);
-        iar.drawFreei(p);
-    }
+sketches.forEach(({ containerId, drawFunction }) => {
+    new p5((p) => {
+        p.setup = function () {
+            setupCanvas(p, containerId);
+        };
 
-    p.windowResized = function () {
-        p.resizeCanvas(p.windowWidth, p.windowHeight);
-        p.translate(p.width / 2, p.height / 2);
-    }
-}
+        p.draw = function () {
+            drawSketch(p, drawFunction);
+        };
 
-const w = (p) => {
-    p.setup = function () {
-        const canvas = p.createCanvas(600, 400);
-        canvas.parent('example_Freei2'); // Attach the canvas to the specified container
-        p.background(255);
-        p.stroke("black");
-        p.fill("black");
-        p.strokeWeight(2);
-        p.translate(p.width / 2, p.height / 2);
-    }
-
-    p.draw = function () {
-        p.background(255);
-        p.stroke("black");
-        p.fill("black");
-        p.strokeWeight(2);
-        p.translate(p.width / 2, p.height / 2);
-        iar.drawFreei2(p);
-    }
-
-    p.windowResized = function () {
-        p.resizeCanvas(p.windowWidth, p.windowHeight);
-        p.translate(p.width / 2, p.height / 2);
-    }
-}
-
-
-new p5(r); // Create a new p5.js sketch
-new p5(s); // Create a new p5.js sketch
-new p5(t); // Create a new p5.js sketch
-new p5(u); // Create a new p5.js sketch
-new p5(v); // Create a new p5.js sketch
-new p5(w); // Create a new p5.js sketch
+        p.windowResized = function () {
+            p.resizeCanvas(p.windowWidth, p.windowHeight);
+            p.translate(p.width / 2, p.height / 2);
+        };
+    });
+});
