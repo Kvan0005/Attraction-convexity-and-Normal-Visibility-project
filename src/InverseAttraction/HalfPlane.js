@@ -301,7 +301,7 @@ export class ConstrainingHalfPlanes {
                 p.text(`P1`, -100, 0)
                 p.text(`P2`, 75, 100)
 
-                p.textFont("Georgia", 9);
+                p.textFont("Georgia", 10);
                 p.text(`1`, this.straightLines[2 * index].p1.x + 16, -this.straightLines[2 * index].p1.y - 10);
                 p.text(`2`, this.straightLines[2 * index + 1].p2.x + 80 + 11, -this.straightLines[2 * index + 1].p2.y + 45);
                 p.text(`1`, -50 + 8, -40 + 5);
@@ -360,7 +360,7 @@ export class ConstrainingHalfPlanes {
 
                 p.text(`w`, intersection.x + 5, -intersection.y - 5);
 
-                p.textFont("Georgia", 9);
+                p.textFont("Georgia", 10);
                 p.text(`1`, this.straightLines[2 * index].p1.x + 17, -this.straightLines[2 * index].p1.y - 10);
                 p.text(`2`, this.straightLines[2 * index + 1].p2.x + 17, -this.straightLines[2 * index + 1].p2.y + 150);
                 p.text(`1`, 120 + 8, -25 + 5);
