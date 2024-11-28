@@ -288,6 +288,7 @@ export class ConstrainingHalfPlanes {
 
                 p.textFont("Georgia", 15);
                 p.stroke("black");
+                p.noStroke();
                 p.text(`v`, v.x + 5, -v.y - 10);
                 p.text(`u`, u.x - 5, -u.y - 5);
                 p.text(`H`, this.straightLines[2 * index].p1.x + 5, -this.straightLines[2 * index].p1.y - 15);
@@ -346,6 +347,7 @@ export class ConstrainingHalfPlanes {
 
                 p.textFont("Georgia", 15);
                 p.stroke("black");
+                p.noStroke();
                 p.fill("black");
                 p.text(`v`, v.x + 5, -v.y - 5);
                 p.text(`u`, u.x + 5, -u.y - 5);

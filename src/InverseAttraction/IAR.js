@@ -169,6 +169,7 @@ export class IAR {
 
         p.textFont("Georgia", 15);
         p.stroke("black");
+        p.noStroke();
         p.fill("black");
         p.text(`p`, this.p.x + 5, -this.p.y - 5);
         p.text(`v`, v.x + 5, -v.y - 5);

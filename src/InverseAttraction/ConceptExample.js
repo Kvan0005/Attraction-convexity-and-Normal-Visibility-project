@@ -122,7 +122,7 @@ function example_constraining(p) {
     y.draw(p);
 
     p.textFont("Georgia", 15);
-    p.stroke("black");
+    p.noStroke();
     p.fill("black");
     p.text(`p`, p_point.x + 5, -p_point.y - 5);
     p.text(`x`, x.x - 10, -x.y - 5);
