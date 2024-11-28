@@ -25,7 +25,7 @@ class PocketPolygon {
         for (const element of this.chains) {
             this.projectionPoints.push(this.projection(this.getFirst(), this.getLast(), element));
         }
-        this.projectionPoints.push(this.getLast);
+        this.projectionPoints.push(this.getLast());
         for (let i = 0; i < this.projectionPoints.length - 1; i++) {
             if (this.order*this.projectionPoints[i].x > this.order*this.projectionPoints[i+1].x) {
                 return false;
