@@ -1,6 +1,7 @@
 import { Point } from "../geometry/Point.js";
 import { Polygon } from "../geometry/Polygon.js";
 import { IAR } from "./IAR.js";
+import { perpendicularFromTwoPoints, StraightLine } from "./StraightLine.js";
 
 const translatedPoints = getTranslatedPoints();
 const polygon = new Polygon(translatedPoints.slice(0, -1), true);
@@ -69,7 +70,8 @@ const sketches = [
     { containerId: 'example_H1_H2', drawFunction: (p) => iar.drawH1(p) },
     { containerId: 'example_H1_H2_2', drawFunction: (p) => iar.drawH2(p) },
     { containerId: 'example_Freei', drawFunction: (p) => iar.drawFreei(p) },
-    { containerId: 'example_Freei2', drawFunction: (p) => iar.drawFreei2(p) }
+    { containerId: 'example_Freei2', drawFunction: (p) => iar.drawFreei2(p) },
+    { containerId: 'example_constraining', drawFunction: (p) => example_constraining(p) }
 ];
 
 sketches.forEach(({ containerId, drawFunction }) => {
@@ -88,3 +90,43 @@ sketches.forEach(({ containerId, drawFunction }) => {
         };
     });
 });
+
+function example_constraining(p) {
+    p.fill("red");
+    p.stroke("red");
+    let p_point = new Point(75, 50);
+    let e = [new Point(-25, 75), new Point(75, -75)];
+    let h = perpendicularFromTwoPoints(e[0], e[1], e[0]);
+
+    let x = new Point(-225, 40);
+    let y = new Point(-125, -90);
+
+    p_point.draw(p);
+    p.stroke("black");
+    p.fill("black");
+    p.line(e[0].x, -e[0].y, e[1].x, -e[1].y);
+    h.draw(p, "blue", true);
+    e[0].draw(p);
+
+    p.stroke(0, 0, 0, 50); // Set transparency to 50 out of 255
+    p.line(e[0].x, -e[0].y, 0, 75);
+    p.stroke("black"); // Reset stroke color to black
+
+    p.stroke("green");
+    p.fill("green");
+    x.draw(p);
+
+    p.stroke("red")
+    p.fill("red");
+    y.draw(p);
+
+    p.textFont("Georgia", 15);
+    p.stroke("black");
+    p.fill("black");
+    p.text(`p`, p_point.x + 5, -p_point.y - 5);
+    p.text(`x`, x.x - 10, -x.y - 5);
+    p.text(`y`, y.x - 10, -y.y - 5);
+    p.text(`e`, (e[0].x + e[1].x) / 2 + 5, -(e[0].y + e[1].y) / 2 + 40);
+    p.text(`H`, (x.x + y.x) / 2 - 50, -(x.y + y.y) / 2 + 20);
+    p.text(`v`, e[0].x + 5, -e[0].y - 15);
+}

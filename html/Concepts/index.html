@@ -249,11 +249,11 @@
             <p>
                 The inverse attraction region of a point within a simple polygon is the set of points that
                 can attract the given point. The inverse attraction region is a subset of the polygon which is denoted
-                as <em>IAR(p)</em>.
+                as <span>\( IAR(p) \)</span>.
                 Note that the concept of attraction in the inverse attraction region is the same as the concept of
-                attraction in the attraction region. However, if the point <em>p</em> attracts a point <em>q</em>,
-                then it does not imply that <em>q</em> attracts <em>p</em>. This implies that the attraction region of
-                <em>p</em> and the inverse attraction region of <em>p</em> are asymmetric problems.
+                attraction in the attraction region. However, if the point <span>\( p \)</span> attracts a point <span>\( q \)</span>,
+                then it does not imply that <span>\( q \)</span> attracts <span>\( p \)</span>. This implies that the attraction region of
+                <span>\( p \)</span> and the inverse attraction region of <span>\( p \)</span> are asymmetric problems.
             </p>
 
             <!-- Figure 1: Inverse Attraction Region : Example-->
@@ -263,94 +263,99 @@
                 As the inverse attraction region is a subset of the polygon, it is important
                 to determine the points that can attract the given point. The computation of the inverse attraction
                 region is done by constructing the shortest path map
-                <a href="../../html/Glossary/index.html#shortest-path-map"><em>SPM(p)</em></a>
-                of the given point <em>p</em> within the polygon <em>P</em>.
+                <a href="../../html/Glossary/index.html#shortest-path-map"><span>\( SPM(p) \)</span></a>
+                of the given point <span>\( p \)</span> within the polygon <span>\( P \)</span>.
                 The inverse attraction region is then constructed by considering the
                 regions of the shortest path map <a href="../../html/Glossary/index.html#shortest-path-map">
-                <em>SPM(p)</em></a> independently.
+                <span>\( SPM(p) \)</span></a> independently.
             </p>
 
             <p>
                 The article proposes to consider the inverse attraction region
-                <a href="../../html/Glossary/index.html#inverse-attraction-region"><em>IAR(p)</em></a>
-                as the union of all <em>Free<sub>i</sub> &cap; R<sub>i</sub></em> for all <em>i</em>.
+                <a href="../../html/Glossary/index.html#inverse-attraction-region"><span>\( IAR(p) \)</span></a>
+                as the union of all <span>\( Free_i \cap R_i \)</span> for all <span>\( i \)</span>.
                 We will explain this in more detail in the following sections.
             </p>
 
             <div id="example_IAR"></div>
 
             <p>
-                Here, the red point is attracted by all beacons placed in the blue part of the polygon. The uncolored part implies the red point will be stuck in a dead point.
+                Here, the red point is attracted by all beacons placed in the blue part of the polygon. The uncolored part implies the red point will be stuck in a dead point if a beacon is placed there.
             </p>
 
-            <h3>Region - <em>R<sub>i</sub></em></h3>
+            <h3>Region - <span>\( R_i \)</span></h3>
 
             <p>
-                To compute this <a href="../../html/Glossary/index.html#inverse-attraction-region"><em>IAR(p)</em></a>, we can divide our polygon into interesting regions where we can work locally. As we need the Euclidean distance to know if a point is attracted or not, we can work on regions delimited by the shortest distance to another one. This is the concept of <span>\({R_i}\)</span>. And we can compute them with the <a href="../../html/Glossary/index.html#shortest-path-map"><em>SPM(p)</em></a>.
+                To compute this <a href="../../html/Glossary/index.html#inverse-attraction-region"><span>\( IAR(p) \)</span></a>, we can divide our polygon into interesting regions where we can work locally. As we need the Euclidean distance to know if a point is attracted or not, we can work on regions delimited by the shortest distance to another one. This is the concept of <span>\( R_i \)</span>. And we can compute them with the <a href="../../html/Glossary/index.html#shortest-path-map"><span>\( SPM(p) \)</span></a>.
             </p>
 
             <p>
-                Let region <span>\({R_i}\)</span> of the shortest path map <a href="../../html/Glossary/index.html#shortest-path-map"><em>SPM(p)</em></a> consist of all points (of a region) such that the last segment of the shortest path from <span>\(p\)</span> to <span>\(t\)</span> is <span>\(\overline{v_i t}\)</span>. Vertex <span>\({v_i}\)</span> is called the base of <span>\({R_i}\)</span>.
-                Extend the edge of <a href="../../html/Glossary/index.html#shortest-path-tree"><em>SPT<sub>r</sub>(p)</em></a> ending at <span>\({v_i}\)</span> until the first intersection <span>\({z_i}\)</span> with the boundary of <em>P</em>. Call the segment <span>\({w_i = \overline{v_iz_i}}\)</span> a window, and point <span>\({z_i}\)</span> – the end of the window; window <span>\({w_i}\)</span> is a boundary segment of <span>\({R_i}\)</span>.
+                Let region <span>\( R_i \)</span> of the shortest path map <a href="../../html/Glossary/index.html#shortest-path-map"><span>\( SPM(p) \)</span></a> consist of all points (of a region) such that the last segment of the shortest path from <span>\( p \)</span> to <span>\( t \)</span> is <span>\( \overline{v_i t} \)</span>. Vertex <span>\( v_i \)</span> is called the base of <span>\( R_i \)</span>.
+                Extend the edge of <a href="../../html/Glossary/index.html#shortest-path-tree"><span>\( SPT_r(p) \)</span></a> ending at <span>\( v_i \)</span> until the first intersection <span>\( z_i \)</span> with the boundary of <span>\( P \)</span>. Call the segment <span>\( w_i = \overline{v_i z_i} \)</span> a window, and point <span>\( z_i \)</span> – the end of the window; window <span>\( w_i \)</span> is a boundary segment of <span>\( R_i \)</span>.
             </p>
 
             <div id="example_Ri"></div>
 
             <p>
-                This figure shows us a region of <a href="../../html/Glossary/index.html#shortest-path-map"><em>SPM(p)</em></a>. This is constructed by making all projections from our reflex vertex to the boundary of the polygon. This can also be seen as the region where the points need to go through the reflex vertex to reach the point <span>\(p\)</span>. Note that each region has a reflex vertex as its base but not all reflex vertices have a region <span>\({R_i}\)</span> associated. Like we can see with the turquoise vertex in the above figure.
+                This figure shows a region of <a href="../../html/Glossary/index.html#shortest-path-map"><span>\( SPM(p) \)</span></a>. It is constructed by projecting from our reflex vertex to the boundary of the polygon. This can also be seen as the region where the points need to go through the reflex vertex to reach the point <span>\( p \)</span>. In our case, we consider the inverse statement, which is also true: the point <span>\( p \)</span> needs to pass through this reflex vertex to reach a point in <span>\( R_i \)</span>. Note that each region has a reflex vertex as its base, but not all reflex vertices have a region <span>\( R_i \)</span> associated with them, as seen with the turquoise vertex <span>\( u \)</span> in the above figure.
             </p>
 
-            <h3><em>Free<sub>i</sub></em> and Constraining Half-Planes</h3>
+            <h3><span>\( Free_i \)</span> and Constraining Half-Planes</h3>
 
             <p>
-                To comprehend the inverse attraction region <a href="../../html/Glossary/index.html#inverse-attraction-region"><em>IAR(p)</em></a> and what exactly <em>Free<sub>i</sub></em> is, it is important to understand the concept of constraining half-planes. The constraining half-planes are used to identify the regions within the polygon <em>P</em> where points cannot attract <em>p</em> due to the presence of vertex <em>v</em>.
+                To comprehend the inverse attraction region <a href="../../html/Glossary/index.html#inverse-attraction-region"><span>\( IAR(p) \)</span></a> and what exactly <span>\( Free_i \)</span> is, it is important to understand the concept of constraining half-planes. The constraining half-planes are used to identify the regions within the polygon <span>\( P \)</span> where points cannot attract <span>\( p \)</span> due to the presence of vertex <span>\( v \)</span> where <span>\( v \in SPT_r(p) \)</span>.
             </p>
 
             <h4>Constraining Half-Planes</h4>
-            <p>
-                Let <em>uv</em> be an edge of the shortest path tree <a href="../../html/Glossary/index.html#shortest-path-tree"><em>SPT<sub>r</sub>(p)</em></a>, where <em>u</em> is the parent of <em>v</em>. Extend <em>uv</em> from <em>u</em> until it intersects the boundary of <em>P</em> at <em>w</em>. The segment <em>uw</em> partitions <em>P</em> into two subpolygons. Let <em>P<sub>p</sub></em> be the subpolygon containing <em>p</em>. Any path from <em>p</em> to any point outside <em>P<sub>p</sub></em> must pass through <em>uw</em>.
-            </p>
-            <p>
-                <strong>Case 1: <span>\({u}\)</span> is not in <em>H<sub>1</sub> ∪ H<sub>2</sub>:</em></strong><br>
-                Let <span>\({e_1}\)</span> and <span>\({e_2}\)</span> be the edges incident to <em>v</em>. <em>H<sub>1</sub></em> is the half-plane defined by a line orthogonal to <em>e<sub>1</sub></em> passing through <em>v</em> and containing <em>e<sub>1</sub></em>. <em>H<sub>2</sub></em> is the half-plane defined by a line orthogonal to <em>e<sub>2</sub></em> passing through <em>v</em> and containing <em>e<sub>2</sub></em>. If <em>u</em> is not in <em>H<sub>1</sub> ∪ H<sub>2</sub></em>, the supporting line of <em>uv</em> is the only line associated with <em>v</em> that may contribute to the boundary of the inverse attraction region <a href="../../html/Glossary/index.html#inverse-attraction-region"><em>IAR(p)</em></a>.
-            </p>
+            To give an intuition of the constraining half-planes, we will consider the following example: <span>\(p\)</span> is attracted by the beacon placed on <span>\(x\)</span> but not by the beacon placed on <span>\(y\)</span>. Therefore, there is a separation between <span>\(x\)</span> and <span>\(y\)</span>, which results from the reflex vertex <span>\(v\)</span>. This separation corresponds to the constraining half-plane delimited by a perpendicular bisector, which is caused by our concept of distance in the definition of attraction. In the figure below, the constraining half-plane is delimited the perpendicular bisector of the edge <span>\(e\)</span> at the point <span>\(v\)</span>.
 
+            <div id="example_constraining"></div>
+
+            <p>
+                Now, let <span>\( uv \)</span> be an edge of the shortest path tree <a href="../../html/Glossary/index.html#shortest-path-tree"><span>\( SPT_r(p) \)</span></a>, where <span>\( u \)</span> is the parent of <span>\( v \)</span>. Extend <span>\( uv \)</span> from <span>\( u \)</span> until it intersects the boundary of <span>\( P \)</span> at <span>\( w \)</span>. The segment <span>\( uw \)</span> partitions <span>\( P \)</span> into two subpolygons. Let <span>\( P_p \)</span> be the subpolygon containing <span>\( p \)</span>. Any path from <span>\( p \)</span> to any point outside <span>\( P_p \)</span> must pass through <span>\( uw \)</span>.
+            </p>
+            
+            <p>
+                <strong>Case 1: <span>\( u \)</span> is in <span>\( H_1 \cup H_2 \)</span>:</strong><br>
+                Let <span>\( e_1 \)</span> and <span>\( e_2 \)</span> be the edges incident to <span>\( v \)</span>. <span>\( H_1 \)</span> is the half-plane defined by a line orthogonal to <span>\( e_1 \)</span> passing through <span>\( v \)</span> and containing <span>\( e_1 \)</span>. <span>\( H_2 \)</span> is the half-plane defined by a line orthogonal to <span>\( e_2 \)</span> passing through <span>\( v \)</span> and containing <span>\( e_2 \)</span>. If <span>\( u \)</span> can see part of the edge <span>\( e_2 \)</span>, define the subpolygon <span>\( P_p \)</span> and let <span>\( w \)</span> be the first intersection of the ray <span>\( \vec{vu} \)</span> with the boundary of <span>\( P \)</span>. The segment <span>\( \overline{uw} \)</span> partitions <span>\( P \)</span> into two subpolygons. Let <span>\( P_p \)</span> be the subpolygon containing <span>\( p \)</span>. Define <span>\( \rho \)</span> as the ray originating at <span>\( v \)</span> along the extension of edge <span>\( e_2 \)</span> and let <span>\( z \)</span> be the first intersection of <span>\( \rho \)</span> with the boundary of <span>\( P \)</span>. <span>\( P_1 \)</span> is the subpolygon induced by <span>\( \overline{vz} \)</span> containing <span>\( e_1 \)</span>.
+            </p>
+            <p>
+                These constraining half-planes help in identifying the regions within the polygon <span>\( P \)</span> where points cannot attract <span>\( p \)</span> due to the presence of vertex <span>\( v \)</span>.
+            </p>
+            
+            <div id="example_H1_H2_2"></div>
+            
+            <p>
+                The figure above shows case 1 of the constraining half-planes. We see that <span>\( H_2 \)</span> is the constraining half-plane resulting in the computation of <span>\( Free_i \)</span> (detailed below).
+            </p>
+            
+            <div id="example_Freei2"></div>
+            
+            <p>
+                <strong>Case 2: <span>\( u \)</span> is not in <span>\( H_1 \cup H_2 \)</span>:</strong><br>
+                If <span>\( u \)</span> is not in <span>\( H_1 \cup H_2 \)</span>, the supporting line of <span>\( uv \)</span> is the only line associated with <span>\( v \)</span> that may contribute to the boundary of the inverse attraction region <a href="../../html/Glossary/index.html#inverse-attraction-region"><span>\( IAR(p) \)</span></a>. We have the notion of an effective line corresponding to the line (half-plane or supportive line) which has an incidence on the attraction of a region. There is only one effective line per reflex vertex in <span>\( P \)</span>.
+            </p>
+            
             <div id="example_H1_H2"></div>
-
+            
             <p>
-                From the Constraining Half-Plane above and the respective subpolygons of each perpendicular projection, we can compute <em>Free<sub>i</sub></em> as the intersection of the complements of the half-planes in <em>H<sub>i</sub></em> for the vertex v. Here, the intersection concerns only one half-plane, therefore, <em>Free<sub>i</sub></em> of v is computed directly.
+                From the Constraining Half-Plane above and the respective subpolygons of each perpendicular projection, we can compute <span>\( Free_i \)</span> as the intersection of the complements of the half-planes in <span>\( H_i \)</span> for the vertex <span>\( v \)</span>. Here, the intersection concerns only one half-plane, therefore, <span>\( Free_i \)</span> of <span>\( v \)</span> is computed directly.
             </p>
-
+            
             <div id="example_Freei"></div>
-
+            
             <p>
                 The figure highlights that when we are in case 1, we obtain 2 subpolygons with one constraining line working on the opposite regions of each.
             </p>
-
+            
             <p>
-                <strong>Case 2: <span>\({u}\)</span> is in <em>H<sub>1</sub> ∪ H<sub>2</sub>:</em></strong><br>
-                If <span>\({u}\)</span> can see part of the edge <span>\({e_2}\)</span>, define the subpolygon <em>P<sub>p</sub></em> and let <em>w</em> be the first intersection of the ray <span>\({\vec{vu}}\)</span> with the boundary of <em>P</em>. The segment <span>\(\overline{uw}\)</span> partitions <em>P</em> into two subpolygons. Let <em>P<sub>p</sub></em> be the subpolygon containing <em>p</em>. Define <em>ρ</em> as the ray originating at <em>v</em> along the extension of edge <span>\({e_2}\)</span> and let <em>z</em> be the first intersection of <span>\({\rho}\)</span> with the boundary of <em>P</em>. <em>P<sub>1</sub></em> is the subpolygon induced by <span>\(\overline{vz}\)</span> containing <em>e<sub>1</sub></em>.
-            </p>
-            <p>
-                These constraining half-planes help in identifying the regions within the polygon <em>P</em> where points cannot attract <em>p</em> due to the presence of vertex <em>v</em>.
-            </p>
-
-            <div id="example_H1_H2_2"></div>
-
-            <p>
-                The figure above shows case 2 of the constraining half-planes. We see that <em>H<sub>2</sub></em> is the constraining half-plane resulting in the computation of Freei below.
-            </p>
-
-            <div id="example_Freei2"></div>
-
-            <p>
-                The set <em>H<sub>i</sub></em> is the set of all constraining half-planes corresponding to the domain subpolygons that contain the point <em>v<sub>i</sub></em> (the base vertex of <em>R<sub>i</sub></em>). <em>Free<sub>i</sub></em> is the intersection of the complements of the half-planes in <em>H<sub>i</sub></em>.
+                The set <span>\( H_i \)</span> is the set of all constraining half-planes corresponding to the domain subpolygons that contain the point <span>\( v_i \)</span> (the base vertex of <span>\( R_i \)</span>). <span>\( Free_i \)</span> is the intersection of the complements of the half-planes in <span>\( H_i \)</span>.
             </p>
 
             <p>
-                The set of <em>Free<sub>i</sub></em> is used in each region <em>R<sub>i</sub></em> to compute the inverse attraction region <a href="../../html/Glossary/index.html#inverse-attraction-region"><em>IAR(p)</em></a> as the union of all <em>Free<sub>i</sub> &cap; R<sub>i</sub></em> for all <em>i</em>.
+                The set of <span>\( Free_i \)</span> is used in each region <span>\( R_i \)</span> to compute the inverse attraction region <a href="../../html/Glossary/index.html#inverse-attraction-region"><span>\( IAR(p) \)</span></a> as the union of all <span>\( Free_i \cap R_i \)</span> for all <span>\( i \)</span>.
             </p>
-
+            
             <h2>Complexity</h2>
             <p>
                 If we had used the <em>Brodal and Jacob</em> data structure for the convex hull, the overall complexity would have been <span>O(nlogn)</span>. Since the complete proof is somewhat challenging to grasp, we will omit certain parts for clarity. The main idea is to utilize the <em>Brodal and Jacob</em> data structure for computing the free space. This incremental data structure allows constraints to be added or removed in <span>O(logn)</span> time.

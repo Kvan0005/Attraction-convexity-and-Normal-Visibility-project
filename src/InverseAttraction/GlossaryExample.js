@@ -66,7 +66,7 @@ function drawSketch(p, drawFunction) {
 }
 
 const sketches = [
-    { containerId: 'SPM', drawFunction: (p) => spm.draw(p) },
+    { containerId: 'SPM', drawFunction: (p) => {p_point.draw(p); spt.draw(p); spm.draw(p)} },
 ];
 
 sketches.forEach(({ containerId, drawFunction }) => {

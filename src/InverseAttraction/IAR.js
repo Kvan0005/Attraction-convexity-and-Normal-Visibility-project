@@ -163,6 +163,23 @@ export class IAR {
         p.fill("turquoise");
         this.polygon.points[5].draw(p);
 
+        let v = region.points[0];
+        let u = region.points[5];
+        let z = region.points[1];
+
+        p.textFont("Georgia", 15);
+        p.stroke("black");
+        p.fill("black");
+        p.text(`p`, this.p.x + 5, -this.p.y - 5);
+        p.text(`v`, v.x + 5, -v.y - 5);
+        p.text(`u`, u.x + 5, -u.y - 5);
+        p.text(`z`, z.x + 5, -z.y - 5);
+        p.text(`w`, (v.x + z.x) / 2 + 5, -(v.y + z.y) / 2 - 5);
+        p.textFont("Georgia", 6);
+        p.text(`i`, v.x + 14, -v.y - 5);
+        p.text(`i`, z.x + 14, -z.y - 5);
+        p.text(`i`, (v.x + z.x) / 2 + 15, -(v.y + z.y) / 2 - 5);
+
     }
 
     drawDashedLines(p, start, end) {

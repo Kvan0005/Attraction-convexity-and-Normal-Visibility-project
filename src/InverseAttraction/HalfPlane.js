@@ -252,10 +252,25 @@ export class ConstrainingHalfPlanes {
                     p.fill(...color);
                     p.beginShape();
                     for (const point of subPolygon) {
-                    p.vertex(point.x, -point.y);
+                        p.vertex(point.x, -point.y);
                     }
                     p.endShape(p.CLOSE);
                 }
+
+                let intersection = associatedLine[0].getIntersection(this.polygon.points[15], this.polygon.points[0])
+                let p_p = [intersection, this.polygon.points[15], this.polygon.points[14], this.polygon.points[13]]
+
+                p.fill("black");
+                p.stroke("black");
+                intersection.draw(p);
+                
+                p.beginShape();
+                p.fill(144, 238, 144); // Light green color
+                for (const point of p_p) {
+                    p.vertex(point.x, -point.y);
+                }
+                p.endShape(p.CLOSE);
+
                 associatedLine[0].draw(p);
                 const [u, v] = this.spt.tree[1];
                 p.fill("red");
@@ -271,16 +286,29 @@ export class ConstrainingHalfPlanes {
                 this.straightLines[2 * index].draw(p, "blue", true);
                 this.straightLines[2 * index + 1].draw(p, "blue", true);
 
-                p.textSize(10);
+                p.textFont("Georgia", 15);
                 p.stroke("black");
-                p.fill("black");
                 p.text(`v`, v.x + 5, -v.y - 10);
                 p.text(`u`, u.x - 5, -u.y - 5);
-                p.textSize(9);
-                p.text(`H1`, this.straightLines[2 * index].p1.x + 5, -this.straightLines[2 * index].p1.y - 15);
-                p.text(`H2`, this.straightLines[2 * index + 1].p2.x + 80, -this.straightLines[2 * index + 1].p2.y + 40);
-                p.text(`e1`, -50, -40);
-                p.text(`e2`, 0, -5);
+                p.text(`H`, this.straightLines[2 * index].p1.x + 5, -this.straightLines[2 * index].p1.y - 15);
+                p.text(`H`, this.straightLines[2 * index + 1].p2.x + 80, -this.straightLines[2 * index + 1].p2.y + 40);
+                p.text(`e`, -50, -40);
+                p.text(`e`, 0, -5);
+                p.text(`w`, intersection.x + 5, -intersection.y - 5);
+                p.text(`z`, subPolygons[0][2].x + 5, -subPolygons[0][2].y - 5);
+                p.text(`z`, subPolygons[1][1].x + 5, -subPolygons[1][1].y - 5);
+                p.text(`P1`, -100, 0)
+                p.text(`P2`, 75, 100)
+
+                p.textFont("Georgia", 9);
+                p.text(`1`, this.straightLines[2 * index].p1.x + 16, -this.straightLines[2 * index].p1.y - 10);
+                p.text(`2`, this.straightLines[2 * index + 1].p2.x + 80 + 11, -this.straightLines[2 * index + 1].p2.y + 45);
+                p.text(`1`, -50 + 8, -40 + 5);
+                p.text(`2`, 8, -5 + 5);
+                p.text(`1`, subPolygons[0][2].x + 12, -subPolygons[0][2].y - 5);
+                p.text(`2`, subPolygons[1][1].x + 12, -subPolygons[1][1].y - 5);
+
+
             } else {
                 const color = colors[index % colors.length];
                 p.fill(...color);
@@ -289,6 +317,21 @@ export class ConstrainingHalfPlanes {
                     p.vertex(point.x, -point.y);
                 }
                 p.endShape(p.CLOSE);
+                
+                let intersection = this.straightLines[2 * index].getIntersection(this.polygon.points[15], this.polygon.points[0])
+                let p_p = [intersection, this.polygon.points[15], this.polygon.points[14], this.polygon.points[13]]
+                
+                p.beginShape();
+                p.fill(144, 238, 144); // Light green color
+                for (const point of p_p) {
+                    p.vertex(point.x, -point.y);
+                }
+                p.endShape(p.CLOSE);
+                
+                p.fill("black");
+                p.stroke("black");
+                intersection.draw(p);
+
                 associatedLine.draw(p);
                 const [u, v] = this.spt.tree[0];
                 p.fill("red");
@@ -301,16 +344,27 @@ export class ConstrainingHalfPlanes {
                 this.straightLines[2 * index].draw(p, "blue", true);
                 this.straightLines[2 * index + 1].draw(p, "blue", true);
 
-                p.textSize(10);
+                p.textFont("Georgia", 15);
                 p.stroke("black");
                 p.fill("black");
                 p.text(`v`, v.x + 5, -v.y - 5);
                 p.text(`u`, u.x + 5, -u.y - 5);
-                p.textSize(9);
-                p.text(`H1`, this.straightLines[2 * index].p1.x + 5, -this.straightLines[2 * index].p1.y - 15);
-                p.text(`H2`, this.straightLines[2 * index + 1].p2.x + 5, -this.straightLines[2 * index + 1].p2.y + 150);
-                p.text(`e1`, 120, -25);
-                p.text(`e2`, 135, -95);
+                p.text(`H`, this.straightLines[2 * index].p1.x + 5, -this.straightLines[2 * index].p1.y - 15);
+                p.text(`H`, this.straightLines[2 * index + 1].p2.x + 5, -this.straightLines[2 * index + 1].p2.y + 150);
+                p.text(`e`, 120, -25);
+                p.text(`e`, 135, -95);
+                p.text(`z`, subPolygons[2].x + 5, -subPolygons[2].y - 5);
+                p.text(`P1`, -100, 0)
+
+                p.text(`w`, intersection.x + 5, -intersection.y - 5);
+
+                p.textFont("Georgia", 9);
+                p.text(`1`, this.straightLines[2 * index].p1.x + 17, -this.straightLines[2 * index].p1.y - 10);
+                p.text(`2`, this.straightLines[2 * index + 1].p2.x + 17, -this.straightLines[2 * index + 1].p2.y + 150);
+                p.text(`1`, 120 + 8, -25 + 5);
+                p.text(`2`, 135 + 8, -95 + 5);
+                p.text(`1`, subPolygons[2].x + 12, -subPolygons[2].y - 5);
+
             }
         });
     }
