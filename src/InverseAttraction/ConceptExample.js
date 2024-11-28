@@ -66,6 +66,7 @@ function drawSketch(p, drawFunction) {
 
 const sketches = [
     { containerId: 'example_IAR', drawFunction: (p) => iar.draw(p) },
+    { containerId: 'example_IAR2', drawFunction: (p) => iar.draw(p) },
     { containerId: 'example_Ri', drawFunction: (p) => iar.drawRi(p) },
     { containerId: 'example_H1_H2', drawFunction: (p) => iar.drawH1(p) },
     { containerId: 'example_H1_H2_2', drawFunction: (p) => iar.drawH2(p) },
