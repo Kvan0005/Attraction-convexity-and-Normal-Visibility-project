@@ -44,7 +44,7 @@ export class ConstrainingHalfPlanes {
 
         this.spt.tree.forEach(([u, v]) => {
             let i = this.polygon.points.indexOf(v);
-            let pe1 = this.polygon.points[(i - 1) % this.polygon.points.length];
+            let pe1 = this.polygon.points[(i - 1 + this.polygon.points.length) % this.polygon.points.length];
             let pe2 = this.polygon.points[(i + 1) % this.polygon.points.length];
             let h1 = perpendicularFromTwoPoints(pe1, v, v);
             let h2 = perpendicularFromTwoPoints(pe2, v, v);

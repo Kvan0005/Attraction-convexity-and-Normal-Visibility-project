@@ -1,7 +1,7 @@
 import { Point } from "../geometry/Point.js";
 import { Polygon } from "../geometry/Polygon.js";
 import { IAR } from "./IAR.js";
-import { perpendicularFromTwoPoints, StraightLine } from "./StraightLine.js";
+import { perpendicularFromTwoPoints } from "./StraightLine.js";
 
 const translatedPoints = getTranslatedPoints();
 const polygon = new Polygon(translatedPoints.slice(0, -1), true);
@@ -27,6 +27,7 @@ function getTranslatedPoints() {
         new Point(950, -405),  // e
         new Point(1065, -405), // d
         new Point(1065, -380),  // p
+        
         new Point(1040, -392.5)    // p
     ];
 

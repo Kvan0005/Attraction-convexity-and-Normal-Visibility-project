@@ -19,9 +19,16 @@ export class IAR {
         iar[JSON.stringify({x: this.p.x, y: this.p.y})] = this.spm.regions[JSON.stringify({x: this.p.x, y: this.p.y})];
         let path = [this.p];
 
+        let spmRejectingVertex = [];
+
         this.spt.tree.forEach(([, v]) => {
-            let spmRegion = this.spm.regions[JSON.stringify({x: v.x, y: v.y})];
             path.push(v);
+            if (this.spt.isInPath(v, spmRejectingVertex)) {
+                spmRejectingVertex.push(v);
+                return null;
+            }
+
+            let spmRegion = this.spm.regions[JSON.stringify({x: v.x, y: v.y})];
             if (spmRegion === undefined) {
                 return;
             }
@@ -29,6 +36,7 @@ export class IAR {
             let hi = this.free.freeRegions[JSON.stringify({x: v.x, y: v.y})];
             hi = this.keepRegion(hi, spmRegion);
             if (hi === null) {
+                spmRejectingVertex.push(v);
                 return;
             }
 
@@ -43,6 +51,7 @@ export class IAR {
             }
             let res = spmRegion.intersectWith(hi, v);
             if (res === null) {
+                spmRejectingVertex.push(v);
                 return;
             }
             iar[JSON.stringify({x: v.x, y: v.y})] = res;
@@ -101,12 +110,26 @@ export class IAR {
         this.free.setDrawRegion(0);
     }
 
-    draw(p) {
+    draw(p, toBeColored = false) {
+        const colors = [
+            [100, 100, 250, 50],
+            [250, 100, 100, 50],
+            [100, 250, 100, 50],
+            [250, 250, 100, 50],
+            [100, 250, 250, 50],
+            [250, 100, 250, 50]
+        ];
+
         // draw attracted point
         this.drawPoly(p);
         
         Object.values(this.iar).forEach((region, index) => {
-            p.fill(100, 100, 250, 50);
+            if (toBeColored) {
+                const color = colors[index % colors.length];
+                p.fill(...color);
+            } else {
+                p.fill(100, 100, 250, 50);
+            }
             p.beginShape();
             for (const point of region.points) {
                 p.vertex(point.x, -point.y);

@@ -16,16 +16,36 @@ export class SPM {
         const regions = {};
         const points = this.insertProjections();
 
-        let i = 0;
-        regions[JSON.stringify({x: this.p.x, y: this.p.y})] = new Polygon(this.getNeighbors(points[0], points), true);
+        let intersection;
+        let x_point = this.getSeenPointfromSource();
+        // const key = JSON.stringify([this.p, x_point])
+        // if (key in this.projections) {
+        //     intersection = this.projections[key][0];
+        // }
+        regions[JSON.stringify({x: this.p.x, y: this.p.y})] = new Polygon(this.getNeighbors(x_point, points), true);
 
         Object.keys(this.projections).forEach(key => {
-            i++;
             const [, v] = JSON.parse(key);
-            const intersection = this.projections[key][0];
+            intersection = this.projections[key][0];
             regions[JSON.stringify({x: v.x, y: v.y})] = new Polygon(this.getNeighbors(new Point(v.x, v.y), points, intersection), true);
         });
         return regions;
+    }
+
+    getSeenPointfromSource() {
+        let findOne = null;
+        for (let i = 0; i < this.polygon.length(); i++) {
+            const p1 = this.polygon.get(i);
+            if (this.polygon.isCutting2(this.p, p1)) {
+                findOne = null;
+            }
+            else if (findOne) {
+                return findOne;
+            } else {
+                findOne = p1;
+            }
+        }
+        return null;
     }
 
     getNeighbors(u, points, intersection = null) {

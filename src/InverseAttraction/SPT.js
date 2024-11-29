@@ -66,6 +66,28 @@ export class SPT {
         return points;
     }
 
+    isInPath(v, spmRejectingVertex) {
+
+        let u = this.getPreviousVertex(v);
+
+        while (u !== null) {
+            if (spmRejectingVertex.includes(u)) {
+                return true;
+            }
+            u = this.getPreviousVertex(u);
+        }
+        return false;
+    }
+
+    getPreviousVertex(v) {
+        for (const element of this.tree) {
+            if (element[1] === v) {
+                return element[0];
+            }
+        }
+        return null;
+    }
+    
     switchLimitDrawing() {
         this.limitDraw = !this.limitDraw;
     }
