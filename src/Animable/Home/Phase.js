@@ -1,4 +1,5 @@
 export class Phase {
+    static ShowIAR = new Phase('ShowIAR');
     static EndVisible = new Phase('EndVisible');
     static ImagineAnt = new Phase('ImagineAnt', Phase.EndVisible);
     static Explanation = new Phase('Explanation', Phase.ImagineAnt);

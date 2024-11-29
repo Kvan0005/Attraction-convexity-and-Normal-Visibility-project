@@ -3,6 +3,7 @@ import { ReactivePolygon } from "./Animable/ReactivePolygon.js";
 import { Phase } from "./Animable/Home/Phase.js";
 import { Attraction } from "./Attraction/Attraction.js";
 import {WalkingAnt} from "./Animable/WalkingAnt.js";
+import { IAR } from "./InverseAttraction/IAR.js";
 
 var canvas;
 var buttonList = [];
@@ -19,6 +20,9 @@ class Sketch{
         this.text_to_display = "";
         this.is_ant = false;
         this.ant;
+        this.p_point;
+        this.iar;
+        this.waitPoint = false;
     }
 
     setP(p){
@@ -26,6 +30,11 @@ class Sketch{
     }
 
     notify(){
+        if (this.phase === Phase.ShowIAR){ 
+            this.polygon.toCounterClockwiseOrder();
+            this.iar = new IAR(this.polygon.toPolygon(), this.p_point);
+        }
+
         if (this.phase === Phase.Draw){
             this.polygon.toCounterClockwiseOrder();
             this.phase = this.phase.next();
@@ -33,6 +42,8 @@ class Sketch{
         if (this.phase === Phase.Explanation) {
             this.is_ant = false;
         }
+
+
     }
 
     draw(){
@@ -47,6 +58,10 @@ class Sketch{
                 if (this.show_convex_hull===true && this.convex_hull !== null ) this.convex_hull.draw(this.p);
                 if (this.show_projection && this.data_pocket_chain_on_lid.length > 0) this.data_pocket_chain_on_lid.forEach(elem => elem.draw(this.p));
                 if (this.is_ant) this.ant.draw(this.p, this);
+                break;}
+            case Phase.ShowIAR: {
+                this.text_to_display = ""
+                this.iar.draw(this.p, true);
                 break;}
         }
     }
@@ -69,8 +84,14 @@ class Sketch{
             }
         }
     }
+
     addPoint(point){
-        this.polygon.add(point);
+        if (this.waitPoint) {
+            this.waitPoint = false;
+            this.setPPoint(point);
+        } else {
+            this.polygon.add(point);
+        }
     }
 
 
@@ -88,6 +109,17 @@ class Sketch{
         this.ant = new WalkingAnt(this.polygon, 2000, 2000);
         this.ant.init(this.p);
     }
+    
+    waitPPoint(){
+        this.waitPoint = true;
+    }
+
+    setPPoint(point){
+        this.p_point = point;
+        this.phase = Phase.ShowIAR;
+        this.notify();
+        console.log(this.p_point, this.iar);
+    }
 
     reset(){
         this.polygon = new ReactivePolygon();
@@ -100,6 +132,9 @@ class Sketch{
         this.text_to_display = "";
         this.is_ant = false;
         this.ant = undefined;
+        this.p_point = undefined;
+        this.iar = undefined;
+        this.waitPoint = false;
     }
 }
 
@@ -122,6 +157,7 @@ const s = (p) => {
         buttonList.push(generateButton("Show projection", () => sketch.toggleShowProjection(), p));
         buttonList.push(generateButton("Clear", reset_points, p));
         buttonList.push(generateButton("Summon an ant", () => sketch.summonAnt(), p));
+        buttonList.push(generateButton("Compute IAR", () => sketch.waitPPoint(), p));
         let buttonListSize = buttonList.reduce((a, b) => a + b.size().width, 0);
         let width = parentBounds.width / 2 - buttonListSize / 6;
         buttonList.forEach(element => {
@@ -157,7 +193,7 @@ const s = (p) => {
 
     p.mousePressed = function (event) {
         if (event.target === canvas.elt){ // we need to be in the canvas to draw not buttons or other elements
-            if (sketch.polygonIsClosed())
+            if (sketch.polygonIsClosed() && !sketch.waitPoint)
                 return;
 
             if (sketch.isNearFirstVertexPolygon()) {
